@@ -205,7 +205,6 @@ namespace RoomService
 
 		public ROOM_RESULT Push(String deviceToken, String Message, int badge )
 		{
-			
 			ROOM_RESULT res = new ROOM_RESULT();
 			JdSoft.Apple.Apns.Notifications.Notification
 			alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(deviceToken);
