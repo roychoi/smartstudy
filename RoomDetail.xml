@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ROOM_DETAIL_INFO index="100011" category ="1" comment ="토익구만점" location ="강북언저리" max_user ="10" master_user_no ="0Adkjekk00000AAAAA123123" >
+  <NOTICE_LIST count ="2">
+    <NOTICE index ="1" title ="숙제범위">내용내용내용</NOTICE>
+    <NOTICE index ="2" title ="장소공지">내용내용내용</NOTICE>
+  </NOTICE_LIST>
+  <MEMBER_SUMMARY_LIST>
+    <MEMBER_SUMMARY user_no ="0Adkjekk00000AAAAA123123" id ="roy1669" nick_name="코쟁이" age ="31" />
+    <MEMBER_SUMMARY user_no ="0Adkjekk00000BBBBB123123" id ="shin" nick_name="매울신" age ="60"/>
+    <MEMBER_SUMMARY user_no ="0Adkjekk00000CCCCC123123" id ="gusupa" nick_name="구수파" age ="50" />
+  </MEMBER_SUMMARY_LIST>
+</ROOM_DETAIL_INFO>
+
+

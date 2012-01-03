@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ROOM_INFO_LIST>
+  <CREATE_INFO>
+    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="true" is_dirty ="true"/>
+    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="false"/>
+  </CREATE_INFO>
+  <JOIN_INFO>
+    <ROOM index="100012" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="true" is_dirty ="true"/>
+    <ROOM index="100013" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="false"/>
+  </JOIN_INFO>
+</ROOM_INFO_LIST>

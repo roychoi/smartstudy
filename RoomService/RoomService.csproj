@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8DE37A20-CB79-416E-BE4E-D330A343B790}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RoomService</RootNamespace>
+    <AssemblyName>RoomService</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="NApns\Provider.cs" />
+    <Compile Include="NLogic\ChatMessage.cs" />
+    <Compile Include="NLogic\Notice.cs" />
+    <Compile Include="NLogic\NRoom\Builder.cs" />
+    <Compile Include="NLogic\NRoom\Handler.cs" />
+    <Compile Include="NLogic\NRoom\List.cs" />
+    <Compile Include="NLogic\NUser\Builder.cs" />
+    <Compile Include="NLogic\NUser\List.cs" />
+    <Compile Include="NLogic\Room.cs" />
+    <Compile Include="NLogic\User.cs" />
+    <Compile Include="NSchemas\Chat.cs">
+      <DependentUpon>Chat.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="NSchemas\CreateRoom.cs" />
+    <Compile Include="NSchemas\JoinRoom.cs" />
+    <Compile Include="NSchemas\JoinRoomDetail.cs">
+      <DependentUpon>JoinRoomDetail.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="NSchemas\Notice.cs">
+      <DependentUpon>Notice.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="NSchemas\RoomInfoList.cs" />
+    <Compile Include="NSchemas\RoomResult.cs">
+      <DependentUpon>RoomResult.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="NSchemas\RoomSummaryList.cs" />
+    <Compile Include="NTrace\LocalStorageXmlWriterTraceListener.cs" />
+    <Compile Include="Room.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NSchemas\Chat.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NSchemas\CreateRoom.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NSchemas\JoinRoom.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NSchemas\JoinRoomDetail.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NSchemas\Notice.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NSchemas\RoomInfoList.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NSchemas\RoomResult.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NSchemas\RoomSummaryList.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NSchemas\Chat.xml" />
+    <Content Include="NSchemas\JoinRoomDetail.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="NSchemas\Notice.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="NSchemas\RoomResult.xml" />
+    <Content Include="NSchemas\RoomSummaryList.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JdSoft.Apple.Apns.Notifications\JdSoft.Apple.Apns.Notifications.csproj">
+      <Project>{4CFB9AA8-55F8-46DC-B7BD-9E18B9939110}</Project>
+      <Name>JdSoft.Apple.Apns.Notifications</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

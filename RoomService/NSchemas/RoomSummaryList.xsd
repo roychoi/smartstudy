@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ROOM_SUMMARY_LIST">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="ROOM_SUMMARY">
+          <xs:complexType>
+            <xs:attribute name="index" type="xs:unsignedInt" use="required" />
+            <xs:attribute name="name" type="xs:string" use="required" />
+            <xs:attribute name="comment" type="xs:string" use="required" />
+            <xs:attribute name="duration" type="xs:string" use="required" />
+            <xs:attribute name="max_user" type="xs:unsignedByte" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="category" type="xs:int" use="required" />
+      <xs:attribute name="location_main" type="xs:int" use="required" />
+      <xs:attribute name="location_sub" type="xs:int" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

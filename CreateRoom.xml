@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ROOM_CREATE_INFO index="100011" category ="0" name ="토익하고미팅하고" comment ="토익구만점" duration_day="0" start_time ="13 " end_time ="16" location_code ="1" location_sub_code ="10" max_user ="10">
+</ROOM_CREATE_INFO>
+<!-- 시간설정 스터디 시간 외에.. 기간은 필요없을지 -->

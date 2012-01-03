@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<NOTICE_LIST room_index ="1000001" count ="3" crud ="UP" result_code ="0">
+  <NOTICE index ="1" title ="숙제" date_time="2008-11-20T00:00:00" >책다보고오셈</NOTICE>
+  <NOTICE index ="2" title ="장소및시간" date_time="2008-11-20T00:00:00" >강남역토즈 5시까지 오셈</NOTICE>
+  <NOTICE index ="3" title ="기타" date_time="2008-11-20T00:00:00" >물좋음</NOTICE>
+</NOTICE_LIST>
+
+<!-- 공통 error -->
+<!-- -1 : 올바르지 않은 방정보-->
+<!-- -2 : 올바르지 않은 유저정보-->
+
+<!-- UP : UPdate -->
+
+<!-- CR : CReate -->
+<!--  -3 : 방장권한이 없음 -->
+<!--  -4 : 최대갯수를 초과하였음 -->
+
+<!-- DR : DRop -->
+<!--  -3 : 방장권한이 없음 -->
+<!--  -4 : 해당 공지사항 인덱스를 찾을수 없음 -->
+<!-- Positive value : 지워진 공지사항 Index -->
+

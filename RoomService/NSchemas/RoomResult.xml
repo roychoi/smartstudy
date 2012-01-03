@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ROOM_RESULT crud ="CR" reason_sort="0" />
+<!-- CR : CReate -->
+
+<!-- JN : JoiN -->
+<!-- JN : -1 : 해당 유저를 찾을수 없음 -->
+<!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
+<!-- JN : -3 : maxUser 만큼 꽉찾다 -->
+<!-- JN : -4 : 이미가입중이다. -->
+
+<!-- DR : DRop -->
+
+
+<!-- CM :CoMmit-->
+<!-- CM : -1 : -->
+<!-- CM : -2 : -->
+<!-- CM : -3 :-->
+
