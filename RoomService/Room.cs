@@ -214,31 +214,30 @@ namespace RoomService
 			alertNotification.Payload.Sound = "default";
 			alertNotification.Payload.Badge = badge;
 
-            string p12Filename = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "iphone_dev.p12");
+            //string p12Filename = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "iphone_dev.p12");
 
-            NotificationService _service = new NotificationService(true, p12Filename, "roy3513!", 1);
+            //NotificationService _service = new NotificationService(true, p12Filename, "roy3513!", 1);
 
-            _service.SendRetries = 10;		//5 retries before generating notificationfailed event
-            _service.ReconnectDelay = 10000; //5 seconds
+            //_service.SendRetries = 10;		//5 retries before generating notificationfailed event
+            //_service.ReconnectDelay = 10000; //5 seconds
 
-            _service.Error += new NotificationService.OnError(NApns.Provider.service_Error);
-            _service.NotificationTooLong += new NotificationService.OnNotificationTooLong(NApns.Provider.service_NotificationTooLong);
+            //_service.Error += new NotificationService.OnError(NApns.Provider.service_Error);
+            //_service.NotificationTooLong += new NotificationService.OnNotificationTooLong(NApns.Provider.service_NotificationTooLong);
 
-            _service.BadDeviceToken += new NotificationService.OnBadDeviceToken(NApns.Provider.service_BadDeviceToken);
-            _service.NotificationFailed += new NotificationService.OnNotificationFailed(NApns.Provider.service_NotificationFailed);
-            _service.NotificationSuccess += new NotificationService.OnNotificationSuccess(NApns.Provider.service_NotificationSuccess);
-            _service.Connecting += new NotificationService.OnConnecting(NApns.Provider.service_Connecting);
-            _service.Connected += new NotificationService.OnConnected(NApns.Provider.service_Connected);
-            _service.Disconnected += new NotificationService.OnDisconnected(NApns.Provider.service_Disconnected);
+            //_service.BadDeviceToken += new NotificationService.OnBadDeviceToken(NApns.Provider.service_BadDeviceToken);
+            //_service.NotificationFailed += new NotificationService.OnNotificationFailed(NApns.Provider.service_NotificationFailed);
+            //_service.NotificationSuccess += new NotificationService.OnNotificationSuccess(NApns.Provider.service_NotificationSuccess);
+            //_service.Connecting += new NotificationService.OnConnecting(NApns.Provider.service_Connecting);
+            //_service.Connected += new NotificationService.OnConnected(NApns.Provider.service_Connected);
+            //_service.Disconnected += new NotificationService.OnDisconnected(NApns.Provider.service_Disconnected);
 
 			//Queue the notification to be sent
-            if (_service.QueueNotification(alertNotification))
+            if (_apnsProvider.Service.QueueNotification(alertNotification))
 			{
 				res.crud = "Notification Queued!";
 
 				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Queued! by TraceEvent");
 				NApns.Provider._source.Flush();
-
 			}
 			else
 			{

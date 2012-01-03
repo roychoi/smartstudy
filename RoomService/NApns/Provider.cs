@@ -19,8 +19,8 @@ namespace RoomService.NApns
 
             _service = new NotificationService(sandbox, p12Filename, p12FilePassword, 1);
 
-            _service.SendRetries = 5;		//5 retries before generating notificationfailed event
-            _service.ReconnectDelay = 5000; //5 seconds
+            _service.SendRetries = 10;		//10 retries before generating notificationfailed event
+            _service.ReconnectDelay = 10000; //10 seconds
 
             _service.Error += new NotificationService.OnError(service_Error);
             _service.NotificationTooLong += new NotificationService.OnNotificationTooLong(service_NotificationTooLong);
