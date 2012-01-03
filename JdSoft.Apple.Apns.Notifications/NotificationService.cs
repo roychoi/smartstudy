@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
 
 namespace JdSoft.Apple.Apns.Notifications
 {
     using System.IO;
- 
+
     public class NotificationService : IDisposable
 	{
 		#region Constants

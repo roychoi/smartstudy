@@ -11,7 +11,6 @@ namespace JdSoft.Apple.Apns.Notifications
 {
 	public class Notification
 	{
-
 		public string DeviceToken { get; set; }
 		public NotificationPayload Payload { get; set; }
 
