@@ -99,7 +99,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NSchemas\Chat.xml" />
+    <Content Include="NSchemas\Chat.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="NSchemas\JoinRoomDetail.xml">
       <SubType>Designer</SubType>
     </Content>
