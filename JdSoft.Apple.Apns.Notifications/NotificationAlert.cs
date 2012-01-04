@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using System.Runtime.Serialization;
 
 namespace JdSoft.Apple.Apns.Notifications
 {
 	/// <summary>
 	/// Alert Portion of the Notification Payload
 	/// </summary>
-    /// 
-	public class NotificationAlert  
+	public class NotificationAlert
 	{
 		/// <summary>
 		/// Constructor
