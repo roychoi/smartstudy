@@ -368,6 +368,72 @@ public partial class JOIN_ROOM_DETAILMEMBER_LISTMEMBER : object, System.Runtime.
 
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+[System.Runtime.Serialization.DataContractAttribute(Name="UPDATE_DEVICE_INFO", Namespace="http://schemas.datacontract.org/2004/07/")]
+public partial class UPDATE_DEVICE_INFO : object, System.Runtime.Serialization.IExtensibleDataObject
+{
+    
+    private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+    
+    private string login_idFieldField;
+    
+    private int result_codeFieldField;
+    
+    private string user_noFieldField;
+    
+    public System.Runtime.Serialization.ExtensionDataObject ExtensionData
+    {
+        get
+        {
+            return this.extensionDataField;
+        }
+        set
+        {
+            this.extensionDataField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public string login_idField
+    {
+        get
+        {
+            return this.login_idFieldField;
+        }
+        set
+        {
+            this.login_idFieldField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public int result_codeField
+    {
+        get
+        {
+            return this.result_codeFieldField;
+        }
+        set
+        {
+            this.result_codeFieldField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public string user_noField
+    {
+        get
+        {
+            return this.user_noFieldField;
+        }
+        set
+        {
+            this.user_noFieldField = value;
+        }
+    }
+}
+
+[System.Diagnostics.DebuggerStepThroughAttribute()]
+[System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
 [System.Runtime.Serialization.DataContractAttribute(Name="ROOM_INFO_LIST", Namespace="http://schemas.datacontract.org/2004/07/")]
 public partial class ROOM_INFO_LIST : object, System.Runtime.Serialization.IExtensibleDataObject
 {
@@ -1344,6 +1410,9 @@ public interface IRoom
     [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/LoginUser", ReplyAction="http://www.studyheyo.co.kr/IRoom/LoginUserResponse")]
     bool LoginUser(string user_no, string login_id, string user_name, System.DateTime birth, byte gender, string deviceToken);
     
+    [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/UpdateUserDevice", ReplyAction="http://www.studyheyo.co.kr/IRoom/UpdateUserDeviceResponse")]
+    UPDATE_DEVICE_INFO UpdateUserDevice(string user_guid, string deviceToken);
+    
     [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/CreateRoom", ReplyAction="http://www.studyheyo.co.kr/IRoom/CreateRoomResponse")]
     ROOM_RESULT CreateRoom(string user_no, RoomService.RoomSearchKey key, string name, string comment, string duration, int maxuser);
     
@@ -1438,6 +1507,11 @@ public partial class RoomClient : System.ServiceModel.ClientBase<IRoom>, IRoom
     public bool LoginUser(string user_no, string login_id, string user_name, System.DateTime birth, byte gender, string deviceToken)
     {
         return base.Channel.LoginUser(user_no, login_id, user_name, birth, gender, deviceToken);
+    }
+    
+    public UPDATE_DEVICE_INFO UpdateUserDevice(string user_guid, string deviceToken)
+    {
+        return base.Channel.UpdateUserDevice(user_guid, deviceToken);
     }
     
     public ROOM_RESULT CreateRoom(string user_no, RoomService.RoomSearchKey key, string name, string comment, string duration, int maxuser)

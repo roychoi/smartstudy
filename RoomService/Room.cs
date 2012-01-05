@@ -55,6 +55,9 @@ namespace RoomService
 
         [OperationContract]
         bool LoginUser(String user_no, String login_id, String user_name, DateTime birth, byte gender, String deviceToken);
+      
+        [OperationContract]
+        UPDATE_DEVICE_INFO UpdateUserDevice(String user_guid, String deviceToken);
 
         [OperationContract]
         ROOM_RESULT CreateRoom(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser);
@@ -205,7 +208,6 @@ namespace RoomService
 
 		public ROOM_RESULT Push(String deviceToken, String Message, int badge )
 		{
-			
 			ROOM_RESULT res = new ROOM_RESULT();
 			JdSoft.Apple.Apns.Notifications.Notification
 			alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(deviceToken);
@@ -264,6 +266,36 @@ namespace RoomService
             Console.WriteLine(String.Format("NewUser {0} : {1}", user.LoginId, user.UserGuid));
             return _userList.InsertUser(user);
         }
+
+        public UPDATE_DEVICE_INFO UpdateUserDevice(String user_guid, String deviceToken)
+        {
+            UPDATE_DEVICE_INFO update_device_info = new UPDATE_DEVICE_INFO();
+
+            NLogic.User user = _userList.FindUser(user_guid);
+            if (user == null)
+            {
+                update_device_info.user_no = user_guid;
+                update_device_info.result_code = -1;
+
+                return update_device_info;
+            }
+
+            if (deviceToken.Length != Notification.DEVICE_TOKEN_STRING_SIZE)
+            {
+                update_device_info.user_no = user_guid;
+                update_device_info.result_code = -2;
+
+                return update_device_info;
+            }
+
+            user.DeviceToken = deviceToken;
+
+            update_device_info.login_id = user.LoginId;
+            update_device_info.result_code = 0;
+
+            return update_device_info;
+        }
+
 
         public ROOM_RESULT CreateRoom(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser)
         {

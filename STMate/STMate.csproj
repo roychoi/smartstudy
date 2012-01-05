@@ -53,6 +53,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Interface.txt" />
     <Content Include="NSchemas\CreateUser.xml" />
     <Content Include="Service\RoomLocal.asmx" />
     <Content Include="Service\RoomManager.asmx" />

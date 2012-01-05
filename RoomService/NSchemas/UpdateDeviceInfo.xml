@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<UPDATE_DEVICE_INFO result_code ="-1" user_no ="81ae5a0f16264de3900a5747ee9e853d" login_id ="roy1669@gmail.com"/>
+<!-- result_code  -->
+<!--  -1 : SystemError -->
+<!--  -2 : device token 의 포맷이 잘못됨  -->
+<!--  -3 : 로그인 되지않은 user_no -->

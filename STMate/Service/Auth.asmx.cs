@@ -17,6 +17,7 @@ using System.ServiceModel.Description;
 using System.Collections;
 using RoomService;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace STMate.Service
 {
@@ -306,6 +307,8 @@ namespace STMate.Service
             catch (Exception e)
             {
                 AUTH_RESULT exception = new AUTH_RESULT();
+
+                exception.result = false;
 				exception.loginid = loginEmail;
                 exception.reason_sort = e.Message;
 
@@ -313,27 +316,34 @@ namespace STMate.Service
             }
         }
 
-		public void UpdateDeviceToken(String user_no, String deviceToken )
+        [WebMethod(EnableSession = true)]
+        public UPDATE_DEVICE_INFO UpdateDeviceInfo(String userNo, String deviceToken)
 		{
+            IRoom proxy = factory.CreateChannel();
 
-			//bool bResult = proxy.LoginUser(user_guid.ToString("N"),
-			//    loginEmail,		// from membership
-			//    userName,		// from profile
-			//    birth, // from profile
-			//    auth_user_result.gender, // from profile 
-			//    deviceToken
-			//    );
+            UPDATE_DEVICE_INFO update_device_info = proxy.UpdateUserDevice(userNo, deviceToken);
 
-			//ProfileBase userProfile = ProfileBase.Create(loginEmail, true);
+            if (update_device_info.result_code != 0)
+            {
+                return update_device_info;
+            }
 
-			//auth_user_result.gender = (byte)userProfile.GetPropertyValue("Gender");
-			//DateTime birth = (DateTime)userProfile.GetPropertyValue("BirthYear");
-			//String userName = (String)userProfile.GetPropertyValue("NickName");
+            try
+            {
+                ProfileBase userProfile = ProfileBase.Create(update_device_info.login_id, true);
 
-			//userProfile["DeviceToken"] = deviceToken;	// last logined device
-			//userProfile.Save();
+                userProfile["DeviceToken"] = deviceToken;	// last logined device
+                userProfile.Save();
 
-			//DateTime current = DateTime.Today;
+                (proxy as IDisposable).Dispose();
+
+                return update_device_info;
+            }
+            catch(Exception e )
+            {
+                update_device_info.result_code = -1;
+                return update_device_info;
+            }
 		}
     }
 }
