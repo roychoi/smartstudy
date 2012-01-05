@@ -37,7 +37,7 @@ namespace WCFClient
 
 				ROOM_INFO_LIST room_info_list = test.MyRoomList(" TEST");
 
-				ROOM_RESULT result111 = test.Push("f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6", "잇힝", 1);
+				ROOM_RESULT result111 = test.Push("f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6", "좋다", 1);
 
 
             }
