@@ -72,6 +72,10 @@ public partial class CHAT_LIST {
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
 public partial class CHAT_LISTCHAT {
     
+    private byte ownerField;
+    
+    private bool ownerFieldSpecified;
+    
     private string nick_nameField;
     
     private int chat_indexField;
@@ -79,6 +83,28 @@ public partial class CHAT_LISTCHAT {
     private System.DateTime date_timeField;
     
     private string valueField;
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public byte owner {
+        get {
+            return this.ownerField;
+        }
+        set {
+            this.ownerField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlIgnoreAttribute()]
+    public bool ownerSpecified {
+        get {
+            return this.ownerFieldSpecified;
+        }
+        set {
+            this.ownerFieldSpecified = value;
+        }
+    }
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]

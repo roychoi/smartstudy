@@ -27,5 +27,10 @@ namespace RoomService.NLogic
 			get;
 			set;
 		}
+		public String UserGuid
+		{
+			get;
+			set;
+		}
 	}
 }

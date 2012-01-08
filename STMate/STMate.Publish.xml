@@ -1,18 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <publishData>
-  <publishProfile publishUrl="ftp://www.studyheyo.co.kr" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="STMate" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="True" profileName="Test" publishMethod="FTP" replaceMatchingFiles="True" userName="studyheyo" savePWD="True" userPWD="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAt2mi2VLNz0ey/t9J/WZKHgAAAAACAAAAAAAQZgAAAAEAACAAAACuOFA8ajlECICN6NZMk1NkyFo02JJ7cLN1+6TLwiVh+gAAAAAOgAAAAAIAACAAAABaxomwVocFy9w2PLf6R1WW1DFEuiR66tY4TI9WLDitoiAAAAD2ErqG44xuSWH0K49VoCpKbd+gklseu8Bt84l9wNC6fUAAAAAQEUWtz87lS5G3JRGr44nE1colXWBq0h7tvewlTuENbhj6X7QKXCvdJvuRoe2iRioq+Pl9fH6rk8pneigRHIQ9" SelectedForPublish="True">
-    <file relUrl="Web.config" publishTime="01/04/2012 23:09:37" />
-    <file relUrl="Service/RoomManager.asmx" publishTime="10/02/2011 19:49:52" />
-    <file relUrl="NSchemas/CreateUser.xml" publishTime="12/09/2011 21:58:26" />
-    <file relUrl="bin/JdSoft.Apns.Notifications.dll" publishTime="01/04/2012 10:00:50" />
-    <file relUrl="bin/RoomService.pdb" publishTime="01/04/2012 23:09:28" />
-    <file relUrl="bin/STMate.pdb" publishTime="01/04/2012 23:09:34" />
-    <file relUrl="Service/Auth.asmx" publishTime="09/18/2011 01:56:08" />
-    <file relUrl="bin/STMate.dll" publishTime="01/04/2012 23:09:34" />
-    <file relUrl="bin/Newtonsoft.Json.Compact.dll" publishTime="01/04/2012 10:00:27" />
-    <file relUrl="bin/RoomService.dll" publishTime="01/04/2012 23:09:28" />
-    <file relUrl="bin/JdSoft.Apns.Notifications.pdb" publishTime="01/04/2012 10:00:50" />
-    <file relUrl="Service/RoomLocal.asmx" publishTime="12/30/2011 17:34:12" />
-    <file relUrl="Service/RoomService.RoomWCFService.svc" publishTime="12/27/2011 22:46:54" />
+  <publishProfile publishUrl="ftp://www.studyheyo.co.kr" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="STMate" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="True" profileName="Test" publishMethod="FTP" replaceMatchingFiles="True" userName="studyheyo" savePWD="True" userPWD="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAD7SNDc93RUeML82W9mHpRgAAAAACAAAAAAAQZgAAAAEAACAAAAD73sLJUEmui+toyhL63YFRZyUN+TtskBoSFQmtVqLbuQAAAAAOgAAAAAIAACAAAAAximQ3HgBeJCOR7VmV0yibxvmh8X3miVaepti2wm5N3CAAAABw1uUwlN6nJsJpdst9UnQ3KyTx9/G8DQBm57G/RJL+2EAAAABaat2MH+HBay4S8OgZhCL+NTTI5WjaPzy534iCQhVda+28gSigcR30eKbjabkxqlvUHz4ZmuA0tnHAolZK/2vg" SelectedForPublish="True">
+    <file relUrl="Web.config" publishTime="01/08/2012 22:59:19" />
+    <file relUrl="Service/RoomManager.asmx" publishTime="01/03/2012 22:40:24" />
+    <file relUrl="Interface.txt" publishTime="01/05/2012 21:07:48" />
+    <file relUrl="NSchemas/CreateUser.xml" publishTime="01/03/2012 22:40:24" />
+    <file relUrl="bin/JdSoft.Apns.Notifications.dll" publishTime="01/08/2012 22:54:27" />
+    <file relUrl="bin/RoomService.pdb" publishTime="01/08/2012 22:54:30" />
+    <file relUrl="bin/STMate.pdb" publishTime="01/08/2012 22:54:37" />
+    <file relUrl="Service/Auth.asmx" publishTime="01/03/2012 22:40:24" />
+    <file relUrl="bin/STMate.dll" publishTime="01/08/2012 22:54:37" />
+    <file relUrl="bin/Newtonsoft.Json.Compact.dll" publishTime="12/08/2011 05:55:38" />
+    <file relUrl="bin/RoomService.dll" publishTime="01/08/2012 22:54:30" />
+    <file relUrl="bin/JdSoft.Apns.Notifications.pdb" publishTime="01/08/2012 22:54:27" />
+    <file relUrl="Service/RoomLocal.asmx" publishTime="01/03/2012 22:40:24" />
+    <file relUrl="Service/RoomService.RoomWCFService.svc" publishTime="01/03/2012 22:40:24" />
   </publishProfile>
 </publishData>

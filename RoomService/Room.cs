@@ -769,19 +769,26 @@ namespace RoomService
                     continue;
                 }
 
-                //Create a new notification to send
-                JdSoft.Apple.Apns.Notifications.Notification
-                alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(joined_user.DeviceToken);
+				try
+				{
+					//Create a new notification to send
+					JdSoft.Apple.Apns.Notifications.Notification
+					alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(joined_user.DeviceToken);
 
-                alertNotification.Payload.Alert.Body = content;
-                alertNotification.Payload.Sound = "default";
-                alertNotification.Payload.Badge = chat_list.count;
+					alertNotification.Payload.Alert.Body = content;
+					alertNotification.Payload.Sound = "default";
+					alertNotification.Payload.Badge = chat_list.count;
 
-                //Queue the notification to be sent
-                if (_apnsProvider.Service.QueueNotification(alertNotification))
-                    Console.WriteLine("Notification Queued!");
-                else
-                    Console.WriteLine("Notification Failed to be Queued!");
+					//Queue the notification to be sent
+					if (_apnsProvider.Service.QueueNotification(alertNotification))
+						Console.WriteLine("Notification Queued!");
+					else
+						Console.WriteLine("Notification Failed to be Queued!");
+				}
+				catch
+				{
+					continue;
+				}
             }
 
             return chat_list;
