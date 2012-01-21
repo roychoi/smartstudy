@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="NApns\Provider.cs" />
     <Compile Include="NLogic\ChatMessage.cs" />
+    <Compile Include="NLogic\NNotice\Group.cs" />
     <Compile Include="NLogic\Notice.cs" />
     <Compile Include="NLogic\NRoom\Builder.cs" />
     <Compile Include="NLogic\NRoom\Handler.cs" />

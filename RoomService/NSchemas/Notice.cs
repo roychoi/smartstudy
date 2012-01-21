@@ -28,6 +28,8 @@ public partial class NOTICE_LIST {
     
     private uint room_indexField;
     
+    private int groupField;
+    
     private int countField;
     
     private string crudField;
@@ -53,6 +55,17 @@ public partial class NOTICE_LIST {
         }
         set {
             this.room_indexField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public int group {
+        get {
+            return this.groupField;
+        }
+        set {
+            this.groupField = value;
         }
     }
     

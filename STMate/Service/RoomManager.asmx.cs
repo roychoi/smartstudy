@@ -141,20 +141,20 @@ namespace STMate.Service
         }
 
         [WebMethod(EnableSession = true)]
-        public NOTICE_LIST CreateNotice(String user_no, UInt32 room_index, String title, String content)
+        public NOTICE_LIST CreateNotice(String user_no, UInt32 room_index, int group, String title, String content)
         {
             IRoom proxy = factory.CreateChannel();
-            NOTICE_LIST notice_list = proxy.CreateNotice(room_index, user_no, title, content);
+            NOTICE_LIST notice_list = proxy.CreateNotice(room_index, user_no, group, title, content);
             (proxy as IDisposable).Dispose();
 
             return notice_list;
         }
 
         [WebMethod(EnableSession = true)]
-        public NOTICE_LIST DeleteNotice(String user_no, UInt32 room_index, int notice_index)
+		public NOTICE_LIST DeleteNotice(String user_no, UInt32 room_index, int group, int notice_index)
         {
             IRoom proxy = factory.CreateChannel();
-            NOTICE_LIST notice_list = proxy.DeleteNotice(room_index, user_no, notice_index);
+			NOTICE_LIST notice_list = proxy.DeleteNotice(room_index, user_no, group, notice_index);
             (proxy as IDisposable).Dispose();
 
             return notice_list;
@@ -162,10 +162,10 @@ namespace STMate.Service
 
 
         [WebMethod(EnableSession = true)]
-        public NOTICE_LIST UpdateNotice(String user_no, UInt32 room_index, int last_update)
+		public NOTICE_LIST UpdateNotice(String user_no, UInt32 room_index, int group, int last_update)
         {
             IRoom proxy = factory.CreateChannel();
-            NOTICE_LIST notice_list = proxy.UpdateNotice(room_index, user_no, last_update);
+			NOTICE_LIST notice_list = proxy.UpdateNotice(room_index, user_no, group, last_update);
             (proxy as IDisposable).Dispose();
 
             return notice_list;

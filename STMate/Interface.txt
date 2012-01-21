@@ -162,27 +162,31 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/CreateNotice
 
 user_no:  string
 room_index:  int
+group:  int
 title:  string
 content:  string
 
 
 Result
 
-<NOTICE_LIST result_code="0" crud="UP" count="3" room_index="1000001">
+<NOTICE_LIST room_index ="1000001" group ="1" count ="5" crud ="UP" result_code ="0">
 <!-- 공통 error -->
 
 	<!-- -1 : 올바르지 않은 방정보-->
 	<!-- -2 : 올바르지 않은 유저정보-->
+	<!-- -3 : 올바르지 않은 그룹정보-->
+	
 	<!-- UP : UPdate -->
 
 	<!-- CR : CReate -->
 
-	<!-- -3 : 방장권한이 없음 -->
-	<!-- -4 : 최대갯수를 초과하였음 -->
+	<!-- -4 : 방장권한이 없음 -->
+	<!-- -5 : 최대갯수를 초과하였음 -->
+	
 
 	<!-- DR : DRop -->
-	<!-- -3 : 방장권한이 없음 -->
-	<!-- -4 : 해당 공지사항 인덱스를 찾을수 없음 -->
+	<!-- -4 : 방장권한이 없음 -->
+	<!-- -5 : 해당 공지사항 인덱스를 찾을수 없음 -->
 	<!-- Positive value : 지워진 공지사항 Index -->
 
 	<NOTICE title="숙제" date_time="2008-11-20T00:00:00" index="1">책다보고오셈</NOTICE> 
@@ -202,27 +206,31 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/DeleteNotice
 
 user_no:  string
 room_index:  int
+group:  int
 notice_index: int
 
 
 
 Result
 
-<NOTICE_LIST result_code="0" crud="UP" count="3" room_index="1000001">
+<NOTICE_LIST room_index ="1000001" group ="1" count ="5" crud ="DR" result_code ="0">
 	<!-- 공통 error -->
 
 	<!-- -1 : 올바르지 않은 방정보-->
 	<!-- -2 : 올바르지 않은 유저정보-->
+	<!-- -3 : 올바르지 않은 그룹정보-->
+	
 	<!-- UP : UPdate -->
 
 	<!-- CR : CReate -->
 
-	<!-- -3 : 방장권한이 없음 -->
-	<!-- -4 : 최대갯수를 초과하였음 -->
+	<!-- -4 : 방장권한이 없음 -->
+	<!-- -5 : 최대갯수를 초과하였음 -->
+	
 
 	<!-- DR : DRop -->
-	<!-- -3 : 방장권한이 없음 -->
-	<!-- -4 : 해당 공지사항 인덱스를 찾을수 없음 -->
+	<!-- -4 : 방장권한이 없음 -->
+	<!-- -5 : 해당 공지사항 인덱스를 찾을수 없음 -->
 	<!-- Positive value : 지워진 공지사항 Index -->
 
 	<NOTICE title="숙제" date_time="2008-11-20T00:00:00" index="1">책다보고오셈</NOTICE> 
@@ -245,26 +253,29 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/UpdateNotice
 
 user_no:  string
 room_index:  string
+group:  int
 last_update: int
 
 
 Result
 
-<NOTICE_LIST result_code="0" crud="UP" count="3" room_index="1000001">
+<NOTICE_LIST room_index ="1000001" group ="1" count ="3" crud ="UP" result_code ="0">
 	<!-- 공통 error -->
-
 	<!-- -1 : 올바르지 않은 방정보-->
 	<!-- -2 : 올바르지 않은 유저정보-->
+	<!-- -3 : 올바르지 않은 그룹정보-->
+	
 	<!-- UP : UPdate -->
 
 	<!-- CR : CReate -->
 
-	<!-- -3 : 방장권한이 없음 -->
-	<!-- -4 : 최대갯수를 초과하였음 -->
+	<!-- -4 : 방장권한이 없음 -->
+	<!-- -5 : 최대갯수를 초과하였음 -->
+	
 
 	<!-- DR : DRop -->
-	<!-- -3 : 방장권한이 없음 -->
-	<!-- -4 : 해당 공지사항 인덱스를 찾을수 없음 -->
+	<!-- -4 : 방장권한이 없음 -->
+	<!-- -5 : 해당 공지사항 인덱스를 찾을수 없음 -->
 	<!-- Positive value : 지워진 공지사항 Index -->
 
 	<NOTICE title="숙제" date_time="2008-11-20T00:00:00" index="1">책다보고오셈</NOTICE> 

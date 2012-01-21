@@ -87,13 +87,13 @@ namespace RoomService
         CHAT_LIST ChatUpdate(UInt32 room_index, String user_no, int last_update);
 
         [OperationContract]
-        NOTICE_LIST CreateNotice(UInt32 room_index, String user_no, String title, String content);
+        NOTICE_LIST CreateNotice(UInt32 room_index, String user_no, int group, String title, String content);
 
         [OperationContract]
-        NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int notice_index);
+		NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int group, int notice_index);
 
         [OperationContract]
-        NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int last_update);
+        NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update);
 	}
 
 	public class RoomWCFService : IRoom
@@ -820,7 +820,11 @@ namespace RoomService
             return chat_list;
         }
 
-        public NOTICE_LIST CreateNotice(UInt32 room_index, String user_no, String title, String content)
+        public NOTICE_LIST CreateNotice(	UInt32 room_index, 
+											String user_no,
+											int group,
+											String title,
+											String content)
         {
             NOTICE_LIST notice_list = new NOTICE_LIST();
             notice_list.count = 0;
@@ -841,7 +845,7 @@ namespace RoomService
                 return notice_list;
             }
 
-            int result = room.AddNotice(title, content, user, ref notice_list);
+			int result = room.AddNotice(group, title, content, user, ref notice_list);
 
             notice_list.result_code = result;
 
@@ -889,7 +893,7 @@ namespace RoomService
             return notice_list;
 
         }
-        public NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int notice_index)
+        public NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no,int group, int notice_index)
         {
             NOTICE_LIST notice_list = new NOTICE_LIST();
             notice_list.count = 0;
@@ -910,20 +914,20 @@ namespace RoomService
                 return notice_list;
             }
 
-            int result = room.DeleteNotice(notice_index, user);
+			int result = room.DeleteNotice(group, notice_index, user);
             notice_list.result_code = result;
 
             return notice_list;
         }
 
 
-        public NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int last_update)
+        public NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update)
         {
             NOTICE_LIST notice_list = new NOTICE_LIST();
             notice_list.count = 0;
             notice_list.crud = "UP";
             notice_list.room_index = room_index;
-
+			notice_list.group = 0;
 
             NLogic.Room room = _roomList.Find(room_index);
             if (room == null)
@@ -939,7 +943,7 @@ namespace RoomService
                 return notice_list;
             }
 
-            room.UpdateNotice(user, last_update, ref notice_list);
+            room.UpdateNotice(user,group, last_update, ref notice_list);
             notice_list.result_code = 0;
 
             return notice_list;

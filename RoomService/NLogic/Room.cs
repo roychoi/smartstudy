@@ -17,12 +17,11 @@ namespace RoomService.NLogic
         private String _comment;
         private byte _maxuser;
 		private UInt32 _index;
-		private Int32 _notice_indexer;
         private NUser.List _userList;
 		private User _master_user;
 
 		private List<ChatMessage> _instantChat;
-		private Dictionary<int, Notice> _noticeList;
+		private Dictionary<int, NNotice.Group> _notice_group;
 
         public Room(	String duration,
 						RoomSearchKey search_key,
@@ -39,15 +38,18 @@ namespace RoomService.NLogic
             _search_key = new RoomSearchKey();
             _search_key = search_key;
 			_instantChat = new List<ChatMessage>();
-			_notice_indexer = 0;
-			_noticeList = new Dictionary<int, Notice>();
+			_notice_group = new Dictionary<int, NNotice.Group>();
+
+			_notice_group.Add(1, new NNotice.Group(1));
+			_notice_group.Add(2, new NNotice.Group(2));
+			_notice_group.Add(3, new NNotice.Group(3));
         }
 
         public void Dispose()
         {
 			_userList.RemoveAll();
 			_instantChat.Clear();
-			_noticeList.Clear();
+			_notice_group.Clear();
 
 			_master_user = null;
 
@@ -137,76 +139,49 @@ namespace RoomService.NLogic
 			return _master_user;
 		}
 
-		public int AddNotice(String title, String contents, User user, ref NOTICE_LIST notice_list)
+		public int AddNotice(int group, String title, String contents, User user, ref NOTICE_LIST notice_list)
 		{
 			if (!user.UserGuid.Equals(_master_user.UserGuid) )
 			{
-				return -1;
+				return -4;
 			}
 
-			if ( _noticeList.Count > 10)
-			{
-				return -2;
-			}
-
-			Notice msg = new Notice();
-
-			msg.Title = title;
-			msg.Content = contents;
-			msg.Index = ++_notice_indexer;
-			msg.IptTime = DateTime.Now;
-
-			try
-			{
-				_noticeList.Add(msg.Index, msg);
-
-				this.UpdateNotice(user, msg.Index - 1, ref notice_list);
-
-				return 0;
-			}
-			catch
+			NNotice.Group group_n  = null;
+			if (_notice_group.TryGetValue( group, out group_n ) == false )
 			{
 				return -3;
 			}
+
+			return group_n.AddNotice(title, contents, user, this, ref notice_list);
 		}
 
-		public int DeleteNotice( int notice_index, User user )
+		public int DeleteNotice( int group, int notice_index, User user )
 		{
 			if (!user.UserGuid.Equals(_master_user.UserGuid))
 			{
 				return -3;
 			}
 
-			bool bfound = _noticeList.Remove(notice_index);
-			if (bfound == false)
+			NNotice.Group group_n = null;
+			if (_notice_group.TryGetValue(group, out group_n) == false)
 			{
-				return -4;
+				return -2;
 			}
 
-			return notice_index;
+			return group_n.DeleteNotice( notice_index, user );
+
 		}
 
-		public void UpdateNotice( User user, int last_update, ref NOTICE_LIST notice_list)
+		public void UpdateNotice( User user, int group, int last_update, ref NOTICE_LIST notice_list)
 		{
-			IEnumerable<KeyValuePair<int,Notice>> query = from chat in _noticeList where chat.Key > last_update select chat;
-			int nCount = query.Count<KeyValuePair<int, Notice>>();
-
-			notice_list.count = nCount;
-			notice_list.room_index = this.Index;
-			notice_list.NOTICE = new NOTICE_LISTNOTICE[nCount];
-
-			int nIndex = 0;
-			foreach (KeyValuePair<int, Notice> msg in query)
+			NNotice.Group group_n = null;
+			if (_notice_group.TryGetValue(group, out group_n) == false)
 			{
-				notice_list.NOTICE[nIndex] = new NOTICE_LISTNOTICE();
-
-				notice_list.NOTICE[nIndex].index = msg.Value.Index;
-				notice_list.NOTICE[nIndex].date_time = msg.Value.IptTime;
-				notice_list.NOTICE[nIndex].title = msg.Value.Title;
-				notice_list.NOTICE[nIndex].Value = msg.Value.Content;
-
-				nIndex++;
+				return;
 			}
+
+			group_n.UpdateNotice(user, this,last_update, ref notice_list);
+
 		}
 
 		public void InsertMessage(String contents, User user, int last_update, ref CHAT_LIST chat_list)
