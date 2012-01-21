@@ -78,6 +78,8 @@ public partial class CHAT_LISTCHAT {
     
     private string nick_nameField;
     
+    private int local_indexField;
+    
     private int chat_indexField;
     
     private System.DateTime date_timeField;
@@ -114,6 +116,17 @@ public partial class CHAT_LISTCHAT {
         }
         set {
             this.nick_nameField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public int local_index {
+        get {
+            return this.local_indexField;
+        }
+        set {
+            this.local_indexField = value;
         }
     }
     
