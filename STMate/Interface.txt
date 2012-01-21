@@ -286,6 +286,7 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/Chat
 
 user_no:  string
 room_index:  int
+local_index: int
 last_update:  int
 message: string
 owner: unsignedByte, optional
@@ -294,7 +295,7 @@ owner: unsignedByte, optional
 
 Result
 
-<CHAT_LIST count="4" room_index="1000001"> 
+<CHAT_LIST count="4" room_index="1000001" local_index = "1"> 
 	<CHAT owner ="1" date_time="2008-11-20T00:00:00" chat_index="1" nick_name="置遭舶">馬馬馬馬馬馬</CHAT>
 	<CHAT owner ="1" date_time="2008-11-20T00:00:00" chat_index="2" nick_name="置遭舶">馬馬馬馬馬馬"</CHAT>
 	<CHAT owner ="1" date_time="2008-11-20T00:00:00" chat_index="3" nick_name="置遭舶">馬馬馬馬馬馬"</CHAT>
@@ -325,7 +326,7 @@ last_update:  int
 
 Result
 
-<CHAT_LIST count="4" room_index="1000001"> 
+<CHAT_LIST count="4" room_index="1000001" local_index = "-1"> 
 	<CHAT date_time="2008-11-20T00:00:00" chat_index="1" nick_name="置遭舶">馬馬馬馬馬馬</CHAT>
 	<CHAT date_time="2008-11-20T00:00:00" chat_index="2" nick_name="置遭舶">馬馬馬馬馬馬"</CHAT>
 	<CHAT date_time="2008-11-20T00:00:00" chat_index="3" nick_name="置遭舶">馬馬馬馬馬馬"</CHAT>

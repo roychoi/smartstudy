@@ -81,7 +81,7 @@ namespace RoomService
         ROOM_RESULT CommitRoom(String user_no, UInt32 room_index);
 
         [OperationContract]
-        CHAT_LIST Chat(UInt32 room_index, String user_no, int last_update, String content);
+        CHAT_LIST Chat(UInt32 room_index, String user_no, int local_index, int last_update, String content);
 
         [OperationContract]
         CHAT_LIST ChatUpdate(UInt32 room_index, String user_no, int last_update);
@@ -733,7 +733,7 @@ namespace RoomService
             return room_result;
         }
 
-        public CHAT_LIST Chat(UInt32 room_index, String user_no, int last_update, String content)
+		public CHAT_LIST Chat(UInt32 room_index, String user_no, int local_index, int last_update, String content)
         {
             CHAT_LIST chat_list = new CHAT_LIST();
             chat_list.count = 0;
@@ -791,6 +791,8 @@ namespace RoomService
 				}
             }
 
+			chat_list.local_index = local_index;
+
             return chat_list;
 
         }
@@ -814,7 +816,7 @@ namespace RoomService
             }
 
             room.UpdateMessage(user, last_update, ref chat_list);
-
+			chat_list.local_index = -1;
             return chat_list;
         }
 

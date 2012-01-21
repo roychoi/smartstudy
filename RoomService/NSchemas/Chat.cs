@@ -30,6 +30,8 @@ public partial class CHAT_LIST {
     
     private int countField;
     
+    private int local_indexField;
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute("CHAT")]
     public CHAT_LISTCHAT[] CHAT {
@@ -62,6 +64,17 @@ public partial class CHAT_LIST {
             this.countField = value;
         }
     }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public int local_index {
+        get {
+            return this.local_indexField;
+        }
+        set {
+            this.local_indexField = value;
+        }
+    }
 }
 
 /// <remarks/>
@@ -77,8 +90,6 @@ public partial class CHAT_LISTCHAT {
     private bool ownerFieldSpecified;
     
     private string nick_nameField;
-    
-    private int local_indexField;
     
     private int chat_indexField;
     
@@ -116,17 +127,6 @@ public partial class CHAT_LISTCHAT {
         }
         set {
             this.nick_nameField = value;
-        }
-    }
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int local_index {
-        get {
-            return this.local_indexField;
-        }
-        set {
-            this.local_indexField = value;
         }
     }
     
