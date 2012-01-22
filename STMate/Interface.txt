@@ -59,7 +59,7 @@ comment:  string
 duration:  string
 maxuser:  int
   
-<ROOM_RESULT reason_sort="0" crud="CR"/>
+<ROOM_RESULT reason_sort="0" room_index = "1000020" crud="CR"/>
 
 <!-- CR : CReate -->
 <!-- JN : JoiN -->
@@ -86,7 +86,7 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/Join
 
 Result
   
-<ROOM_RESULT reason_sort="0" crud="CR"/>
+<ROOM_RESULT reason_sort="0" room_index = "1000020" crud="CR"/>
 
 <!-- CR : CReate -->
 <!-- JN : JoiN -->
@@ -139,6 +139,7 @@ room_index:  int
 
 
 Result
+<ROOM_RESULT reason_sort="0" room_index = "1000020" crud="CR"/>
 
 <!-- CR : CReate -->
 <!-- JN : JoiN -->

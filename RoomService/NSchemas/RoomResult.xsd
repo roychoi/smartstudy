@@ -3,6 +3,7 @@
   <xs:element name="ROOM_RESULT">
     <xs:complexType>
       <xs:attribute name="crud" type="xs:string" use="required" />
+      <xs:attribute name="room_index" type="xs:unsignedInt" use="required" />
       <xs:attribute name="reason_sort" type="xs:int" use="required" />
     </xs:complexType>
   </xs:element>

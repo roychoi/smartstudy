@@ -354,6 +354,7 @@ namespace RoomService
             Trace.Assert(room.SelectMaster(masterUser) == true);
 
             result.reason_sort = 0;
+			result.room_index = room.Index;
 
             Console.WriteLine("CreateRoom Success... Index {0} name {1} maxUser {2}", room.Index, room.Name, room.MaxUser);
 
@@ -606,7 +607,7 @@ namespace RoomService
             }
 
             room_result.reason_sort = room.Join(user);
-
+			room_result.room_index = room_index;
             return room_result;
         }
 
@@ -652,9 +653,11 @@ namespace RoomService
                 findRoomList.Remove(created_room);
                 _roomList.Remove(created_room);
 
-                created_room.Dispose();
+				room_result.room_index = created_room.Index;
+				room_result.reason_sort = 0;
 
-                room_result.reason_sort = 0;
+				created_room.Dispose();
+
                 return room_result;
             }
 
@@ -671,7 +674,9 @@ namespace RoomService
             bool result = joined_room.Leave(user);
             Trace.Assert(result == true);
 
-            room_result.reason_sort = 0;
+			room_result.room_index = joined_room.Index;
+			room_result.reason_sort = 0;
+
             return room_result;
 
         }
@@ -728,6 +733,7 @@ namespace RoomService
                 joined_user.JoinCommitedList.Insert(created_room);
             }
 
+			room_result.room_index = created_room.Index;
             room_result.reason_sort = 0;
 
             return room_result;

@@ -26,6 +26,8 @@ public partial class ROOM_RESULT {
     
     private string crudField;
     
+    private uint room_indexField;
+    
     private int reason_sortField;
     
     /// <remarks/>
@@ -36,6 +38,17 @@ public partial class ROOM_RESULT {
         }
         set {
             this.crudField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public uint room_index {
+        get {
+            return this.room_indexField;
+        }
+        set {
+            this.room_indexField = value;
         }
     }
     

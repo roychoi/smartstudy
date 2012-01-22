@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ROOM_RESULT crud ="CR" reason_sort="0" />
+<ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
 
 <!-- JN : JoiN -->
