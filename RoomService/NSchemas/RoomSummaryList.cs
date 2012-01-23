@@ -93,6 +93,8 @@ public partial class ROOM_SUMMARY_LISTROOM_SUMMARY {
     
     private string durationField;
     
+    private byte current_userField;
+    
     private byte max_userField;
     
     /// <remarks/>
@@ -136,6 +138,17 @@ public partial class ROOM_SUMMARY_LISTROOM_SUMMARY {
         }
         set {
             this.durationField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public byte current_user {
+        get {
+            return this.current_userField;
+        }
+        set {
+            this.current_userField = value;
         }
     }
     

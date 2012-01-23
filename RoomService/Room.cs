@@ -511,6 +511,7 @@ namespace RoomService
                 room_summary_list.ROOM_SUMMARY[index].name = room.Name;
                 room_summary_list.ROOM_SUMMARY[index].duration = room.Duration;
                 room_summary_list.ROOM_SUMMARY[index].comment = room.Commment;
+				room_summary_list.ROOM_SUMMARY[index].current_user = (byte)room.UserList.GetCount();
                 room_summary_list.ROOM_SUMMARY[index].max_user = room.MaxUser;
 
                 Console.WriteLine(" SUMMARY index {0} name {1} Master : {2}", pair.Key, room.Name, room.GetMaster().UserGuid);

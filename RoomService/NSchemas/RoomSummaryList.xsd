@@ -9,6 +9,7 @@
             <xs:attribute name="name" type="xs:string" use="required" />
             <xs:attribute name="comment" type="xs:string" use="required" />
             <xs:attribute name="duration" type="xs:string" use="required" />
+            <xs:attribute name="current_user" type="xs:unsignedByte" use="required" />
             <xs:attribute name="max_user" type="xs:unsignedByte" use="required" />
           </xs:complexType>
         </xs:element>

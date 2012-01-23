@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ROOM_SUMMARY_LIST category ="0" location_main ="1" location_sub ="10">
-  <ROOM_SUMMARY index="100011" name ="스터디디디" comment ="토익구만점"  duration="A100200" max_user ="10"  />
-  <ROOM_SUMMARY index="100012" name ="스터디디디" comment ="토익구만점"  duration="A100200" max_user ="10"  />
-  <ROOM_SUMMARY index="100013" name ="스터디디디" comment ="토익구만점"  duration="A100200" max_user ="10"  />
-  <ROOM_SUMMARY index="100013" name ="스터디디디" comment ="토익구만점" duration="A100200"  max_user ="10"  />
-  <ROOM_SUMMARY index="100013" name ="스터디디디" comment ="토익구만점" duration="A100200"  max_user ="10"  />
+  <ROOM_SUMMARY index="100011" name ="스터디디디" comment ="토익구만점"  duration="A100200" current_user ="2" max_user ="10"  />
+  <ROOM_SUMMARY index="100012" name ="스터디디디" comment ="토익구만점"  duration="A100200" current_user ="2" max_user ="10"  />
+  <ROOM_SUMMARY index="100013" name ="스터디디디" comment ="토익구만점"  duration="A100200" current_user ="2" max_user ="10"  />
+  <ROOM_SUMMARY index="100013" name ="스터디디디" comment ="토익구만점" duration="A100200"  current_user ="2" max_user ="10"  />
+  <ROOM_SUMMARY index="100013" name ="스터디디디" comment ="토익구만점" duration="A100200"  current_user ="2" max_user ="10"  />
  </ROOM_SUMMARY_LIST>
 
 
