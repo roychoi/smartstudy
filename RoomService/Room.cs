@@ -94,6 +94,9 @@ namespace RoomService
 
         [OperationContract]
         NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update);
+
+		[OperationContract]
+		void UpdateBadge(int notice, int last_chat);
 	}
 
 	public class RoomWCFService : IRoom
@@ -666,8 +669,8 @@ namespace RoomService
             NLogic.Room joined_room = user.JoinList.Find(room_index);
             if (joined_room == null)
             {
-                Console.WriteLine("[-3] index {0}", room_index);
-                room_result.reason_sort = -3;
+                Console.WriteLine("[-2] index {0}", room_index);
+                room_result.reason_sort = -2;
                 return room_result;
             }
 
