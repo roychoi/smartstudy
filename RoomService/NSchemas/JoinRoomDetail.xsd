@@ -28,6 +28,7 @@
       <xs:attribute name="location_main" type="xs:int" use="required" />
       <xs:attribute name="location_sub" type="xs:int" use="required" />
       <xs:attribute name="max_user" type="xs:unsignedByte" use="required" />
+      <xs:attribute name="current_user" type="xs:unsignedByte" use="required" />
     </xs:complexType>
   </xs:element>
 </xs:schema>

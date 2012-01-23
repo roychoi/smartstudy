@@ -539,7 +539,8 @@ namespace RoomService
             join_room_detail.comment = room.Commment;
             join_room_detail.location_main = room.SearchKey._location_main;
             join_room_detail.location_sub = room.SearchKey._location_sub;
-            join_room_detail.max_user = room.MaxUser;
+			join_room_detail.current_user = (byte)room.UserList.GetCount();
+			join_room_detail.max_user = room.MaxUser;
             join_room_detail.duration = room.Duration;
 
             Int32 current_member_count = room.UserList.GetCount();

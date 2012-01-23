@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<JOIN_ROOM_DETAIL index ="1002000" name ="강남에서" comment ="영어" duration ="10000A" category ="0" location_main ="1" location_sub ="10" max_user ="10">
+<JOIN_ROOM_DETAIL index ="1002000" name ="강남에서" comment ="영어" duration ="10000A" category ="0" location_main ="1" location_sub ="10" current_user="2" max_user ="10">
   <MEMBER_LIST count ="4" joinable ="0" >
     <!--  joinable 이 1 이면 가입버튼 활성화 0이면 대기인원 꽉찾거나 이미가입중 인 경우  -->
     <MEMBER loginid="shin" user_name="신상범" gender="0" age="31"  />

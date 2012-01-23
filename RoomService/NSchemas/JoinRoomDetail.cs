@@ -42,6 +42,8 @@ public partial class JOIN_ROOM_DETAIL {
     
     private byte max_userField;
     
+    private byte current_userField;
+    
     /// <remarks/>
     public JOIN_ROOM_DETAILMEMBER_LIST MEMBER_LIST {
         get {
@@ -137,6 +139,17 @@ public partial class JOIN_ROOM_DETAIL {
         }
         set {
             this.max_userField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public byte current_user {
+        get {
+            return this.current_userField;
+        }
+        set {
+            this.current_userField = value;
         }
     }
 }
