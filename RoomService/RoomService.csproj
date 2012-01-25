@@ -115,7 +115,9 @@
     <Content Include="NSchemas\Notice.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="NSchemas\RoomInfoList.xml" />
+    <Content Include="NSchemas\RoomInfoList.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="NSchemas\RoomResult.xml" />
     <Content Include="NSchemas\RoomSummaryList.xml" />
     <Content Include="NSchemas\UpdateDeviceInfo.xml" />
