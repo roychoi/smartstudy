@@ -115,9 +115,11 @@
     <Content Include="NSchemas\Notice.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="NSchemas\RoomInfoList.xml" />
     <Content Include="NSchemas\RoomResult.xml" />
     <Content Include="NSchemas\RoomSummaryList.xml" />
     <Content Include="NSchemas\UpdateDeviceInfo.xml" />
+    <Content Include="NSchemas\RoomBadgeInfo.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JdSoft.Apple.Apns.Notifications\JdSoft.Apple.Apns.Notifications.csproj">

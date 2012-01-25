@@ -96,7 +96,7 @@ namespace RoomService
         NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update);
 
 		[OperationContract]
-		void UpdateBadge(int notice, int last_chat);
+		void UpdateBadge(UInt32 room_index, String user_no, int last_update);
 	}
 
 	public class RoomWCFService : IRoom
@@ -187,28 +187,6 @@ namespace RoomService
 			}
 		}
 
-		//public NotificationService Test(string p12File, string p12FilePassword, bool sandbox)
-		//{
-		//    string p12Filename = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, p12File);
-
-		//    NotificationService _service = new NotificationService(sandbox, p12Filename, p12FilePassword, 1);
-
-		//    _service.SendRetries = 5;		//5 retries before generating notificationfailed event
-		//    _service.ReconnectDelay = 5000; //5 seconds
-
-		//    _service.Error += new NotificationService.OnError(NApns.Provider.service_Error);
-		//    _service.NotificationTooLong += new NotificationService.OnNotificationTooLong(NApns.Provider.service_NotificationTooLong);
-
-		//    _service.BadDeviceToken += new NotificationService.OnBadDeviceToken(NApns.Provider.service_BadDeviceToken);
-		//    _service.NotificationFailed += new NotificationService.OnNotificationFailed(NApns.Provider.service_NotificationFailed);
-		//    _service.NotificationSuccess += new NotificationService.OnNotificationSuccess(NApns.Provider.service_NotificationSuccess);
-		//    _service.Connecting += new NotificationService.OnConnecting(NApns.Provider.service_Connecting);
-		//    _service.Connected += new NotificationService.OnConnected(NApns.Provider.service_Connected);
-		//    _service.Disconnected += new NotificationService.OnDisconnected(NApns.Provider.service_Disconnected);
-
-		//    return _service;
-		//}
-
 		public ROOM_RESULT Push(String deviceToken, String Message, int badge )
 		{
 			ROOM_RESULT res = new ROOM_RESULT();
@@ -218,23 +196,6 @@ namespace RoomService
 			alertNotification.Payload.Alert.Body = Message;
 			alertNotification.Payload.Sound = "default";
 			alertNotification.Payload.Badge = badge;
-
-            //string p12Filename = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "iphone_dev.p12");
-
-            //NotificationService _service = new NotificationService(true, p12Filename, "roy3513!", 1);
-
-            //_service.SendRetries = 10;		//5 retries before generating notificationfailed event
-            //_service.ReconnectDelay = 10000; //5 seconds
-
-            //_service.Error += new NotificationService.OnError(NApns.Provider.service_Error);
-            //_service.NotificationTooLong += new NotificationService.OnNotificationTooLong(NApns.Provider.service_NotificationTooLong);
-
-            //_service.BadDeviceToken += new NotificationService.OnBadDeviceToken(NApns.Provider.service_BadDeviceToken);
-            //_service.NotificationFailed += new NotificationService.OnNotificationFailed(NApns.Provider.service_NotificationFailed);
-            //_service.NotificationSuccess += new NotificationService.OnNotificationSuccess(NApns.Provider.service_NotificationSuccess);
-            //_service.Connecting += new NotificationService.OnConnecting(NApns.Provider.service_Connecting);
-            //_service.Connected += new NotificationService.OnConnected(NApns.Provider.service_Connected);
-            //_service.Disconnected += new NotificationService.OnDisconnected(NApns.Provider.service_Disconnected);
 
 			//Queue the notification to be sent
             if (_apnsProvider.Service.QueueNotification(alertNotification))

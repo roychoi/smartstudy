@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ROOM_BADGE_INFO room_index ="1000001" result_code ="0" badge_count ="3">
+  <NOTICE_BADGE group ="1" is_dirty ="0"/>
+  <NOTICE_BADGE group ="2" is_dirty ="1"/>
+  <NOTICE_BADGE group ="3" is_dirty ="1"/>
+</ROOM_BADGE_INFO>
+
+<!-- 공통 error -->
+<!-- -1 : 올바르지 않은 방정보-->
+<!-- -2 : 올바르지 않은 유저정보-->
+<!-- -3 : 올바르지 않은 그룹정보-->
+
