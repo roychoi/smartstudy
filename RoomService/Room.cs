@@ -95,8 +95,8 @@ namespace RoomService
         [OperationContract]
         NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update);
 
-		[OperationContract]
-		void UpdateBadge(UInt32 room_index, String user_no, int last_update);
+		//[OperationContract]
+		//void UpdateBadge(UInt32 room_index, String user_no, int last_update);
 	}
 
 	public class RoomWCFService : IRoom

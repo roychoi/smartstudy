@@ -89,6 +89,8 @@ public partial class CHAT_LISTCHAT {
     
     private bool ownerFieldSpecified;
     
+    private string login_idField;
+    
     private string nick_nameField;
     
     private int chat_indexField;
@@ -116,6 +118,17 @@ public partial class CHAT_LISTCHAT {
         }
         set {
             this.ownerFieldSpecified = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public string login_id {
+        get {
+            return this.login_idField;
+        }
+        set {
+            this.login_idField = value;
         }
     }
     

@@ -193,6 +193,7 @@ namespace RoomService.NLogic
 			msg.IptTime = DateTime.Now;
 			msg.UserNickName = user.UserName;
 			msg.UserGuid = user.UserGuid;
+			msg.LoginId = user.LoginId;
 
 			_instantChat.Add(msg);
 
@@ -218,6 +219,7 @@ namespace RoomService.NLogic
 				chat_list.CHAT[nIndex].date_time = msg.IptTime;
 				chat_list.CHAT[nIndex].nick_name = msg.UserNickName;
 				chat_list.CHAT[nIndex].Value = msg.Content;
+				chat_list.CHAT[nIndex].login_id = msg.LoginId;
 
 				if (user.UserGuid.Equals(msg.UserGuid))
 				{

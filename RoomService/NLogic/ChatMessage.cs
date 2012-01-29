@@ -27,6 +27,13 @@ namespace RoomService.NLogic
 			get;
 			set;
 		}
+		
+		public String LoginId
+		{
+			get;
+			set;
+		}
+
 		public String UserGuid
 		{
 			get;
