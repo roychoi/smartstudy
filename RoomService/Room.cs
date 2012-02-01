@@ -99,14 +99,30 @@ namespace RoomService
 		//void UpdateBadge(UInt32 room_index, String user_no, int last_update);
 	}
 
-	public class RoomWCFService : IRoom
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
+					 ConcurrencyMode = ConcurrencyMode.Single )]
+
+	public class RoomWCFService : IRoom , IDisposable
 	{
         static public int nValue = 10;
 		static public NLogic.NRoom.List _roomList = new NLogic.NRoom.List();
 		static public Dictionary<RoomSearchKey, NLogic.NRoom.List> _roomTree = new Dictionary<RoomSearchKey, NLogic.NRoom.List>();
 
 		static public NLogic.NUser.List _userList = new NLogic.NUser.List();
-		static public NApns.Provider _apnsProvider = new NApns.Provider("iphone_dev.p12", "roy3513!", true);
+		public NApns.Provider _apnsProvider = null;
+
+		public RoomWCFService()
+		{
+			_apnsProvider = new NApns.Provider("iphone_dev.p12", "roy3513!", true);
+			NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "WCFRoomService() called!!!!!!!!!!!!!!!!!");
+			NApns.Provider._source.Flush();
+		}
+
+		public void Dispose()
+		{
+			NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Dispose()!!!!!!!!!!!!!!!!!!");
+			NApns.Provider._source.Flush();
+		}
 
         public ROOM_RESULT Test(String user_no)
         {
