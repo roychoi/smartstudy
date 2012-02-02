@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <publishData>
   <publishProfile publishUrl="ftp://www.studyheyo.co.kr" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="STMate" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="True" profileName="Test" publishMethod="FTP" replaceMatchingFiles="True" userName="studyheyo" savePWD="True" userPWD="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAD7SNDc93RUeML82W9mHpRgAAAAACAAAAAAAQZgAAAAEAACAAAAD73sLJUEmui+toyhL63YFRZyUN+TtskBoSFQmtVqLbuQAAAAAOgAAAAAIAACAAAAAximQ3HgBeJCOR7VmV0yibxvmh8X3miVaepti2wm5N3CAAAABw1uUwlN6nJsJpdst9UnQ3KyTx9/G8DQBm57G/RJL+2EAAAABaat2MH+HBay4S8OgZhCL+NTTI5WjaPzy534iCQhVda+28gSigcR30eKbjabkxqlvUHz4ZmuA0tnHAolZK/2vg" SelectedForPublish="True">
-    <file relUrl="Web.config" publishTime="01/29/2012 21:37:02" />
+    <file relUrl="Web.config" publishTime="02/03/2012 02:24:07" />
     <file relUrl="Service/RoomManager.asmx" publishTime="01/03/2012 22:40:24" />
     <file relUrl="NSchemas/CreateUser.xml" publishTime="01/03/2012 22:40:24" />
     <file relUrl="bin/JdSoft.Apns.Notifications.dll" publishTime="01/08/2012 22:54:27" />
-    <file relUrl="bin/RoomService.pdb" publishTime="01/29/2012 21:36:51" />
-    <file relUrl="bin/STMate.pdb" publishTime="01/29/2012 21:36:53" />
+    <file relUrl="bin/RoomService.pdb" publishTime="02/03/2012 02:14:17" />
+    <file relUrl="bin/STMate.pdb" publishTime="02/03/2012 02:23:59" />
     <file relUrl="Service/Auth.asmx" publishTime="01/03/2012 22:40:24" />
-    <file relUrl="bin/STMate.dll" publishTime="01/29/2012 21:36:53" />
+    <file relUrl="bin/STMate.dll" publishTime="02/03/2012 02:23:59" />
     <file relUrl="bin/Newtonsoft.Json.Compact.dll" publishTime="12/08/2011 05:55:38" />
     <file relUrl="Interface.txt" publishTime="01/24/2012 00:56:23" />
     <file relUrl="bin/JdSoft.Apns.Notifications.pdb" publishTime="01/08/2012 22:54:27" />
     <file relUrl="Service/RoomLocal.asmx" publishTime="01/03/2012 22:40:24" />
     <file relUrl="Service/RoomService.RoomWCFService.svc" publishTime="01/03/2012 22:40:24" />
-    <file relUrl="bin/RoomService.dll" publishTime="01/29/2012 21:36:51" />
+    <file relUrl="bin/RoomService.dll" publishTime="02/03/2012 02:14:17" />
   </publishProfile>
 </publishData>

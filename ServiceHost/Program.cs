@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 using RoomService;
 
 namespace Host
@@ -14,10 +15,30 @@ namespace Host
             ServiceHost host = new ServiceHost(typeof(RoomWCFService),
                    new Uri("net.tcp://localhost/wcf/roomwcfservice"));
 
+			ServiceDebugBehavior debug = host.Description.Behaviors.Find<ServiceDebugBehavior>();
+
+			// if not found - add behavior with setting turned on  
+			if (debug == null)
+			{
+				host.Description.Behaviors.Add(
+					 new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
+			}
+			else
+			{
+				// make sure setting is turned ON 
+				if (!debug.IncludeExceptionDetailInFaults)
+				{
+					debug.IncludeExceptionDetailInFaults = true;
+				}
+			} 
+
+			NetTcpBinding bd = new NetTcpBinding();
+			
             host.AddServiceEndpoint(
                 typeof(IRoom),        // service contract
-                new NetTcpBinding(),      // service binding
+				bd,      // service binding
                 "");
+			
 
             host.Open();
 

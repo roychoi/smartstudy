@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -43,6 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NApns\Provider.cs" />
+    <Compile Include="NDb\RoomDataClasses.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RoomDataClasses.dbml</DependentUpon>
+    </Compile>
     <Compile Include="NLogic\ChatMessage.cs" />
     <Compile Include="NLogic\NNotice\Group.cs" />
     <Compile Include="NLogic\Notice.cs" />
@@ -73,10 +79,21 @@
       <DependentUpon>UpdateDeviceInfo.xsd</DependentUpon>
     </Compile>
     <Compile Include="NTrace\LocalStorageXmlWriterTraceListener.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Room.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="NDb\RoomDataClasses.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>RoomDataClasses.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NSchemas\Chat.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -104,6 +121,10 @@
     <None Include="NSchemas\UpdateDeviceInfo.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="NSchemas\Chat.xml">
@@ -129,7 +150,14 @@
       <Name>JdSoft.Apple.Apns.Notifications</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NDb\RoomDataClasses.dbml.layout">
+      <DependentUpon>RoomDataClasses.dbml</DependentUpon>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

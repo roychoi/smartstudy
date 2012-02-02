@@ -61,6 +61,8 @@ namespace RoomService
 
         [OperationContract]
         ROOM_RESULT CreateRoom(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser);
+		[OperationContract]
+		ROOM_RESULT CreateRoomDb(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser);
 
         [OperationContract]
         ROOM_INFO_LIST MyRoomList(String user_no);
@@ -259,6 +261,47 @@ namespace RoomService
 
             return update_device_info;
         }
+
+		public ROOM_RESULT CreateRoomDb(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser)
+		{
+			ROOM_RESULT result = new ROOM_RESULT();
+			result.crud = "CR";
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+				NDb.CreateRoom room = new NDb.CreateRoom();
+
+				room.Category = (byte)key._category;
+				room.Location_Main = (byte)key._location_main;
+				room.Location_Sub = (byte)key._location_sub;
+				room.Comment = comment;
+				room.Name = name;
+				room.CreateDateTime = DateTime.Now;
+				room.MaxUser = (byte)maxuser;
+				room.UserId = new Guid(user_no);
+				room.Duration = duration;
+
+				db.CreateRooms.InsertOnSubmit(room);
+				db.SubmitChanges();
+
+				Console.WriteLine("CreateRoom Success...{0}", m.RoomIndex);
+
+			}
+			catch( Exception e )
+			{
+				Console.WriteLine("CreateRoom findRoomList Insert failed...{0}", e.Message);
+
+				result.reason_sort = -1;
+				result.room_index = 0;
+				return result;
+			}
+
+			result.reason_sort = 0;
+			result.room_index = 1;
+
+			return result;
+		}
 
 
         public ROOM_RESULT CreateRoom(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser)

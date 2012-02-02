@@ -35,11 +35,65 @@ namespace STMate.Service
 		[WebMethod(EnableSession = true)]
 		public ROOM_RESULT Push(String deviceTOken, String message, int badge)
 		{
+			try
+			{
+				IRoom proxy = factory.CreateChannel();
+				ROOM_RESULT res = proxy.Push(deviceTOken, message, badge);
+				(proxy as IDisposable).Dispose();
+
+				return res;
+
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+
+			return null;
+		}
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_RESULT Test(String user_no)
+		{
+			try
+			{
+				IRoom proxy = factory.CreateChannel();
+				ROOM_RESULT res = proxy.Test(user_no);
+				(proxy as IDisposable).Dispose();
+
+				return res;
+
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+
+			return null;
+		}
+
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_RESULT CreateRoom(String user_no, Int32 category, Int32 location_main, Int32 location_sub, String name, String comment, String duration, int maxuser)
+		{
 			IRoom proxy = factory.CreateChannel();
-			ROOM_RESULT res = proxy.Push(deviceTOken, message, badge);
+			RoomSearchKey search_key = new RoomSearchKey();
+			search_key._category = category;
+			search_key._location_main = location_main;
+			search_key._location_sub = location_sub;
+
+			ROOM_RESULT result = proxy.CreateRoomDb(user_no, search_key, name, comment, duration, maxuser);
 			(proxy as IDisposable).Dispose();
 
-			return res;
+			if (result != null)
+			{
+				return result;
+			}
+
+			ROOM_RESULT resultError = new ROOM_RESULT();
+			resultError.crud = "CR";
+			resultError.reason_sort = -1;
+			return resultError;
 		}
 	}
 }

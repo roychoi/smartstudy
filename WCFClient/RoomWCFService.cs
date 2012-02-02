@@ -24,6 +24,8 @@ public partial class ROOM_RESULT : object, System.Runtime.Serialization.IExtensi
     
     private int reason_sortFieldField;
     
+    private uint room_indexFieldField;
+    
     public System.Runtime.Serialization.ExtensionDataObject ExtensionData
     {
         get
@@ -61,6 +63,19 @@ public partial class ROOM_RESULT : object, System.Runtime.Serialization.IExtensi
             this.reason_sortFieldField = value;
         }
     }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public uint room_indexField
+    {
+        get
+        {
+            return this.room_indexFieldField;
+        }
+        set
+        {
+            this.room_indexFieldField = value;
+        }
+    }
 }
 
 [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -74,6 +89,8 @@ public partial class JOIN_ROOM_DETAIL : object, System.Runtime.Serialization.IEx
     private int categoryFieldField;
     
     private string commentFieldField;
+    
+    private byte current_userFieldField;
     
     private string durationFieldField;
     
@@ -124,6 +141,19 @@ public partial class JOIN_ROOM_DETAIL : object, System.Runtime.Serialization.IEx
         set
         {
             this.commentFieldField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public byte current_userField
+    {
+        get
+        {
+            return this.current_userFieldField;
+        }
+        set
+        {
+            this.current_userFieldField = value;
         }
     }
     
@@ -976,6 +1006,8 @@ public partial class ROOM_SUMMARY_LISTROOM_SUMMARY : object, System.Runtime.Seri
     
     private string commentFieldField;
     
+    private byte current_userFieldField;
+    
     private string durationFieldField;
     
     private uint indexFieldField;
@@ -1006,6 +1038,19 @@ public partial class ROOM_SUMMARY_LISTROOM_SUMMARY : object, System.Runtime.Seri
         set
         {
             this.commentFieldField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public byte current_userField
+    {
+        get
+        {
+            return this.current_userFieldField;
+        }
+        set
+        {
+            this.current_userFieldField = value;
         }
     }
     
@@ -1074,6 +1119,8 @@ public partial class CHAT_LIST : object, System.Runtime.Serialization.IExtensibl
     
     private int countFieldField;
     
+    private int local_indexFieldField;
+    
     private uint room_indexFieldField;
     
     public System.Runtime.Serialization.ExtensionDataObject ExtensionData
@@ -1115,6 +1162,19 @@ public partial class CHAT_LIST : object, System.Runtime.Serialization.IExtensibl
     }
     
     [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public int local_indexField
+    {
+        get
+        {
+            return this.local_indexFieldField;
+        }
+        set
+        {
+            this.local_indexFieldField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
     public uint room_indexField
     {
         get
@@ -1140,7 +1200,13 @@ public partial class CHAT_LISTCHAT : object, System.Runtime.Serialization.IExten
     
     private System.DateTime date_timeFieldField;
     
+    private string login_idFieldField;
+    
     private string nick_nameFieldField;
+    
+    private byte ownerFieldField;
+    
+    private bool ownerFieldSpecifiedField;
     
     private string valueFieldField;
     
@@ -1183,6 +1249,19 @@ public partial class CHAT_LISTCHAT : object, System.Runtime.Serialization.IExten
     }
     
     [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public string login_idField
+    {
+        get
+        {
+            return this.login_idFieldField;
+        }
+        set
+        {
+            this.login_idFieldField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
     public string nick_nameField
     {
         get
@@ -1192,6 +1271,32 @@ public partial class CHAT_LISTCHAT : object, System.Runtime.Serialization.IExten
         set
         {
             this.nick_nameFieldField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public byte ownerField
+    {
+        get
+        {
+            return this.ownerFieldField;
+        }
+        set
+        {
+            this.ownerFieldField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public bool ownerFieldSpecified
+    {
+        get
+        {
+            return this.ownerFieldSpecifiedField;
+        }
+        set
+        {
+            this.ownerFieldSpecifiedField = value;
         }
     }
     
@@ -1220,6 +1325,8 @@ public partial class NOTICE_LIST : object, System.Runtime.Serialization.IExtensi
     private int countFieldField;
     
     private string crudFieldField;
+    
+    private int groupFieldField;
     
     private NOTICE_LISTNOTICE[] nOTICEFieldField;
     
@@ -1262,6 +1369,19 @@ public partial class NOTICE_LIST : object, System.Runtime.Serialization.IExtensi
         set
         {
             this.crudFieldField = value;
+        }
+    }
+    
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+    public int groupField
+    {
+        get
+        {
+            return this.groupFieldField;
+        }
+        set
+        {
+            this.groupFieldField = value;
         }
     }
     
@@ -1416,6 +1536,9 @@ public interface IRoom
     [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/CreateRoom", ReplyAction="http://www.studyheyo.co.kr/IRoom/CreateRoomResponse")]
     ROOM_RESULT CreateRoom(string user_no, RoomService.RoomSearchKey key, string name, string comment, string duration, int maxuser);
     
+    [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/CreateRoomDb", ReplyAction="http://www.studyheyo.co.kr/IRoom/CreateRoomDbResponse")]
+    ROOM_RESULT CreateRoomDb(string user_no, RoomService.RoomSearchKey key, string name, string comment, string duration, int maxuser);
+    
     [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/MyRoomList", ReplyAction="http://www.studyheyo.co.kr/IRoom/MyRoomListResponse")]
     ROOM_INFO_LIST MyRoomList(string user_no);
     
@@ -1435,19 +1558,19 @@ public interface IRoom
     ROOM_RESULT CommitRoom(string user_no, uint room_index);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/Chat", ReplyAction="http://www.studyheyo.co.kr/IRoom/ChatResponse")]
-    CHAT_LIST Chat(uint room_index, string user_no, int last_update, string content);
+    CHAT_LIST Chat(uint room_index, string user_no, int local_index, int last_update, string content);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/ChatUpdate", ReplyAction="http://www.studyheyo.co.kr/IRoom/ChatUpdateResponse")]
     CHAT_LIST ChatUpdate(uint room_index, string user_no, int last_update);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/CreateNotice", ReplyAction="http://www.studyheyo.co.kr/IRoom/CreateNoticeResponse")]
-    NOTICE_LIST CreateNotice(uint room_index, string user_no, string title, string content);
+    NOTICE_LIST CreateNotice(uint room_index, string user_no, int group, string title, string content);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/DeleteNotice", ReplyAction="http://www.studyheyo.co.kr/IRoom/DeleteNoticeResponse")]
-    NOTICE_LIST DeleteNotice(uint room_index, string user_no, int notice_index);
+    NOTICE_LIST DeleteNotice(uint room_index, string user_no, int group, int notice_index);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://www.studyheyo.co.kr/IRoom/UpdateNotice", ReplyAction="http://www.studyheyo.co.kr/IRoom/UpdateNoticeResponse")]
-    NOTICE_LIST UpdateNotice(uint room_index, string user_no, int last_update);
+    NOTICE_LIST UpdateNotice(uint room_index, string user_no, int group, int last_update);
 }
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1519,6 +1642,11 @@ public partial class RoomClient : System.ServiceModel.ClientBase<IRoom>, IRoom
         return base.Channel.CreateRoom(user_no, key, name, comment, duration, maxuser);
     }
     
+    public ROOM_RESULT CreateRoomDb(string user_no, RoomService.RoomSearchKey key, string name, string comment, string duration, int maxuser)
+    {
+        return base.Channel.CreateRoomDb(user_no, key, name, comment, duration, maxuser);
+    }
+    
     public ROOM_INFO_LIST MyRoomList(string user_no)
     {
         return base.Channel.MyRoomList(user_no);
@@ -1549,9 +1677,9 @@ public partial class RoomClient : System.ServiceModel.ClientBase<IRoom>, IRoom
         return base.Channel.CommitRoom(user_no, room_index);
     }
     
-    public CHAT_LIST Chat(uint room_index, string user_no, int last_update, string content)
+    public CHAT_LIST Chat(uint room_index, string user_no, int local_index, int last_update, string content)
     {
-        return base.Channel.Chat(room_index, user_no, last_update, content);
+        return base.Channel.Chat(room_index, user_no, local_index, last_update, content);
     }
     
     public CHAT_LIST ChatUpdate(uint room_index, string user_no, int last_update)
@@ -1559,19 +1687,19 @@ public partial class RoomClient : System.ServiceModel.ClientBase<IRoom>, IRoom
         return base.Channel.ChatUpdate(room_index, user_no, last_update);
     }
     
-    public NOTICE_LIST CreateNotice(uint room_index, string user_no, string title, string content)
+    public NOTICE_LIST CreateNotice(uint room_index, string user_no, int group, string title, string content)
     {
-        return base.Channel.CreateNotice(room_index, user_no, title, content);
+        return base.Channel.CreateNotice(room_index, user_no, group, title, content);
     }
     
-    public NOTICE_LIST DeleteNotice(uint room_index, string user_no, int notice_index)
+    public NOTICE_LIST DeleteNotice(uint room_index, string user_no, int group, int notice_index)
     {
-        return base.Channel.DeleteNotice(room_index, user_no, notice_index);
+        return base.Channel.DeleteNotice(room_index, user_no, group, notice_index);
     }
     
-    public NOTICE_LIST UpdateNotice(uint room_index, string user_no, int last_update)
+    public NOTICE_LIST UpdateNotice(uint room_index, string user_no, int group, int last_update)
     {
-        return base.Channel.UpdateNotice(room_index, user_no, last_update);
+        return base.Channel.UpdateNotice(room_index, user_no, group, last_update);
     }
 }
 namespace RoomService
