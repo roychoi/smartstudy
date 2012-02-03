@@ -45,6 +45,11 @@ namespace RoomService.NLogic
 			_notice_group.Add(3, new NNotice.Group(3));
         }
 
+		public Room()
+		{
+			// TODO: Complete member initialization
+		}
+
         public void Dispose()
         {
 			_userList.RemoveAll();
@@ -94,27 +99,32 @@ namespace RoomService.NLogic
         public UInt32 Index
         {
             get { return _index; }
+			set {  _index = value; }
         }
 
         public String Duration
         {
             get { return _duration; }
-        }
+			set { _duration = value; }
+		}
 
         public String Name
         {
             get { return _name; }
-        }
+			set { _name = value; }
+		}
 
-        public String Commment
+        public String Comment
         {
             get { return _comment; }
-        }
+			set { _comment = value; }
+		}
 
         public byte MaxUser
         {
             get { return _maxuser; }
-        }
+			set { _maxuser = value; }
+		}
 
         public RoomSearchKey SearchKey
         {

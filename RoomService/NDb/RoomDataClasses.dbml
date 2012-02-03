@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="dbstudyheyo" Class="RoomDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=db.studyheyo.co.kr;Initial Catalog=dbstudyheyo;User ID=studyheyo" SettingsObjectName="RoomService.Properties.Settings" SettingsPropertyName="dbstudyheyoConnectionString" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DataSource" Class="RoomDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=db.studyheyo.co.kr;Persist Security Info=True;User ID=studyheyo" SettingsObjectName="RoomService.Properties.Settings" SettingsPropertyName="DataSourceConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.aspnet_Users" Member="aspnet_Users">
     <Type Name="aspnet_User">
       <Column Name="ApplicationId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
@@ -12,6 +12,7 @@
       <Association Name="aspnet_User_aspnet_Membership" Member="aspnet_Membership" ThisKey="UserId" OtherKey="UserId" Type="aspnet_Membership" Cardinality="One" />
       <Association Name="aspnet_User_aspnet_Profile" Member="aspnet_Profile" ThisKey="UserId" OtherKey="UserId" Type="aspnet_Profile" Cardinality="One" />
       <Association Name="aspnet_User_CreateRoom" Member="CreateRooms" ThisKey="UserId" OtherKey="UserId" Type="CreateRoom" />
+      <Association Name="aspnet_User_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="UserId" OtherKey="UserId" Type="RoomJoinedUser" />
     </Type>
   </Table>
   <Table Name="dbo.aspnet_Membership" Member="aspnet_Memberships">
@@ -61,8 +62,20 @@
       <Column Name="Location_Sub" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
       <Column Name="MaxUser" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
       <Column Name="Duration" Type="System.String" DbType="VarChar(7) NOT NULL" CanBeNull="false" />
+      <Column Name="Commited" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CreateDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CommitedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="CreateRoom_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="RoomJoinedUser" />
       <Association Name="aspnet_User_CreateRoom" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.RoomJoinedUser" Member="RoomJoinedUsers">
+    <Type Name="RoomJoinedUser">
+      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="JoinDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="aspnet_User_RoomJoinedUser" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
+      <Association Name="CreateRoom_RoomJoinedUser" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

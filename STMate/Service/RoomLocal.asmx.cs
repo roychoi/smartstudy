@@ -95,5 +95,15 @@ namespace STMate.Service
 			resultError.reason_sort = -1;
 			return resultError;
 		}
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_INFO_LIST RoomListDb(String user_no)
+		{
+			IRoom proxy = factory.CreateChannel();
+			ROOM_INFO_LIST result = proxy.MyRoomListDb(user_no);
+			(proxy as IDisposable).Dispose();
+
+			return result;
+		}
 	}
 }

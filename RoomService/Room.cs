@@ -5,6 +5,7 @@ using System.Text;
 using System.ServiceModel;
 using System.Diagnostics;
 
+using System.Data.Linq;
 using JdSoft.Apple.Apns.Notifications;
 using System.Runtime.Serialization;
 
@@ -66,6 +67,8 @@ namespace RoomService
 
         [OperationContract]
         ROOM_INFO_LIST MyRoomList(String user_no);
+		[OperationContract]
+		ROOM_INFO_LIST MyRoomListDb(String user_no);
 
         [OperationContract]
         ROOM_SUMMARY_LIST AllRoomList(RoomSearchKey key, String user_no);
@@ -301,6 +304,16 @@ namespace RoomService
 				db.CreateRooms.InsertOnSubmit(room);
 				db.SubmitChanges();
 
+				Console.WriteLine("CreateRoom InsertOnSubmit...RoomIndex {0}", room.RoomIndex);
+
+				NDb.RoomJoinedUser create_user = new NDb.RoomJoinedUser();
+				create_user.RoomIndex = room.RoomIndex;
+				create_user.UserId = room.UserId;
+				create_user.JoinDateTime = DateTime.Now;
+
+				db.RoomJoinedUsers.InsertOnSubmit(create_user);
+				db.RoomJoinedUsers.Context.SubmitChanges();
+
 				Console.WriteLine("CreateRoom Success...{0}", room.RoomIndex);
 
 			}
@@ -411,7 +424,7 @@ namespace RoomService
                 room_info_list.JOIN_INFO[index].index = room.Index;
                 room_info_list.JOIN_INFO[index].name = room.Name;
                 room_info_list.JOIN_INFO[index].commited = 1;
-                room_info_list.JOIN_INFO[index].comment = room.Commment;
+                room_info_list.JOIN_INFO[index].comment = room.Comment;
                 room_info_list.JOIN_INFO[index].category = room.SearchKey._category;
                 room_info_list.JOIN_INFO[index].location_main = room.SearchKey._location_main;
                 room_info_list.JOIN_INFO[index].location_sub = room.SearchKey._location_sub;
@@ -432,7 +445,7 @@ namespace RoomService
                 room_info_list.JOIN_INFO[index].index = room.Index;
                 room_info_list.JOIN_INFO[index].name = room.Name;
                 room_info_list.JOIN_INFO[index].commited = 0;
-                room_info_list.JOIN_INFO[index].comment = room.Commment;
+                room_info_list.JOIN_INFO[index].comment = room.Comment;
                 room_info_list.JOIN_INFO[index].category = room.SearchKey._category;
                 room_info_list.JOIN_INFO[index].location_main = room.SearchKey._location_main;
                 room_info_list.JOIN_INFO[index].location_sub = room.SearchKey._location_sub;
@@ -460,7 +473,7 @@ namespace RoomService
                 room_info_list.CREATE_INFO[index].index = room.Index;
                 room_info_list.CREATE_INFO[index].name = room.Name;
                 room_info_list.CREATE_INFO[index].commited = 1;
-                room_info_list.CREATE_INFO[index].comment = room.Commment;
+                room_info_list.CREATE_INFO[index].comment = room.Comment;
                 room_info_list.CREATE_INFO[index].category = room.SearchKey._category;
                 room_info_list.CREATE_INFO[index].location_main = room.SearchKey._location_main;
                 room_info_list.CREATE_INFO[index].location_sub = room.SearchKey._location_sub;
@@ -480,7 +493,7 @@ namespace RoomService
                 room_info_list.CREATE_INFO[index].index = room.Index;
                 room_info_list.CREATE_INFO[index].name = room.Name;
                 room_info_list.CREATE_INFO[index].commited = 0;
-                room_info_list.CREATE_INFO[index].comment = room.Commment;
+                room_info_list.CREATE_INFO[index].comment = room.Comment;
                 room_info_list.CREATE_INFO[index].category = room.SearchKey._category;
                 room_info_list.CREATE_INFO[index].location_main = room.SearchKey._location_main;
                 room_info_list.CREATE_INFO[index].location_sub = room.SearchKey._location_sub;
@@ -496,6 +509,47 @@ namespace RoomService
 
             return room_info_list;
         }
+
+		public ROOM_INFO_LIST MyRoomListDb(String user_no)
+		{
+			ROOM_INFO_LIST room_info_list = new ROOM_INFO_LIST();
+
+			try
+			{
+				Guid UserId = new Guid(user_no);
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				List<NLogic.Room > room_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>() 
+												join room in db.GetTable<NDb.CreateRoom>()
+												on RoomUser.RoomIndex equals room.RoomIndex 
+												where ( RoomUser.UserId == UserId )
+												select new NLogic.Room
+												{
+												   Index = (uint)room.RoomIndex,
+												   Name = room.Name,
+												   Comment = room.Comment,
+												   Duration = room.Duration
+												}).ToList<NLogic.Room>();
+
+				Console.WriteLine("MyRoomListDb count...{0}", room_list.Count);
+
+				foreach (NLogic.Room room in room_list)
+				{
+					Console.WriteLine("MyRoomListDb Room {0} Name {1} Date {2}", room.Index, room.Name, room.Comment );
+				}
+
+
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("CreateRoom findRoomList Insert failed...{0}", e.Message);
+				return room_info_list;
+			}
+
+			return room_info_list;
+
+		}
+
 
         public ROOM_SUMMARY_LIST AllRoomList(RoomSearchKey key, String user_no)
         {
@@ -533,7 +587,7 @@ namespace RoomService
                 room_summary_list.ROOM_SUMMARY[index].index = room.Index;
                 room_summary_list.ROOM_SUMMARY[index].name = room.Name;
                 room_summary_list.ROOM_SUMMARY[index].duration = room.Duration;
-                room_summary_list.ROOM_SUMMARY[index].comment = room.Commment;
+                room_summary_list.ROOM_SUMMARY[index].comment = room.Comment;
 				room_summary_list.ROOM_SUMMARY[index].current_user = (byte)room.UserList.GetCount();
                 room_summary_list.ROOM_SUMMARY[index].max_user = room.MaxUser;
 
@@ -560,7 +614,7 @@ namespace RoomService
             join_room_detail.category = room.SearchKey._category;
             join_room_detail.index = room.Index;
             join_room_detail.name = room.Name;
-            join_room_detail.comment = room.Commment;
+            join_room_detail.comment = room.Comment;
             join_room_detail.location_main = room.SearchKey._location_main;
             join_room_detail.location_sub = room.SearchKey._location_sub;
 			join_room_detail.current_user = (byte)room.UserList.GetCount();
