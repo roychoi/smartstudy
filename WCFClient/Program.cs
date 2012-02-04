@@ -39,6 +39,7 @@ namespace WCFClient
 				//(proxy as IDisposable).Dispose();
 
 				RoomClient test = new RoomClient("BasicHttpBinding_IRoom");
+				RoomClient testTcp = new RoomClient("NetTcpBinding_IRoomLocal");
 
 
 
@@ -57,13 +58,12 @@ namespace WCFClient
 
 
 
-				ROOM_RESULT result12 = test.CreateRoomDb("9CA1A2F4-AA7C-462C-96D2-1F5FE26D691D", key, "웹에서", "아무나오지말고", "1111111", 10);
+				ROOM_RESULT result12 = test.CreateRoomDb("410fba26-f787-421e-9bbe-1e13f9866da8", key, "내방은", "아무나와요", "1111111", 10);
+				//ROOM_RESULT result12 = test.CreateRoomDb("9CA1A2F4-AA7C-462C-96D2-1F5FE26D691D", key, "웹에서", "아무나오지말고", "1111111", 10);
 
-				
+				//410fba26-f787-421e-9bbe-1e13f9866da8
 				ROOM_RESULT result111 = test.Push("f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6", "좋다", 1);
-
-
-
+				
             }
             catch (FaultException<RoomService.MyFaultException> ee)
             {

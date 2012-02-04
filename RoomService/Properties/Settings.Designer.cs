@@ -44,5 +44,16 @@ namespace RoomService.Properties {
                 return ((string)(this["DataSourceConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=db.studyheyo.co.kr;Initial Catalog=dbstudyheyo;Persist Security Info=" +
+            "True;User ID=studyheyo;Password=clsrnemf123")]
+        public string dbstudyheyoConnectionString1 {
+            get {
+                return ((string)(this["dbstudyheyoConnectionString1"]));
+            }
+        }
     }
 }
