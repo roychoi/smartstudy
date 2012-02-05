@@ -98,14 +98,11 @@ namespace RoomService
 
 		[OperationContract]
 		CHAT_LIST Chat(UInt32 room_index, String user_no, int local_index, int last_update, String content);
-
 		[OperationContract]
 		CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content);
 
-
 		[OperationContract]
 		CHAT_LIST ChatUpdate(UInt32 room_index, String user_no, int last_update);
-
 		[OperationContract]
 		CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update);
 
@@ -306,6 +303,7 @@ namespace RoomService
 
 			try
 			{
+				// TRANSACTION
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
 				NDb.CreateRoom room = new NDb.CreateRoom();
 
@@ -324,10 +322,37 @@ namespace RoomService
 
 				Console.WriteLine("CreateRoom InsertOnSubmit...RoomIndex {0}", room.RoomIndex);
 
+				var joining_user = (from User in db.GetTable<NDb.aspnet_User>()
+									where User.UserId == room.UserId
+									select new NDb.NData.JoinedUser
+									{
+										UserId = User.UserId,
+										LoginId = User.UserName,
+										Gender = Byte.Parse(db.fn_GetProfileElement("Gender", User.aspnet_Profile.PropertyNames,
+																							User.aspnet_Profile.PropertyValuesString)),
+										NickName = db.fn_GetProfileElement("NickName", User.aspnet_Profile.PropertyNames,
+																							User.aspnet_Profile.PropertyValuesString),
+										//Birth = DateTime.Parse(db.fn_GetProfileElement("BirthYear", User.aspnet_Profile.PropertyNames,
+										//                                                    User.aspnet_Profile.PropertyValuesString) )
+
+									}).SingleOrDefault<NDb.NData.JoinedUser>();
+
+				if (joining_user == null)
+				{
+					result.reason_sort = -2;
+					return result;
+				}
+
+				Console.WriteLine("CreateRoom joining_user LoginId (UserName ) {0} NickName {1} ", joining_user.LoginId, joining_user.NickName );
+
+				// LoginId NULL 제약 조건시 Transaction 확인하기..
 				NDb.RoomJoinedUser create_user = new NDb.RoomJoinedUser();
 				create_user.RoomIndex = room.RoomIndex;
-				create_user.UserId = room.UserId;
+				create_user.UserId = joining_user.UserId;
 				create_user.JoinDateTime = DateTime.Now;
+				create_user.LoginId = joining_user.LoginId;
+				create_user.Gender = joining_user.Gender;
+				create_user.NickName = joining_user.NickName;
 
 				db.RoomJoinedUsers.InsertOnSubmit(create_user);
 				db.RoomJoinedUsers.Context.SubmitChanges();
@@ -832,18 +857,34 @@ namespace RoomService
 				}
 
 				// aspnet_User Join 대신에.. 그냥 이미지 링크를 프로파일에 저장하자... 수정요망
+				//List<NDb.NData.JoinedUser> user_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+				//                                        join Profile in db.GetTable<NDb.aspnet_Profile>()
+				//                                          on RoomUser.UserId equals Profile.UserId
+				//                                        join User in db.GetTable<NDb.aspnet_User>() on Profile.UserId equals User.UserId
+				//                                        where RoomUser.RoomIndex == matched_room.Index
+				//                                        select new NDb.NData.JoinedUser
+				//                                        {
+				//                                            UserId = RoomUser.UserId,
+				//                                            LoginId = User.UserName,
+				//                                            Gender = Byte.Parse(db.fn_GetProfileElement("Gender", Profile.PropertyNames, Profile.PropertyValuesString)),
+				//                                            NickName = db.fn_GetProfileElement("NickName", Profile.PropertyNames, Profile.PropertyValuesString),
+				//                                            Birth = DateTime.Parse(db.fn_GetProfileElement("BirthYear", Profile.PropertyNames, Profile.PropertyValuesString))
+
+				//                                        }).ToList<NDb.NData.JoinedUser>();
+
+
 				List<NDb.NData.JoinedUser> user_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
-														join Profile in db.GetTable<NDb.aspnet_Profile>()
-														  on RoomUser.UserId equals Profile.UserId
-														join User in db.GetTable<NDb.aspnet_User>() on Profile.UserId equals User.UserId
 														where RoomUser.RoomIndex == matched_room.Index
 														select new NDb.NData.JoinedUser
 														{
 															UserId = RoomUser.UserId,
-															LoginId = User.UserName,
-															Gender = Byte.Parse(db.fn_GetProfileElement("Gender", Profile.PropertyNames, Profile.PropertyValuesString)),
-															NickName = db.fn_GetProfileElement("NickName", Profile.PropertyNames, Profile.PropertyValuesString),
-															Birth = DateTime.Parse(db.fn_GetProfileElement("BirthYear", Profile.PropertyNames, Profile.PropertyValuesString))
+															LoginId = RoomUser.aspnet_User.UserName,
+															Gender = Byte.Parse(db.fn_GetProfileElement("Gender", RoomUser.aspnet_User.aspnet_Profile.PropertyNames,
+																												RoomUser.aspnet_User.aspnet_Profile.PropertyValuesString)),
+															NickName = db.fn_GetProfileElement("NickName", RoomUser.aspnet_User.aspnet_Profile.PropertyNames,
+																												RoomUser.aspnet_User.aspnet_Profile.PropertyValuesString),
+															Birth = DateTime.Parse(db.fn_GetProfileElement("BirthYear", RoomUser.aspnet_User.aspnet_Profile.PropertyNames,
+																												RoomUser.aspnet_User.aspnet_Profile.PropertyValuesString))
 
 														}).ToList<NDb.NData.JoinedUser>();
 
@@ -1107,7 +1148,7 @@ namespace RoomService
 			{
 				Console.WriteLine("LeaveRoomDb - error {0}", e.Message);
 
-				room_result.reason_sort = -3;
+				room_result.reason_sort = -2;
 				room_result.room_index = 0;
 
 				return room_result;
@@ -1201,6 +1242,8 @@ namespace RoomService
 				}
 
 				matched_room.Commited = true;
+				matched_room.CommitedDateTime = DateTime.Now;
+
 				db.SubmitChanges();
 
 				room_result.reason_sort = 0;
@@ -1300,11 +1343,13 @@ namespace RoomService
 								   MsgId = (from Message in db.GetTable<NDb.Message>()
 											where Message.RoomIndex == room_index
 											select Message.MsgId).Count(),
+
 								   Contents = content,
 								   //NickName = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
 								   //     JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString),
 								   NickName = JoinedUser.NickName,	// NickName 만 JoinedUser 에 저장할까나?... 아니면 위에 같이 조인시킬까?
-								   Email = JoinedUser.aspnet_User.UserName,	// squence 가 하나 여야 성공한다.
+								   Email = JoinedUser.LoginId,	
+								   //Email = JoinedUser.aspnet_User.UserName,	// squence 가 하나 여야 성공한다.
 
 							   }).SingleOrDefault<NDb.NData.ChatMessage>();
 
