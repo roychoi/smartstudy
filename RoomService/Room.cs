@@ -60,6 +60,8 @@ namespace RoomService
 
 		[OperationContract]
 		UPDATE_DEVICE_INFO UpdateUserDevice(String user_guid, String deviceToken);
+		[OperationContract]
+		UPDATE_DEVICE_INFO UpdateUserDeviceDb(String user_guid, String deviceToken);
 
 		[OperationContract]
 		ROOM_RESULT CreateRoom(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser);
@@ -296,6 +298,55 @@ namespace RoomService
 			return update_device_info;
 		}
 
+		public UPDATE_DEVICE_INFO UpdateUserDeviceDb(String user_guid, String deviceToken)
+		{
+			UPDATE_DEVICE_INFO update_device_info = new UPDATE_DEVICE_INFO();
+
+			try
+			{
+
+				Guid UserId = new Guid(user_guid);
+
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+				String LoginId = null;
+
+				var match_info = (from Device in db.GetTable<NDb.UserDeviceInfo>()
+								  where (Device.UserId == UserId)
+								  select Device).SingleOrDefault();
+
+				if (match_info != null)
+				{
+					match_info.DeviceToken = deviceToken;
+					db.SubmitChanges();
+
+					update_device_info.login_id = match_info.aspnet_User.UserName;
+
+					return update_device_info;
+				}
+
+				NDb.UserDeviceInfo update_info = new NDb.UserDeviceInfo();
+				update_info.DeviceToken = deviceToken;
+				update_info.Type = 0;
+				update_info.UserId = UserId;
+
+				db.UserDeviceInfos.InsertOnSubmit(update_info);
+				db.SubmitChanges();
+
+				update_device_info.login_id = update_info.aspnet_User.UserName;
+				update_device_info.result_code = 0;
+
+				return update_device_info;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("================== UpdateUserDeviceDb Error ==================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+
+				update_device_info.result_code = -1;
+				return update_device_info;
+			}
+		}
 		public ROOM_RESULT CreateRoomDb(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser)
 		{
 			ROOM_RESULT result = new ROOM_RESULT();
@@ -878,11 +929,14 @@ namespace RoomService
 														select new NDb.NData.JoinedUser
 														{
 															UserId = RoomUser.UserId,
-															LoginId = RoomUser.aspnet_User.UserName,
-															Gender = Byte.Parse(db.fn_GetProfileElement("Gender", RoomUser.aspnet_User.aspnet_Profile.PropertyNames,
-																												RoomUser.aspnet_User.aspnet_Profile.PropertyValuesString)),
-															NickName = db.fn_GetProfileElement("NickName", RoomUser.aspnet_User.aspnet_Profile.PropertyNames,
-																												RoomUser.aspnet_User.aspnet_Profile.PropertyValuesString),
+															//LoginId = RoomUser.aspnet_User.UserName,
+															LoginId = RoomUser.LoginId,
+															Gender = RoomUser.Gender,
+															NickName = RoomUser.NickName,
+															//Gender = Byte.Parse(db.fn_GetProfileElement("Gender", RoomUser.aspnet_User.aspnet_Profile.PropertyNames,
+															//                                                    RoomUser.aspnet_User.aspnet_Profile.PropertyValuesString)),
+															//NickName = db.fn_GetProfileElement("NickName", RoomUser.aspnet_User.aspnet_Profile.PropertyNames,
+															//                                                    RoomUser.aspnet_User.aspnet_Profile.PropertyValuesString),
 															Birth = DateTime.Parse(db.fn_GetProfileElement("BirthYear", RoomUser.aspnet_User.aspnet_Profile.PropertyNames,
 																												RoomUser.aspnet_User.aspnet_Profile.PropertyValuesString))
 
@@ -1353,6 +1407,13 @@ namespace RoomService
 
 							   }).SingleOrDefault<NDb.NData.ChatMessage>();
 
+				if (message == null)
+				{
+					Console.WriteLine("Invalid ChatMsg...");
+					chat_list.local_index = 0;
+					return chat_list;
+				}
+
 				NDb.Message insert_message = new NDb.Message();
 
 				insert_message.MsgId = ++ message.MsgId;
@@ -1388,7 +1449,6 @@ namespace RoomService
 					chat_list.CHAT[nIndex].date_time = msg.IptTime;
 
 					// 클라이언트에서 판단하도록 수정요망
-
 					//if (user.UserGuid.Equals(query_message.UserGuid))
 					//{
 					//    chat_list.CHAT[nIndex].ownerSpecified = true;
@@ -1403,6 +1463,22 @@ namespace RoomService
 				}
 
 				chat_list.local_index = local_index;
+
+				// Backend push server 로 옮겨야 ..
+				List<String> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+												 where RoomUser.RoomIndex == room_index
+												join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>() 
+																on RoomUser.UserId equals DeviceInfo.UserId
+												 select DeviceInfo.DeviceToken ).ToList<String>();
+
+
+				Console.WriteLine("Push Notification to room {0} ", room_index );
+
+				foreach (String device_info in device_info_list)
+				{
+					Console.WriteLine("DeviceToken {0} ", device_info );
+				}
+
 				return chat_list;
 			}
 			catch (Exception e)
@@ -1449,7 +1525,7 @@ namespace RoomService
 			{
 				Guid UserId = new Guid(user_no);
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
-
+				DateTime last_date = DateTime.Now;
 				IEnumerable<NDb.Message> query_message = (from Message in db.GetTable<NDb.Message>()
 														  where Message.RoomIndex == room_index && Message.MsgId > last_update
 														  orderby Message.MsgId ascending

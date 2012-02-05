@@ -175,5 +175,17 @@ namespace STMate.Service
 
 			return chat_list;
 		}
+
+		[WebMethod(EnableSession = true)]
+		public UPDATE_DEVICE_INFO UpdateDeviceInfo(String userNo, String deviceToken)
+		{
+			IRoom proxy = factory.CreateChannel();
+			UPDATE_DEVICE_INFO update_device_info = proxy.UpdateUserDeviceDb(userNo, deviceToken);
+
+			(proxy as IDisposable).Dispose();
+
+			return update_device_info;
+			
+		}
 	}
 }
