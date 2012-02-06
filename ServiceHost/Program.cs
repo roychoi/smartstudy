@@ -12,6 +12,9 @@ namespace Host
     {
         static void Main(string[] args)
         {
+
+			DateTime test = DateTime.Parse("1981-01-01");
+
             ServiceHost host = new ServiceHost(typeof(RoomWCFService),
                    new Uri("net.tcp://localhost/wcf/roomwcfservice"));
 
@@ -30,7 +33,12 @@ namespace Host
 				{
 					debug.IncludeExceptionDetailInFaults = true;
 				}
-			} 
+			}
+			
+			//ServiceMetadataBehavior metaDataBeh = host.Description.Behaviors.Find<ServiceMetadataBehavior>();
+
+			//host.Description.Behaviors.Add(
+			//         new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
 
 			NetTcpBinding bd = new NetTcpBinding();
 			
