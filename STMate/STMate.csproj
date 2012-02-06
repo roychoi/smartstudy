@@ -57,6 +57,7 @@
     <Content Include="NSchemas\CreateUser.xml" />
     <Content Include="Service\RoomLocal.asmx" />
     <Content Include="Service\RoomManager.asmx" />
+    <Content Include="Service\RoomManager.svc" />
     <Content Include="Service\RoomService.RoomWCFService.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
