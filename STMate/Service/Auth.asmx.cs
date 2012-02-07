@@ -258,7 +258,7 @@ namespace STMate.Service
                     auth_user_result.reason_sort = "Success";
                     auth_user_result.date_timeSpecified = false;
 					//auth_user_result.user_no = user_guid.ToString("N");
-					auth_user_result.user_no = user_guid.ToString();
+					auth_user_result.user_no = user_guid.ToString("D");
 
 					ProfileBase userProfile = ProfileBase.Create(loginEmail, true);
 

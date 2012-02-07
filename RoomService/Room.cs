@@ -653,11 +653,13 @@ namespace RoomService
 
 														}).ToList<NDb.NData.JoinedRoom>();
 
-				Console.WriteLine("MyRoomListDb count...{0}", room_list.Count);
+				Console.WriteLine("MyRoomListDb count...{0} and Requester {1} ", room_list.Count, user_no );
+				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb count...{0} and Requester {1} ", room_list.Count, user_no );
 
 				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list
 																  where create_room.MasterUserId.Equals(user_no) 
 																  select create_room;
+
 
 				int create_count = query_created.Count<NDb.NData.JoinedRoom>();
 				room_info_list.CREATE_INFO = new ROOM_INFO_LISTCREATE_INFO();
@@ -668,6 +670,11 @@ namespace RoomService
 				foreach (NDb.NData.JoinedRoom joinedRoom in query_created)
 				{
 					Console.WriteLine("MyRoomListDb Create Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
+					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Create Room {0} Name {1} Date {2} User :{3}", joinedRoom.Index, 
+						joinedRoom.Name,
+						joinedRoom.CreateDate,
+						joinedRoom.MasterUserId );
+
 					room_info_list.CREATE_INFO.ROOM[index] = new ROOM_INFO_LISTCREATE_INFOROOM();
 					room_info_list.CREATE_INFO.ROOM[index].index = (uint)joinedRoom.Index;
 					room_info_list.CREATE_INFO.ROOM[index].name = joinedRoom.Name;
@@ -696,6 +703,10 @@ namespace RoomService
 				foreach (NDb.NData.JoinedRoom joinedRoom in query_joined)
 				{
 					Console.WriteLine("MyRoomListDb Joined Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
+					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Joined Room {0} Name {1} Date {2} User :{3}", joinedRoom.Index,
+										joinedRoom.Name,
+										joinedRoom.CreateDate,
+										joinedRoom.MasterUserId);
 
 					room_info_list.JOIN_INFO.ROOM[index] = new ROOM_INFO_LISTJOIN_INFOROOM();
 					room_info_list.JOIN_INFO.ROOM[index].index = (uint)joinedRoom.Index;
@@ -711,7 +722,7 @@ namespace RoomService
 					index++;
 				}
 
-
+				NApns.Provider._source.Flush();
 			}
 			catch (Exception e)
 			{
