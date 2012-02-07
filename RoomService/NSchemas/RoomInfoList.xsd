@@ -11,17 +11,18 @@
                   <xs:attribute name="index" type="xs:unsignedInt" use="required" />
                   <xs:attribute name="name" type="xs:string" use="required" />
                   <xs:attribute name="comment" type="xs:string" use="required" />
-                  <xs:attribute name="category" type="xs:int" use="required" />
+                  <xs:attribute name="category" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="duration" type="xs:string" use="required" />
-                  <xs:attribute name="location_main" type="xs:int" use="required" />
-                  <xs:attribute name="location_sub" type="xs:int" use="required" />
+                  <xs:attribute name="location_main" type="xs:unsignedByte" use="required" />
+                  <xs:attribute name="location_sub" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="current_user" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="max_user" type="xs:unsignedByte" use="required" />
-                  <xs:attribute name="commited" type="xs:unsignedByte" use="required" />
-                  <xs:attribute name="is_dirty" type="xs:boolean" use="optional" />
+                  <xs:attribute name="commited" type="xs:boolean" use="required" />
+                  <xs:attribute name="is_dirty" type="xs:unsignedByte" use="optional" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
+            <xs:attribute name="count" type="xs:unsignedByte" use="required" />
           </xs:complexType>
         </xs:element>
         <xs:element name="JOIN_INFO">
@@ -32,17 +33,18 @@
                   <xs:attribute name="index" type="xs:unsignedInt" use="required" />
                   <xs:attribute name="name" type="xs:string" use="required" />
                   <xs:attribute name="comment" type="xs:string" use="required" />
-                  <xs:attribute name="category" type="xs:int" use="required" />
+                  <xs:attribute name="category" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="duration" type="xs:string" use="required" />
-                  <xs:attribute name="location_main" type="xs:int" use="required" />
-                  <xs:attribute name="location_sub" type="xs:int" use="required" />
+                  <xs:attribute name="location_main" type="xs:unsignedByte" use="required" />
+                  <xs:attribute name="location_sub" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="current_user" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="max_user" type="xs:unsignedByte" use="required" />
-                  <xs:attribute name="commited" type="xs:unsignedByte" use="required" />
-                  <xs:attribute name="is_dirty" type="xs:boolean" use="optional" />
+                  <xs:attribute name="commited" type="xs:boolean" use="required" />
+                  <xs:attribute name="is_dirty" type="xs:unsignedByte" use="optional" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
+            <xs:attribute name="count" type="xs:unsignedByte" use="required" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>

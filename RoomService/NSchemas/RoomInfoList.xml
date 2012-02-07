@@ -1,17 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ROOM_INFO_LIST>
-  <CREATE_INFO>
+  <CREATE_INFO count ="2">
     <!-- 방장일경우 -->
-    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="true" is_dirty ="1">
-      <ROOM_BADGE_INFO badge_count ="3">
-        <NOTICE_BADGE group ="1" dirty ="0"/>
-        <NOTICE_BADGE group ="2" dirty ="1"/>
-        <NOTICE_BADGE group ="3" dirty ="1"/>
-      </ROOM_BADGE_INFO>
-    </ROOM>
+    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="true" is_dirty ="1"/>
     <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="false"/>
   </CREATE_INFO>
-  <JOIN_INFO>
+  <JOIN_INFO count ="2">
     <!-- 그냥 가입해있는 경우 -->
     <ROOM index="100012" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="true" is_dirty ="1"/>
     <ROOM index="100013" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="false"/>

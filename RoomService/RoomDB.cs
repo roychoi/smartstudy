@@ -256,46 +256,51 @@ namespace RoomService
 				IEnumerable<NDb.NData.JoinedRoom> query_joined = from join_room in room_list where join_room.MasterUserId != user_no select join_room;
 
 				int join_count = query_joined.Count<NDb.NData.JoinedRoom>();
-				room_info_list.JOIN_INFO = new ROOM_INFO_LISTROOM1[join_count];
+				room_info_list.JOIN_INFO = new ROOM_INFO_LISTJOIN_INFO();
+				room_info_list.JOIN_INFO.count = (byte)join_count;
+				room_info_list.JOIN_INFO.ROOM = new ROOM_INFO_LISTJOIN_INFOROOM[join_count];
+				
 				int index = 0;
 
 				foreach (NDb.NData.JoinedRoom joinedRoom in query_joined)
 				{
 					Console.WriteLine("MyRoomListDb Joined Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
 
-					room_info_list.JOIN_INFO[index] = new ROOM_INFO_LISTROOM1();
-					room_info_list.JOIN_INFO[index].index = (uint)joinedRoom.Index;
-					room_info_list.JOIN_INFO[index].name = joinedRoom.Name;
-					room_info_list.JOIN_INFO[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
-					room_info_list.JOIN_INFO[index].comment = joinedRoom.Comment;
-					room_info_list.JOIN_INFO[index].category = joinedRoom.Category;
-					room_info_list.JOIN_INFO[index].location_main = joinedRoom.LocationMain;
-					room_info_list.JOIN_INFO[index].location_sub = joinedRoom.LocationSub;
-					room_info_list.JOIN_INFO[index].current_user = joinedRoom.CurrentUser;
-					room_info_list.JOIN_INFO[index].max_user = joinedRoom.MaxUser;
-					room_info_list.JOIN_INFO[index].duration = joinedRoom.Duration;
+					room_info_list.JOIN_INFO.ROOM[index] = new ROOM_INFO_LISTJOIN_INFOROOM();
+					room_info_list.JOIN_INFO.ROOM[index].index = (uint)joinedRoom.Index;
+					room_info_list.JOIN_INFO.ROOM[index].name = joinedRoom.Name;
+					room_info_list.JOIN_INFO.ROOM[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
+					room_info_list.JOIN_INFO.ROOM[index].comment = joinedRoom.Comment;
+					room_info_list.JOIN_INFO.ROOM[index].category = joinedRoom.Category;
+					room_info_list.JOIN_INFO.ROOM[index].location_main = joinedRoom.LocationMain;
+					room_info_list.JOIN_INFO.ROOM[index].location_sub = joinedRoom.LocationSub;
+					room_info_list.JOIN_INFO.ROOM[index].current_user = joinedRoom.CurrentUser;
+					room_info_list.JOIN_INFO.ROOM[index].max_user = joinedRoom.MaxUser;
+					room_info_list.JOIN_INFO.ROOM[index].duration = joinedRoom.Duration;
 					index++;
 				}
 
 				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list where create_room.MasterUserId == user_no select create_room;
 				int create_count = query_created.Count<NDb.NData.JoinedRoom>();
-				room_info_list.CREATE_INFO = new ROOM_INFO_LISTROOM[create_count];
+				room_info_list.CREATE_INFO = new ROOM_INFO_LISTCREATE_INFO();
+				room_info_list.CREATE_INFO.count = (byte)create_count;
+				room_info_list.CREATE_INFO.ROOM = new ROOM_INFO_LISTCREATE_INFOROOM[create_count];
 				index = 0;
-
+			
 				foreach (NDb.NData.JoinedRoom joinedRoom in query_created)
 				{
 					Console.WriteLine("MyRoomListDb Create Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
-					room_info_list.CREATE_INFO[index] = new ROOM_INFO_LISTROOM();
-					room_info_list.CREATE_INFO[index].index = (uint)joinedRoom.Index;
-					room_info_list.CREATE_INFO[index].name = joinedRoom.Name;
-					room_info_list.CREATE_INFO[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
-					room_info_list.CREATE_INFO[index].comment = joinedRoom.Comment;
-					room_info_list.CREATE_INFO[index].category = joinedRoom.Category;
-					room_info_list.CREATE_INFO[index].location_main = joinedRoom.LocationMain;
-					room_info_list.CREATE_INFO[index].location_sub = joinedRoom.LocationSub;
-					room_info_list.CREATE_INFO[index].current_user = joinedRoom.CurrentUser;
-					room_info_list.CREATE_INFO[index].max_user = joinedRoom.MaxUser;
-					room_info_list.CREATE_INFO[index].duration = joinedRoom.Duration;
+					room_info_list.CREATE_INFO.ROOM[index] = new ROOM_INFO_LISTCREATE_INFOROOM();
+					room_info_list.CREATE_INFO.ROOM[index].index = (uint)joinedRoom.Index;
+					room_info_list.CREATE_INFO.ROOM[index].name = joinedRoom.Name;
+					room_info_list.CREATE_INFO.ROOM[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
+					room_info_list.CREATE_INFO.ROOM[index].comment = joinedRoom.Comment;
+					room_info_list.CREATE_INFO.ROOM[index].category = joinedRoom.Category;
+					room_info_list.CREATE_INFO.ROOM[index].location_main = joinedRoom.LocationMain;
+					room_info_list.CREATE_INFO.ROOM[index].location_sub = joinedRoom.LocationSub;
+					room_info_list.CREATE_INFO.ROOM[index].current_user = joinedRoom.CurrentUser;
+					room_info_list.CREATE_INFO.ROOM[index].max_user = joinedRoom.MaxUser;
+					room_info_list.CREATE_INFO.ROOM[index].duration = joinedRoom.Duration;
 					index++;
 				}
 			}

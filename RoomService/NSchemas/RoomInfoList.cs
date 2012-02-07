@@ -24,13 +24,12 @@ using System.Xml.Serialization;
 [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
 public partial class ROOM_INFO_LIST {
     
-    private ROOM_INFO_LISTROOM[] cREATE_INFOField;
+    private ROOM_INFO_LISTCREATE_INFO cREATE_INFOField;
     
-    private ROOM_INFO_LISTROOM1[] jOIN_INFOField;
+    private ROOM_INFO_LISTJOIN_INFO jOIN_INFOField;
     
     /// <remarks/>
-    [System.Xml.Serialization.XmlArrayItemAttribute("ROOM", IsNullable=false)]
-    public ROOM_INFO_LISTROOM[] CREATE_INFO {
+    public ROOM_INFO_LISTCREATE_INFO CREATE_INFO {
         get {
             return this.cREATE_INFOField;
         }
@@ -40,8 +39,7 @@ public partial class ROOM_INFO_LIST {
     }
     
     /// <remarks/>
-    [System.Xml.Serialization.XmlArrayItemAttribute("ROOM", IsNullable=false)]
-    public ROOM_INFO_LISTROOM1[] JOIN_INFO {
+    public ROOM_INFO_LISTJOIN_INFO JOIN_INFO {
         get {
             return this.jOIN_INFOField;
         }
@@ -57,7 +55,42 @@ public partial class ROOM_INFO_LIST {
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
-public partial class ROOM_INFO_LISTROOM {
+public partial class ROOM_INFO_LISTCREATE_INFO {
+    
+    private ROOM_INFO_LISTCREATE_INFOROOM[] rOOMField;
+    
+    private byte countField;
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlElementAttribute("ROOM")]
+    public ROOM_INFO_LISTCREATE_INFOROOM[] ROOM {
+        get {
+            return this.rOOMField;
+        }
+        set {
+            this.rOOMField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public byte count {
+        get {
+            return this.countField;
+        }
+        set {
+            this.countField = value;
+        }
+    }
+}
+
+/// <remarks/>
+[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.1")]
+[System.SerializableAttribute()]
+[System.Diagnostics.DebuggerStepThroughAttribute()]
+[System.ComponentModel.DesignerCategoryAttribute("code")]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+public partial class ROOM_INFO_LISTCREATE_INFOROOM {
     
     private uint indexField;
     
@@ -65,13 +98,13 @@ public partial class ROOM_INFO_LISTROOM {
     
     private string commentField;
     
-    private int categoryField;
+    private byte categoryField;
     
     private string durationField;
     
-    private int location_mainField;
+    private byte location_mainField;
     
-    private int location_subField;
+    private byte location_subField;
     
     private byte current_userField;
     
@@ -79,7 +112,7 @@ public partial class ROOM_INFO_LISTROOM {
     
     private byte commitedField;
     
-    private bool is_dirtyField;
+    private byte is_dirtyField;
     
     private bool is_dirtyFieldSpecified;
     
@@ -118,7 +151,7 @@ public partial class ROOM_INFO_LISTROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int category {
+    public byte category {
         get {
             return this.categoryField;
         }
@@ -140,7 +173,7 @@ public partial class ROOM_INFO_LISTROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int location_main {
+    public byte location_main {
         get {
             return this.location_mainField;
         }
@@ -151,7 +184,7 @@ public partial class ROOM_INFO_LISTROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int location_sub {
+    public byte location_sub {
         get {
             return this.location_subField;
         }
@@ -195,7 +228,7 @@ public partial class ROOM_INFO_LISTROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public bool is_dirty {
+    public byte is_dirty {
         get {
             return this.is_dirtyField;
         }
@@ -222,7 +255,42 @@ public partial class ROOM_INFO_LISTROOM {
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
-public partial class ROOM_INFO_LISTROOM1 {
+public partial class ROOM_INFO_LISTJOIN_INFO {
+    
+    private ROOM_INFO_LISTJOIN_INFOROOM[] rOOMField;
+    
+    private byte countField;
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlElementAttribute("ROOM")]
+    public ROOM_INFO_LISTJOIN_INFOROOM[] ROOM {
+        get {
+            return this.rOOMField;
+        }
+        set {
+            this.rOOMField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public byte count {
+        get {
+            return this.countField;
+        }
+        set {
+            this.countField = value;
+        }
+    }
+}
+
+/// <remarks/>
+[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.1")]
+[System.SerializableAttribute()]
+[System.Diagnostics.DebuggerStepThroughAttribute()]
+[System.ComponentModel.DesignerCategoryAttribute("code")]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+public partial class ROOM_INFO_LISTJOIN_INFOROOM {
     
     private uint indexField;
     
@@ -230,13 +298,13 @@ public partial class ROOM_INFO_LISTROOM1 {
     
     private string commentField;
     
-    private int categoryField;
+    private byte categoryField;
     
     private string durationField;
     
-    private int location_mainField;
+    private byte location_mainField;
     
-    private int location_subField;
+    private byte location_subField;
     
     private byte current_userField;
     
@@ -244,7 +312,7 @@ public partial class ROOM_INFO_LISTROOM1 {
     
     private byte commitedField;
     
-    private bool is_dirtyField;
+    private byte is_dirtyField;
     
     private bool is_dirtyFieldSpecified;
     
@@ -283,7 +351,7 @@ public partial class ROOM_INFO_LISTROOM1 {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int category {
+    public byte category {
         get {
             return this.categoryField;
         }
@@ -305,7 +373,7 @@ public partial class ROOM_INFO_LISTROOM1 {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int location_main {
+    public byte location_main {
         get {
             return this.location_mainField;
         }
@@ -316,7 +384,7 @@ public partial class ROOM_INFO_LISTROOM1 {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int location_sub {
+    public byte location_sub {
         get {
             return this.location_subField;
         }
@@ -360,7 +428,7 @@ public partial class ROOM_INFO_LISTROOM1 {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public bool is_dirty {
+    public byte is_dirty {
         get {
             return this.is_dirtyField;
         }

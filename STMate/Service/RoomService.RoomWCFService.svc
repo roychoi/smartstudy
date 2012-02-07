@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="RoomService.RoomWCFService" Factory="RoomService.HostFactory" %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="RoomService.RoomWCFService" %>
