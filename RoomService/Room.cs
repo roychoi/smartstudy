@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 using System.Diagnostics;
 
 using System.Data.Linq;
@@ -12,6 +13,22 @@ using System.Runtime.Serialization;
 
 namespace RoomService
 {
+	public class HostFactory : ServiceHostFactoryBase
+	{
+		public override ServiceHostBase CreateServiceHost(
+		  string constructorString, Uri[] baseAddresses)
+		{
+			Type service = Type.GetType(constructorString);
+			ServiceHost host = new ServiceHost(service, baseAddresses);
+			// hook up event handlers
+			//host.Opening += ServiceHost.OnOpening;
+			//host.Closing += OnClosing;
+
+			return host;
+		}
+	}
+
+
 	[DataContract]
 	public struct RoomSearchKey
 	{
@@ -638,6 +655,7 @@ namespace RoomService
 
 				Console.WriteLine("MyRoomListDb count...{0}", room_list.Count);
 
+<<<<<<< HEAD
 				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list where create_room.MasterUserId.Equals( user_no ) select create_room;
 				int create_count = query_created.Count<NDb.NData.JoinedRoom>();
 				room_info_list.CREATE_INFO = new ROOM_INFO_LISTROOM[create_count];
@@ -663,10 +681,13 @@ namespace RoomService
 				IEnumerable<NDb.NData.JoinedRoom> query_joined = from join_room in room_list 
 																 where !(join_room.MasterUserId.Equals(user_no))
 																 select join_room;
+=======
+				IEnumerable<NDb.NData.JoinedRoom> query_joined = from join_room in room_list where join_room.MasterUserId != user_no select join_room;
+>>>>>>> f5262e31b4d1435fdb919649391c191df73aaf27
 
 				int join_count = query_joined.Count<NDb.NData.JoinedRoom>();
 				room_info_list.JOIN_INFO = new ROOM_INFO_LISTROOM1[join_count];
-				index = 0;
+				int index = 0;
 
 				foreach (NDb.NData.JoinedRoom joinedRoom in query_joined)
 				{
@@ -683,6 +704,28 @@ namespace RoomService
 					room_info_list.JOIN_INFO[index].current_user = joinedRoom.CurrentUser;
 					room_info_list.JOIN_INFO[index].max_user = joinedRoom.MaxUser;
 					room_info_list.JOIN_INFO[index].duration = joinedRoom.Duration;
+					index++;
+				}
+
+				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list where create_room.MasterUserId == user_no select create_room;
+				int create_count = query_created.Count<NDb.NData.JoinedRoom>();
+				room_info_list.CREATE_INFO = new ROOM_INFO_LISTROOM[create_count];
+				index = 0;
+
+				foreach (NDb.NData.JoinedRoom joinedRoom in query_created)
+				{
+					Console.WriteLine("MyRoomListDb Create Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
+					room_info_list.CREATE_INFO[index] = new ROOM_INFO_LISTROOM();
+					room_info_list.CREATE_INFO[index].index = (uint)joinedRoom.Index;
+					room_info_list.CREATE_INFO[index].name = joinedRoom.Name;
+					room_info_list.CREATE_INFO[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
+					room_info_list.CREATE_INFO[index].comment = joinedRoom.Comment;
+					room_info_list.CREATE_INFO[index].category = joinedRoom.Category;
+					room_info_list.CREATE_INFO[index].location_main = joinedRoom.LocationMain;
+					room_info_list.CREATE_INFO[index].location_sub = joinedRoom.LocationSub;
+					room_info_list.CREATE_INFO[index].current_user = joinedRoom.CurrentUser;
+					room_info_list.CREATE_INFO[index].max_user = joinedRoom.MaxUser;
+					room_info_list.CREATE_INFO[index].duration = joinedRoom.Duration;
 					index++;
 				}
 			}
@@ -1399,11 +1442,12 @@ namespace RoomService
 							   {
 								   MsgId = (from Message in db.GetTable<NDb.Message>()
 											where Message.RoomIndex == room_index
-											select Message.MsgId).Count(),
+											select Message.MsgId).Max(),
 
 								   Contents = content,
 								   //NickName = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
-								   //     JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString),
+								   //											    JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString),
+								   UserId = JoinedUser.UserId.ToString(),
 								   NickName = JoinedUser.NickName,	// NickName 만 JoinedUser 에 저장할까나?... 아니면 위에 같이 조인시킬까?
 								   Email = JoinedUser.LoginId,	
 								   //Email = JoinedUser.aspnet_User.UserName,	// squence 가 하나 여야 성공한다.
@@ -1452,15 +1496,15 @@ namespace RoomService
 					chat_list.CHAT[nIndex].date_time = msg.IptTime;
 
 					// 클라이언트에서 판단하도록 수정요망
-					//if (user.UserGuid.Equals(query_message.UserGuid))
-					//{
-					//    chat_list.CHAT[nIndex].ownerSpecified = true;
-					//    chat_list.CHAT[nIndex].owner = 1;
-					//}
-					//else
-					//{
-					//    chat_list.CHAT[nIndex].ownerSpecified = false;
-					//}
+					if (UserId.Equals(message.UserId))
+					{
+						chat_list.CHAT[nIndex].ownerSpecified = true;
+						chat_list.CHAT[nIndex].owner = 1;
+					}
+					else
+					{
+						chat_list.CHAT[nIndex].ownerSpecified = false;
+					}
 
 					nIndex++;
 				}
@@ -1552,7 +1596,7 @@ namespace RoomService
 
 					// 클라이언트에서 판단하도록 수정요망
 
-					//if (user.UserGuid.Equals(query_message.UserGuid))
+					//if (msg.Equals(UserId))
 					//{
 					//    chat_list.CHAT[nIndex].ownerSpecified = true;
 					//    chat_list.CHAT[nIndex].owner = 1;

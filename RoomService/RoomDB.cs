@@ -17,57 +17,57 @@ namespace RoomService
 	public interface IRoomDb
 	{
 		[OperationContract]
-		[WebInvoke(Method = "POST", UriTemplate = "Test")]
+		//[WebInvoke(Method = "POST", UriTemplate = "/Test", ResponseFormat =  WebMessageFormat.Xml )]
 		ROOM_INFO_LIST Test();
 
-		//[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "Update/{user_guid}/{deviceToken}")]
-		//UPDATE_DEVICE_INFO UpdateUserDeviceDb(String user_guid, String deviceToken);
-		
-		//[OperationContract]
+		[OperationContract]
+		//[WebInvoke(Method = "POST", UriTemplate = "/Update?user_guid={user_guid}&deviceToken={deviceToken}")]
+		UPDATE_DEVICE_INFO UpdateUserDeviceDb(String user_guid, String deviceToken);
+
+		[OperationContract]
 		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		//ROOM_RESULT CreateRoomDb(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser);
+		ROOM_RESULT CreateRoomDb(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser);
 
-		//[OperationContract]
+		[OperationContract]
 		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		//ROOM_INFO_LIST MyRoomListDb(String user_no);
+		ROOM_INFO_LIST MyRoomListDb(String user_no);
 
-		//[OperationContract]
+		[OperationContract]
 		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		//ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int Skip);
+		ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int Skip);
 
-		//[OperationContract]
+		[OperationContract]
 		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		//JOIN_ROOM_DETAIL JoinRoomDetailDb(UInt32 room_index, String user_no);
+		JOIN_ROOM_DETAIL JoinRoomDetailDb(UInt32 room_index, String user_no);
 
-		//[OperationContract]
+		[OperationContract]
 		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		//ROOM_RESULT JoinRoomDb(String user_no, UInt32 room_index);
+		ROOM_RESULT JoinRoomDb(String user_no, UInt32 room_index);
 
-		//[OperationContract]
+		[OperationContract]
 		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		//ROOM_RESULT LeaveRoomDb(String user_no, UInt32 room_index);
+		ROOM_RESULT LeaveRoomDb(String user_no, UInt32 room_index);
 
-		//[OperationContract]
+		[OperationContract]
 		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		//ROOM_RESULT CommitRoomDb(String user_no, UInt32 room_index);
+		ROOM_RESULT CommitRoomDb(String user_no, UInt32 room_index);
 
-		//[OperationContract]
+		[OperationContract]
 		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		//CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content);
+		CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content);
 
-		//[OperationContract]
+		[OperationContract]
 		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		//CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update);
+		CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update);
 
-		//[OperationContract]
-		//NOTICE_LIST CreateNotice(UInt32 room_index, String user_no, int group, String title, String content);
+		[OperationContract]
+		NOTICE_LIST CreateNotice(UInt32 room_index, String user_no, int group, String title, String content);
 
-		//[OperationContract]
-		//NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int group, int notice_index);
+		[OperationContract]
+		NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int group, int notice_index);
 
-		//[OperationContract]
-		//NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update);
+		[OperationContract]
+		NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update);
 	}
 
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
@@ -75,9 +75,12 @@ namespace RoomService
 
 	public class RoomDb : IRoomDb, IDisposable
 	{
+		public static NApns.Provider _apnsProvider = null;
+
 		public RoomDb()
 		{
-			//_apnsProvider = new NApns.Provider("iphone_dev.p12", "roy3513!", true);
+			_apnsProvider = new NApns.Provider("iphone_dev.p12", "roy3513!", true);
+
 			NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "WCFRoomService() called!!!!!!!!!!!!!!!!!");
 			NApns.Provider._source.Flush();
 		}
@@ -250,33 +253,11 @@ namespace RoomService
 														}).ToList<NDb.NData.JoinedRoom>();
 
 				Console.WriteLine("MyRoomListDb count...{0}", room_list.Count);
-
-				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list where create_room.MasterUserId == user_no select create_room;
-				int create_count = query_created.Count<NDb.NData.JoinedRoom>();
-				room_info_list.CREATE_INFO = new ROOM_INFO_LISTROOM[create_count];
-				int index = 0;
-				foreach (NDb.NData.JoinedRoom joinedRoom in query_created)
-				{
-					Console.WriteLine("MyRoomListDb Create Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
-					room_info_list.CREATE_INFO[index] = new ROOM_INFO_LISTROOM();
-					room_info_list.CREATE_INFO[index].index = (uint)joinedRoom.Index;
-					room_info_list.CREATE_INFO[index].name = joinedRoom.Name;
-					room_info_list.CREATE_INFO[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
-					room_info_list.CREATE_INFO[index].comment = joinedRoom.Comment;
-					room_info_list.CREATE_INFO[index].category = joinedRoom.Category;
-					room_info_list.CREATE_INFO[index].location_main = joinedRoom.LocationMain;
-					room_info_list.CREATE_INFO[index].location_sub = joinedRoom.LocationSub;
-					room_info_list.CREATE_INFO[index].current_user = joinedRoom.CurrentUser;
-					room_info_list.CREATE_INFO[index].max_user = joinedRoom.MaxUser;
-					room_info_list.CREATE_INFO[index].duration = joinedRoom.Duration;
-					index++;
-				}
-
 				IEnumerable<NDb.NData.JoinedRoom> query_joined = from join_room in room_list where join_room.MasterUserId != user_no select join_room;
 
 				int join_count = query_joined.Count<NDb.NData.JoinedRoom>();
 				room_info_list.JOIN_INFO = new ROOM_INFO_LISTROOM1[join_count];
-				index = 0;
+				int index = 0;
 
 				foreach (NDb.NData.JoinedRoom joinedRoom in query_joined)
 				{
@@ -293,6 +274,28 @@ namespace RoomService
 					room_info_list.JOIN_INFO[index].current_user = joinedRoom.CurrentUser;
 					room_info_list.JOIN_INFO[index].max_user = joinedRoom.MaxUser;
 					room_info_list.JOIN_INFO[index].duration = joinedRoom.Duration;
+					index++;
+				}
+
+				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list where create_room.MasterUserId == user_no select create_room;
+				int create_count = query_created.Count<NDb.NData.JoinedRoom>();
+				room_info_list.CREATE_INFO = new ROOM_INFO_LISTROOM[create_count];
+				index = 0;
+
+				foreach (NDb.NData.JoinedRoom joinedRoom in query_created)
+				{
+					Console.WriteLine("MyRoomListDb Create Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
+					room_info_list.CREATE_INFO[index] = new ROOM_INFO_LISTROOM();
+					room_info_list.CREATE_INFO[index].index = (uint)joinedRoom.Index;
+					room_info_list.CREATE_INFO[index].name = joinedRoom.Name;
+					room_info_list.CREATE_INFO[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
+					room_info_list.CREATE_INFO[index].comment = joinedRoom.Comment;
+					room_info_list.CREATE_INFO[index].category = joinedRoom.Category;
+					room_info_list.CREATE_INFO[index].location_main = joinedRoom.LocationMain;
+					room_info_list.CREATE_INFO[index].location_sub = joinedRoom.LocationSub;
+					room_info_list.CREATE_INFO[index].current_user = joinedRoom.CurrentUser;
+					room_info_list.CREATE_INFO[index].max_user = joinedRoom.MaxUser;
+					room_info_list.CREATE_INFO[index].duration = joinedRoom.Duration;
 					index++;
 				}
 			}
@@ -838,134 +841,134 @@ namespace RoomService
 			}
 		}
 
-		//public NOTICE_LIST CreateNotice(UInt32 room_index,
-		//                                    String user_no,
-		//                                    int group,
-		//                                    String title,
-		//                                    String content)
-		//{
-		//    NOTICE_LIST notice_list = new NOTICE_LIST();
-		//    notice_list.count = 0;
-		//    notice_list.crud = "CR";
-		//    notice_list.room_index = room_index;
+		public NOTICE_LIST CreateNotice(UInt32 room_index,
+											String user_no,
+											int group,
+											String title,
+											String content)
+		{
+			NOTICE_LIST notice_list = new NOTICE_LIST();
+			notice_list.count = 0;
+			notice_list.crud = "CR";
+			notice_list.room_index = room_index;
 
-		//    NLogic.Room room = _roomList.Find(room_index);
-		//    if (room == null)
-		//    {
-		//        notice_list.result_code = -1;
-		//        return notice_list;
-		//    }
+			//NLogic.Room room = _roomList.Find(room_index);
+			//if (room == null)
+			//{
+			//    notice_list.result_code = -1;
+			//    return notice_list;
+			//}
 
-		//    NLogic.User user = room.UserList.FindUser(user_no);
-		//    if (user == null)
-		//    {
-		//        notice_list.result_code = -2;
-		//        return notice_list;
-		//    }
+			//NLogic.User user = room.UserList.FindUser(user_no);
+			//if (user == null)
+			//{
+			//    notice_list.result_code = -2;
+			//    return notice_list;
+			//}
 
-		//    int result = room.AddNotice(group, title, content, user, ref notice_list);
+			//int result = room.AddNotice(group, title, content, user, ref notice_list);
 
-		//    notice_list.result_code = result;
+			//notice_list.result_code = result;
 
-		//    if (result == 0)
-		//    {
-		//        foreach (KeyValuePair<String, NLogic.User> pair in room.UserList)
-		//        {
-		//            NLogic.User joined_user = pair.Value;
+			//if (result == 0)
+			//{
+			//    foreach (KeyValuePair<String, NLogic.User> pair in room.UserList)
+			//    {
+			//        NLogic.User joined_user = pair.Value;
 
-		//            if (user.UserGuid.Equals(joined_user.UserGuid))
-		//            {
-		//                Console.WriteLine("[Notice Skip user]  : {0}", user.UserGuid);
-		//                continue;
-		//            }
+			//        if (user.UserGuid.Equals(joined_user.UserGuid))
+			//        {
+			//            Console.WriteLine("[Notice Skip user]  : {0}", user.UserGuid);
+			//            continue;
+			//        }
 
-		//            if (joined_user.DeviceToken.Equals(""))
-		//            {
-		//                Console.WriteLine("[Notice Skip user Invalid DeviceToken ]  : {0}", user.UserGuid);
-		//                continue;
-		//            }
+			//        if (joined_user.DeviceToken.Equals(""))
+			//        {
+			//            Console.WriteLine("[Notice Skip user Invalid DeviceToken ]  : {0}", user.UserGuid);
+			//            continue;
+			//        }
 
-		//            try
-		//            {
-		//                //Create a new notification to send
-		//                JdSoft.Apple.Apns.Notifications.Notification
-		//                alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(joined_user.DeviceToken);
+			//        try
+			//        {
+			//            //Create a new notification to send
+			//            JdSoft.Apple.Apns.Notifications.Notification
+			//            alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(joined_user.DeviceToken);
 
-		//                alertNotification.Payload.Alert.Body = content;
-		//                alertNotification.Payload.Sound = "default";
-		//                alertNotification.Payload.Badge = notice_list.count;
+			//            alertNotification.Payload.Alert.Body = content;
+			//            alertNotification.Payload.Sound = "default";
+			//            alertNotification.Payload.Badge = notice_list.count;
 
-		//                //Queue the notification to be sent
-		//                if (_apnsProvider.Service.QueueNotification(alertNotification))
-		//                    Console.WriteLine("Notification Queued!");
-		//                else
-		//                    Console.WriteLine("Notification Failed to be Queued!");
-		//            }
-		//            catch
-		//            {
-		//                continue;
-		//            }
-		//        }
-		//    }
+			//            //Queue the notification to be sent
+			//            if (_apnsProvider.Service.QueueNotification(alertNotification))
+			//                Console.WriteLine("Notification Queued!");
+			//            else
+			//                Console.WriteLine("Notification Failed to be Queued!");
+			//        }
+			//        catch
+			//        {
+			//            continue;
+			//        }
+			//    }
+			//}
 
-		//    return notice_list;
+			return notice_list;
 
-		//}
-		//public NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int group, int notice_index)
-		//{
-		//    NOTICE_LIST notice_list = new NOTICE_LIST();
-		//    notice_list.count = 0;
-		//    notice_list.crud = "DR";
-		//    notice_list.room_index = room_index;
+		}
+		public NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int group, int notice_index)
+		{
+			NOTICE_LIST notice_list = new NOTICE_LIST();
+			notice_list.count = 0;
+			notice_list.crud = "DR";
+			notice_list.room_index = room_index;
 
-		//    NLogic.Room room = _roomList.Find(room_index);
-		//    if (room == null)
-		//    {
-		//        notice_list.result_code = -1;
-		//        return notice_list;
-		//    }
+			//NLogic.Room room = _roomList.Find(room_index);
+			//if (room == null)
+			//{
+			//    notice_list.result_code = -1;
+			//    return notice_list;
+			//}
 
-		//    NLogic.User user = room.UserList.FindUser(user_no);
-		//    if (user == null)
-		//    {
-		//        notice_list.result_code = -2;
-		//        return notice_list;
-		//    }
+			//NLogic.User user = room.UserList.FindUser(user_no);
+			//if (user == null)
+			//{
+			//    notice_list.result_code = -2;
+			//    return notice_list;
+			//}
 
-		//    int result = room.DeleteNotice(group, notice_index, user);
-		//    notice_list.result_code = result;
+			//int result = room.DeleteNotice(group, notice_index, user);
+			//notice_list.result_code = result;
 
-		//    return notice_list;
-		//}
+			return notice_list;
+		}
 
 
-		//public NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update)
-		//{
-		//    NOTICE_LIST notice_list = new NOTICE_LIST();
-		//    notice_list.count = 0;
-		//    notice_list.crud = "UP";
-		//    notice_list.room_index = room_index;
-		//    notice_list.group = 0;
+		public NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update)
+		{
+			NOTICE_LIST notice_list = new NOTICE_LIST();
+			notice_list.count = 0;
+			notice_list.crud = "UP";
+			notice_list.room_index = room_index;
+			notice_list.group = 0;
 
-		//    NLogic.Room room = _roomList.Find(room_index);
-		//    if (room == null)
-		//    {
-		//        notice_list.result_code = -1;
-		//        return notice_list;
-		//    }
+			//NLogic.Room room = _roomList.Find(room_index);
+			//if (room == null)
+			//{
+			//    notice_list.result_code = -1;
+			//    return notice_list;
+			//}
 
-		//    NLogic.User user = room.UserList.FindUser(user_no);
-		//    if (user == null)
-		//    {
-		//        notice_list.result_code = -2;
-		//        return notice_list;
-		//    }
+			//NLogic.User user = room.UserList.FindUser(user_no);
+			//if (user == null)
+			//{
+			//    notice_list.result_code = -2;
+			//    return notice_list;
+			//}
 
-		//    room.UpdateNotice(user, group, last_update, ref notice_list);
-		//    notice_list.result_code = 0;
+			//room.UpdateNotice(user, group, last_update, ref notice_list);
+			//notice_list.result_code = 0;
 
-		//    return notice_list;
-		//}
+			return notice_list;
+		}
 
 		public ROOM_INFO_LIST Test()
 		{
