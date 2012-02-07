@@ -21,16 +21,18 @@ namespace STMate.Service
     public class RoomManager : System.Web.Services.WebService
     {
         private ChannelFactory<IRoom> factory = new ChannelFactory<IRoom>(new ServiceEndpoint(
-            ContractDescription.GetContract(typeof(IRoom)),
+			ContractDescription.GetContract(typeof(IRoom)),
+			//ContractDescription.GetContract(typeof(IRoomDb)),
           new BasicHttpBinding(),
             new EndpointAddress(new Uri("http://www.studyheyo.co.kr/Service/RoomService.RoomWCFService.svc"))));
+			//new EndpointAddress(new Uri("http://www.studyheyo.co.kr/Service/RoomManager.svc"))));
 
 
         [WebMethod(EnableSession = true)]
         public ROOM_INFO_LIST MyRoomList(String user_no)
         {
             IRoom proxy = factory.CreateChannel();
-            ROOM_INFO_LIST room_info_list = proxy.MyRoomList(user_no);
+            ROOM_INFO_LIST room_info_list = proxy.MyRoomListDb(user_no);
 
             (proxy as IDisposable).Dispose();
 
@@ -46,7 +48,7 @@ namespace STMate.Service
             search_key._location_main = location_main;
             search_key._location_sub = location_sub;
 
-            ROOM_SUMMARY_LIST room_summary_list = proxy.AllRoomList(search_key, user_no);
+            ROOM_SUMMARY_LIST room_summary_list = proxy.AllRoomListDb(search_key, user_no, 0);
 
             (proxy as IDisposable).Dispose();
 
@@ -58,7 +60,7 @@ namespace STMate.Service
         {
             IRoom proxy = factory.CreateChannel();
 
-            JOIN_ROOM_DETAIL join_room_detail = proxy.JoinRoomDetail(room_index, user_no);
+            JOIN_ROOM_DETAIL join_room_detail = proxy.JoinRoomDetailDb(room_index, user_no);
 
             (proxy as IDisposable).Dispose();
 
@@ -74,7 +76,7 @@ namespace STMate.Service
             search_key._location_main = location_main;
             search_key._location_sub = location_sub;
 
-            ROOM_RESULT result = proxy.CreateRoom(user_no, search_key, name, comment, duration, maxuser);
+            ROOM_RESULT result = proxy.CreateRoomDb(user_no, search_key, name, comment, duration, maxuser);
             (proxy as IDisposable).Dispose();
 
             if (result != null)
@@ -92,7 +94,7 @@ namespace STMate.Service
         public ROOM_RESULT Commit(String user_no, UInt32 room_index)
         {
             IRoom proxy = factory.CreateChannel();
-            ROOM_RESULT commit_result = proxy.CommitRoom(user_no, room_index);
+            ROOM_RESULT commit_result = proxy.CommitRoomDb(user_no, room_index);
             (proxy as IDisposable).Dispose();
 
             return commit_result;
@@ -102,7 +104,7 @@ namespace STMate.Service
         public ROOM_RESULT Join(String user_no, UInt32 room_index)
         {
             IRoom proxy = factory.CreateChannel();
-            ROOM_RESULT join_result = proxy.JoinRoom(user_no, room_index);
+            ROOM_RESULT join_result = proxy.JoinRoomDb(user_no, room_index);
             (proxy as IDisposable).Dispose();
 
             return join_result;
@@ -113,7 +115,7 @@ namespace STMate.Service
         public ROOM_RESULT Leave(String user_no, UInt32 room_index)
         {
             IRoom proxy = factory.CreateChannel();
-            ROOM_RESULT join_result = proxy.LeaveRoom(user_no, room_index);
+            ROOM_RESULT join_result = proxy.LeaveRoomDb(user_no, room_index);
             (proxy as IDisposable).Dispose();
 
             return join_result;
@@ -124,7 +126,7 @@ namespace STMate.Service
         public CHAT_LIST Chat(String user_no, UInt32 room_index, int local_index, int last_update, String message)
         {
             IRoom proxy = factory.CreateChannel();
-            CHAT_LIST chat_list = proxy.Chat(room_index, user_no,local_index, last_update, message);
+            CHAT_LIST chat_list = proxy.ChatDb(room_index, user_no,local_index, last_update, message);
             (proxy as IDisposable).Dispose();
 
             return chat_list;
@@ -134,7 +136,7 @@ namespace STMate.Service
         public CHAT_LIST ChatUpdate(String user_no, UInt32 room_index, int last_update)
         {
             IRoom proxy = factory.CreateChannel();
-            CHAT_LIST chat_list = proxy.ChatUpdate(room_index, user_no, last_update);
+            CHAT_LIST chat_list = proxy.ChatUpdateDb(room_index, user_no, last_update);
             (proxy as IDisposable).Dispose();
 
             return chat_list;

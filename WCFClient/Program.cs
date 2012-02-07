@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.ServiceModel.Description;
 using System.ServiceModel;
+using System.Web;
 
 namespace WCFClient
 {
 	class Program
 	{
+		
 		static void Main(string[] args)
 		{
 			//Service1Client client = new Service1Client("BasicHttpBinding_IService1");
