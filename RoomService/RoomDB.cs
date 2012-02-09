@@ -17,7 +17,7 @@ namespace RoomService
 	public interface IRoomDb
 	{
 		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "/Test", ResponseFormat =  WebMessageFormat.Xml )]
+		[WebInvoke(Method = "POST", UriTemplate = "/Test", ResponseFormat =  WebMessageFormat.Xml )]
 		ROOM_INFO_LIST Test();
 
 		[OperationContract]
