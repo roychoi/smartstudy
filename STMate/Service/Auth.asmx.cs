@@ -322,7 +322,7 @@ namespace STMate.Service
 		{
             IRoom proxy = factory.CreateChannel();
 
-            UPDATE_DEVICE_INFO update_device_info = proxy.UpdateUserDevice(userNo, deviceToken);
+            UPDATE_DEVICE_INFO update_device_info = proxy.UpdateUserDeviceDb(userNo, deviceToken);
 
             if (update_device_info.result_code != 0)
             {

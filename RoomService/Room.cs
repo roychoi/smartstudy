@@ -127,12 +127,18 @@ namespace RoomService
 
 		[OperationContract]
 		NOTICE_LIST CreateNotice(UInt32 room_index, String user_no, int group, String title, String content);
+		[OperationContract]
+		NOTICE_LIST CreateNoticeDb(UInt32 room_index, String user_no, int category, String title, String content);
 
 		[OperationContract]
 		NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int group, int notice_index);
+		[OperationContract]
+		NOTICE_LIST DeleteNoticeDb(UInt32 room_index, String user_no, int category, int notice_index);
 
 		[OperationContract]
 		NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update);
+		[OperationContract]
+		NOTICE_LIST UpdateNoticeDb(UInt32 room_index, String user_no, int category, int last_update);
 
 		//[OperationContract]
 		//void UpdateBadge(UInt32 room_index, String user_no, int last_update);
@@ -649,7 +655,7 @@ namespace RoomService
 															CurrentUser = (byte)(from RoomUserCount in db.GetTable<NDb.RoomJoinedUser>()
 																				 where RoomUserCount.RoomIndex == room.RoomIndex
 																				 select RoomUserCount).Count<NDb.RoomJoinedUser>(),
-															MasterUserId = room.UserId.ToString()
+															MasterUserId = room.UserId
 
 														}).ToList<NDb.NData.JoinedRoom>();
 
@@ -657,7 +663,7 @@ namespace RoomService
 				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb count...{0} and Requester {1} ", room_list.Count, user_no );
 
 				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list
-																  where create_room.MasterUserId.Equals(user_no) 
+																  where create_room.MasterUserId.Equals(UserId) 
 																  select create_room;
 
 
@@ -690,7 +696,7 @@ namespace RoomService
 				}
 
 				IEnumerable<NDb.NData.JoinedRoom> query_joined = from join_room in room_list 
-																 where !join_room.MasterUserId.Equals(user_no) 
+																 where !join_room.MasterUserId.Equals(UserId) 
 																 select join_room;
 
 				int join_count = query_joined.Count<NDb.NData.JoinedRoom>();
@@ -814,7 +820,7 @@ namespace RoomService
 															CurrentUser = (byte)(from RoomUserCount in db.GetTable<NDb.RoomJoinedUser>()
 																				 where RoomUserCount.RoomIndex == room.RoomIndex
 																				 select RoomUserCount).Count<NDb.RoomJoinedUser>(),
-															MasterUserId = room.UserId.ToString()
+															MasterUserId = room.UserId
 
 														}).Skip(Skip).Take(50).ToList<NDb.NData.JoinedRoom>();
 				Console.WriteLine(" Skip Count {0} ", Skip);
@@ -942,7 +948,7 @@ namespace RoomService
 										Commited = room.Commited,
 										CreateDate = room.CreateDateTime,
 										CurrentUser = 0,
-										MasterUserId = room.UserId.ToString()
+										MasterUserId = room.UserId
 									}).SingleOrDefault();
 				if (matched_room == null)
 				{
@@ -1453,7 +1459,7 @@ namespace RoomService
 				if (message == null)
 				{
 					Console.WriteLine("Invalid ChatMsg...");
-					chat_list.local_index = 0;
+					chat_list.local_index = local_index;
 					return chat_list;
 				}
 
@@ -1491,35 +1497,63 @@ namespace RoomService
 					chat_list.CHAT[nIndex].ownerSpecified = false;
 					chat_list.CHAT[nIndex].date_time = msg.IptTime;
 
-					// 클라이언트에서 판단하도록 수정요망
-					if (UserId.Equals(message.UserId))
-					{
-						chat_list.CHAT[nIndex].ownerSpecified = true;
-						chat_list.CHAT[nIndex].owner = 1;
-					}
-					else
-					{
-						chat_list.CHAT[nIndex].ownerSpecified = false;
-					}
-
 					nIndex++;
 				}
 
 				chat_list.local_index = local_index;
 
 				// Backend push server 로 옮겨야 ..
-				List<String> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
-												 where RoomUser.RoomIndex == room_index
-												join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>() 
-																on RoomUser.UserId equals DeviceInfo.UserId
-												 select DeviceInfo.DeviceToken ).ToList<String>();
+				//List<String> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+				//                                 where RoomUser.RoomIndex == room_index
+				//                                join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>() 
+				//                                                on RoomUser.UserId equals DeviceInfo.UserId
+				//                                 select DeviceInfo.DeviceToken ).ToList<String>();
 
+				List<NDb.UserDeviceInfo> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+												 where RoomUser.RoomIndex == room_index
+												 join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>()
+													 on RoomUser.UserId equals DeviceInfo.UserId
+												 select DeviceInfo).ToList<NDb.UserDeviceInfo>();
 
 				Console.WriteLine("Push Notification to room {0} ", room_index );
 
-				foreach (String device_info in device_info_list)
+
+				foreach (NDb.UserDeviceInfo device_info in device_info_list)
 				{
 					Console.WriteLine("DeviceToken {0} ", device_info );
+
+					if (device_info.UserId.Equals(UserId))
+					{
+						Console.WriteLine("[ChatRoom Skip user]  : {0}", device_info.UserId);
+						continue;
+					}
+
+					if (device_info.DeviceToken.Equals(""))
+					{
+						Console.WriteLine("[ChatRoom Skip user Invalid DeviceToken ]  : {0}", device_info.UserId);
+						continue;
+					}
+
+					try
+					{
+						//Create a new notification to send
+						JdSoft.Apple.Apns.Notifications.Notification
+						alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(device_info.DeviceToken);
+
+						alertNotification.Payload.Alert.Body = content;
+						alertNotification.Payload.Sound = "default";
+						alertNotification.Payload.Badge = 1;
+
+						//Queue the notification to be sent
+						if (_apnsProvider.Service.QueueNotification(alertNotification))
+							Console.WriteLine("Notification Queued!");
+						else
+							Console.WriteLine("Notification Failed to be Queued!");
+					}
+					catch
+					{
+						continue;
+					}
 				}
 
 				return chat_list;
@@ -1530,7 +1564,7 @@ namespace RoomService
 				Console.WriteLine("{0}", e.Message);
 				Console.WriteLine("==============================================================");
 
-				chat_list.local_index = 0;
+				chat_list.local_index = local_index;
 				return chat_list;
 			}
 		}
@@ -1589,18 +1623,6 @@ namespace RoomService
 					chat_list.CHAT[nIndex].login_id = msg.Email;
 					chat_list.CHAT[nIndex].ownerSpecified = false;
 					chat_list.CHAT[nIndex].date_time = msg.IptTime;
-
-					// 클라이언트에서 판단하도록 수정요망
-
-					//if (msg.Equals(UserId))
-					//{
-					//    chat_list.CHAT[nIndex].ownerSpecified = true;
-					//    chat_list.CHAT[nIndex].owner = 1;
-					//}
-					//else
-					//{
-					//    chat_list.CHAT[nIndex].ownerSpecified = false;
-					//}
 
 					nIndex++;
 				}
@@ -1692,6 +1714,61 @@ namespace RoomService
 			return notice_list;
 
 		}
+
+		public NOTICE_LIST CreateNoticeDb(uint room_index,
+											String user_no,
+											int category,
+											String title,
+											String content)
+		{
+			NOTICE_LIST notice_list = new NOTICE_LIST();
+			notice_list.count = 0;
+			notice_list.crud = "CR";
+			notice_list.room_index = (uint)room_index;
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+				Guid UserId = new Guid(user_no);
+				
+				var created_room = (from CreateRoom in db.GetTable<NDb.CreateRoom>()
+									where (CreateRoom.RoomIndex == room_index && CreateRoom.UserId == UserId)
+									select CreateRoom).SingleOrDefault<NDb.CreateRoom>();
+
+				if (created_room == null)
+				{
+					Console.WriteLine("Create Notice - not master user...");
+					notice_list.result_code = -1;
+					return notice_list;
+				}
+
+				NDb.Notice insert_notice = new NDb.Notice ();
+
+				insert_notice.RoomIndex = (int)room_index;
+				insert_notice.Category = (byte)category;
+				insert_notice.Title = title;
+				insert_notice.Contents = content;
+				insert_notice.IptTime = DateTime.Now;
+
+				db.Notices.InsertOnSubmit(insert_notice);
+				db.SubmitChanges();
+
+				notice_list.result_code = 0;
+
+				return notice_list;
+
+			}
+			catch( Exception e )
+			{
+				Console.WriteLine("======================== Chat Error ==========================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+		
+				notice_list.result_code = -2;
+				return notice_list;
+			}
+		}
+
 		public NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int group, int notice_index)
 		{
 			NOTICE_LIST notice_list = new NOTICE_LIST();
@@ -1719,6 +1796,59 @@ namespace RoomService
 			return notice_list;
 		}
 
+		public NOTICE_LIST DeleteNoticeDb(UInt32 room_index, String user_no, int category, int notice_index)
+		{
+			NOTICE_LIST notice_list = new NOTICE_LIST();
+			notice_list.count = 0;
+			notice_list.crud = "DR";
+			notice_list.room_index = room_index;
+			notice_list.group = 0;
+			
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+				Guid UserId = new Guid(user_no);
+
+
+				var created_room = (from CreateRoom in db.GetTable<NDb.CreateRoom>()
+									where (CreateRoom.RoomIndex == room_index && CreateRoom.UserId == UserId)
+									select CreateRoom).SingleOrDefault<NDb.CreateRoom>();
+
+				if (created_room == null)
+				{
+					Console.WriteLine("Create Notice - not master user...");
+					notice_list.result_code = -1;
+					return notice_list;
+				}
+
+				var matched_notice = (from Notice in db.GetTable<NDb.Notice>()
+									where (Notice.RoomIndex == room_index &&
+											Notice.NoticeId == notice_index )
+									select Notice).SingleOrDefault();
+
+				if (matched_notice == null)
+				{
+					notice_list.result_code = -2;   // not found Notice
+					return notice_list;
+				}
+
+				db.Notices.DeleteOnSubmit(matched_notice);
+				db.SubmitChanges();
+
+				notice_list.group = category;
+				notice_list.result_code = notice_index;
+
+				return notice_list;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("DeleteNoticeDb - error {0}", e.Message);
+
+				notice_list.result_code = -3;
+
+				return notice_list;
+			}
+		}
 
 		public NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update)
 		{
@@ -1748,6 +1878,52 @@ namespace RoomService
 			return notice_list;
 		}
 
+		public NOTICE_LIST UpdateNoticeDb(UInt32 room_index, String user_no, int category, int last_update)
+		{
+			NOTICE_LIST notice_list = new NOTICE_LIST();
+			notice_list.crud = "UP";
+			notice_list.room_index = room_index;
+			notice_list.group = category;
 
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+				Guid UserId = new Guid(user_no);
+
+				IEnumerable<NDb.Notice> query_message = (from Notice in db.GetTable<NDb.Notice>()
+														  where Notice.RoomIndex == room_index && Notice.Category == category
+														  orderby Notice.NoticeId ascending
+														  select Notice);
+
+				int count = query_message.Count();
+				notice_list.count = count;
+				notice_list.NOTICE = new NOTICE_LISTNOTICE[count];
+
+				int nIndex = 0;
+				foreach (NDb.Notice notice in query_message)
+				{
+					notice_list.NOTICE[nIndex] = new NOTICE_LISTNOTICE();
+					notice_list.NOTICE[nIndex].index = notice.NoticeId;
+					notice_list.NOTICE[nIndex].title = notice.Title;
+					notice_list.NOTICE[nIndex].Value = notice.Contents;
+					notice_list.NOTICE[nIndex].date_time = notice.IptTime;
+
+					nIndex++;
+				}
+				notice_list.result_code = 0;
+
+				return notice_list;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("UpdateNoticeDb - error {0}", e.Message);
+
+				notice_list.result_code = -3;
+
+				return notice_list;
+			}
+
+			return notice_list;
+		}
 	}
 }

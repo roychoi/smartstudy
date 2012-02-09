@@ -146,7 +146,7 @@ namespace STMate.Service
         public NOTICE_LIST CreateNotice(String user_no, UInt32 room_index, int group, String title, String content)
         {
             IRoom proxy = factory.CreateChannel();
-            NOTICE_LIST notice_list = proxy.CreateNotice(room_index, user_no, group, title, content);
+            NOTICE_LIST notice_list = proxy.CreateNoticeDb(room_index, user_no, group, title, content);
             (proxy as IDisposable).Dispose();
 
             return notice_list;
@@ -156,7 +156,7 @@ namespace STMate.Service
 		public NOTICE_LIST DeleteNotice(String user_no, UInt32 room_index, int group, int notice_index)
         {
             IRoom proxy = factory.CreateChannel();
-			NOTICE_LIST notice_list = proxy.DeleteNotice(room_index, user_no, group, notice_index);
+			NOTICE_LIST notice_list = proxy.DeleteNoticeDb(room_index, user_no, group, notice_index);
             (proxy as IDisposable).Dispose();
 
             return notice_list;
@@ -167,7 +167,7 @@ namespace STMate.Service
 		public NOTICE_LIST UpdateNotice(String user_no, UInt32 room_index, int group, int last_update)
         {
             IRoom proxy = factory.CreateChannel();
-			NOTICE_LIST notice_list = proxy.UpdateNotice(room_index, user_no, group, last_update);
+			NOTICE_LIST notice_list = proxy.UpdateNoticeDb(room_index, user_no, group, last_update);
             (proxy as IDisposable).Dispose();
 
             return notice_list;

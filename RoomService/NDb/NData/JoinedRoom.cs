@@ -13,7 +13,7 @@ namespace RoomService.NDb.NData
 			set;
 		}
 
-		public String MasterUserId
+		public Guid MasterUserId
 		{
 			get;
 			set;

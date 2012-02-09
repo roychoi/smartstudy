@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="dbstudyheyo" Class="RoomDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=db.studyheyo.co.kr;Initial Catalog=dbstudyheyo;Persist Security Info=True;User ID=studyheyo" SettingsObjectName="RoomService.Properties.Settings" SettingsPropertyName="dbstudyheyoConnectionString1" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DataSource" Class="RoomDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=db.studyheyo.co.kr;Persist Security Info=True;User ID=studyheyo" SettingsObjectName="RoomService.Properties.Settings" SettingsPropertyName="DataSourceConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.aspnet_Users" Member="aspnet_Users">
     <Type Name="aspnet_User">
       <Column Name="ApplicationId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
@@ -68,6 +68,7 @@
       <Column Name="CommitedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="CreateRoom_Message" Member="Messages" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Message" />
       <Association Name="CreateRoom_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="RoomJoinedUser" />
+      <Association Name="CreateRoom_Notice" Member="Notices" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Notice" />
       <Association Name="aspnet_User_CreateRoom" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
     </Type>
   </Table>
@@ -100,6 +101,17 @@
       <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
       <Column Name="DeviceToken" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
       <Association Name="aspnet_User_UserDeviceInfo" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Notice" Member="Notices">
+    <Type Name="Notice">
+      <Column Name="NoticeId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Category" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="Contents" Type="System.String" DbType="VarChar(512)" CanBeNull="true" />
+      <Column Name="IptTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="CreateRoom_Notice" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.fn_GetProfileElement" Method="fn_GetProfileElement" IsComposable="true">

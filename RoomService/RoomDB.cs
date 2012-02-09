@@ -248,12 +248,12 @@ namespace RoomService
 															CurrentUser = (byte)(from RoomUserCount in db.GetTable<NDb.RoomJoinedUser>()
 																				 where RoomUserCount.RoomIndex == room.RoomIndex
 																				 select RoomUserCount).Count<NDb.RoomJoinedUser>(),
-															MasterUserId = room.UserId.ToString()
+															MasterUserId = room.UserId
 
 														}).ToList<NDb.NData.JoinedRoom>();
 
 				Console.WriteLine("MyRoomListDb count...{0}", room_list.Count);
-				IEnumerable<NDb.NData.JoinedRoom> query_joined = from join_room in room_list where join_room.MasterUserId != user_no select join_room;
+				IEnumerable<NDb.NData.JoinedRoom> query_joined = from join_room in room_list where join_room.MasterUserId != UserId select join_room;
 
 				int join_count = query_joined.Count<NDb.NData.JoinedRoom>();
 				room_info_list.JOIN_INFO = new ROOM_INFO_LISTJOIN_INFO();
@@ -280,7 +280,7 @@ namespace RoomService
 					index++;
 				}
 
-				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list where create_room.MasterUserId == user_no select create_room;
+				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list where create_room.MasterUserId == UserId select create_room;
 				int create_count = query_created.Count<NDb.NData.JoinedRoom>();
 				room_info_list.CREATE_INFO = new ROOM_INFO_LISTCREATE_INFO();
 				room_info_list.CREATE_INFO.count = (byte)create_count;
@@ -343,7 +343,7 @@ namespace RoomService
 															CurrentUser = (byte)(from RoomUserCount in db.GetTable<NDb.RoomJoinedUser>()
 																				 where RoomUserCount.RoomIndex == room.RoomIndex
 																				 select RoomUserCount).Count<NDb.RoomJoinedUser>(),
-															MasterUserId = room.UserId.ToString()
+															MasterUserId = room.UserId
 
 														}).Skip(Skip).Take(50).ToList<NDb.NData.JoinedRoom>();
 				Console.WriteLine(" Skip Count {0} ", Skip);
@@ -404,7 +404,7 @@ namespace RoomService
 										Commited = room.Commited,
 										CreateDate = room.CreateDateTime,
 										CurrentUser = 0,
-										MasterUserId = room.UserId.ToString()
+										MasterUserId = room.UserId
 									}).SingleOrDefault();
 				if (matched_room == null)
 				{
