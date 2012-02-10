@@ -140,6 +140,9 @@ namespace RoomService
 		[OperationContract]
 		NOTICE_LIST UpdateNoticeDb(UInt32 room_index, String user_no, int category, int last_update);
 
+		[OperationContract]
+		void UpdateRoomInfo(int room_index, String user_no, RoomSearchKey key);
+
 		//[OperationContract]
 		//void UpdateBadge(UInt32 room_index, String user_no, int last_update);
 	}
@@ -1922,8 +1925,11 @@ namespace RoomService
 
 				return notice_list;
 			}
+		}
 
-			return notice_list;
+		public void UpdateRoomInfo(int room_index, String user_no, RoomSearchKey key)
+		{
+			Console.WriteLine("Update Room Info {0}", key._category);
 		}
 	}
 }

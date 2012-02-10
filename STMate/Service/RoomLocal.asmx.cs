@@ -217,5 +217,17 @@ namespace STMate.Service
 
 			return notice_list;
 		}
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_RESULT UpdateRoom(String user_no, RoomService.RoomSearchKey [] roomkey)
+		{
+			IRoom proxy = factory.CreateChannel();
+			proxy.UpdateRoomInfo(0, user_no, roomkey[0]);
+			(proxy as IDisposable).Dispose();
+
+			ROOM_RESULT join_result = new ROOM_RESULT();
+			return join_result;
+		}
+
 	}
 }
