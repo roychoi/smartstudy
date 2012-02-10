@@ -1,0 +1,38 @@
+﻿
+---------------------------------------------------------------
+1. 모든 유저 정보 쿼리
+---------------------------------------------------------------
+
+- Procedure
+
+DECLARE	@return_value int
+
+EXEC	@return_value = [dbo].[studyheyoadmin_Membership_GetAllUsers]
+		@ApplicationName = N'/STMate',
+		@PageIndex = 0,
+		@PageSize = 100
+
+SELECT	'Return Value' = @return_value
+
+GO
+
+
+---------------------------------------------------------------
+2. 유저ID (Email) 에 해당하는 정보 쿼리
+---------------------------------------------------------------
+
+
+- Procedure
+
+DECLARE	@return_value int
+
+EXEC	@return_value = [dbo].[studyheyoadmin_Membership_FindUsersByName]
+		@ApplicationName = N'/STMate',
+		@UserNameToMatch = N'roy1669@gmail.com',
+		@PageIndex = 0,
+		@PageSize = 100
+
+SELECT	'Return Value' = @return_value
+
+GO
+
