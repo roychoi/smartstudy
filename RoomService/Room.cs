@@ -141,6 +141,14 @@ namespace RoomService
 		NOTICE_LIST UpdateNoticeDb(UInt32 room_index, String user_no, int category, int last_update);
 
 		[OperationContract]
+		ROOM_RESULT UpdatePenaltyInfo(UInt32 room_index, String user_no, int deposit, int absenceA, int absenceB, int lateness, int homework);
+		[OperationContract]
+		MEMBER_DETAIL_INFO CheckUserPenalty(Int32 room_index, String user_no, String member_id, int penalty);
+		[OperationContract]
+		MEMBER_DETAIL_INFO MemberDetailInfo(Int32 room_index, String user_no);
+
+	
+		[OperationContract]
 		void UpdateRoomInfo(int room_index, String user_no, RoomSearchKey key);
 
 		//[OperationContract]
@@ -630,7 +638,7 @@ namespace RoomService
 			return room_info_list;
 		}
 
-			public ROOM_INFO_LIST MyRoomListDb(String user_no)
+		public ROOM_INFO_LIST MyRoomListDb(String user_no)
 		{
 			ROOM_INFO_LIST room_info_list = new ROOM_INFO_LIST();
 
@@ -1440,40 +1448,61 @@ namespace RoomService
 				Guid UserId = new Guid(user_no);
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
 
-				var message = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
-							   where (JoinedUser.RoomIndex == room_index && JoinedUser.UserId == UserId)
-							   //join Profile in db.GetTable<NDb.aspnet_Profile>() on UserId equals Profile.UserId
-							   select new NDb.NData.ChatMessage
-							   {
-								   MsgId = (from Message in db.GetTable<NDb.Message>()
-											where Message.RoomIndex == room_index
-											select Message.MsgId).Max(),
+				//var message = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+				//               where (JoinedUser.RoomIndex == room_index && JoinedUser.UserId == UserId)
+				//               //join Profile in db.GetTable<NDb.aspnet_Profile>() on UserId equals Profile.UserId
+				//               select new NDb.NData.ChatMessage
+				//               {
+				//                   MsgId = (from Message in db.GetTable<NDb.Message>()
+				//                            where Message.RoomIndex == room_index
+				//                            select Message.MsgId).Count(),
 
-								   Contents = content,
-								   //NickName = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
-								   //											    JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString),
-								   UserId = JoinedUser.UserId.ToString(),
-								   NickName = JoinedUser.NickName,	// NickName 만 JoinedUser 에 저장할까나?... 아니면 위에 같이 조인시킬까?
-								   Email = JoinedUser.LoginId,	
-								   //Email = JoinedUser.aspnet_User.UserName,	// squence 가 하나 여야 성공한다.
+				//                   Contents = content,
+				//                   //NickName = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+				//                   //											    JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString),
+				//                   UserId = JoinedUser.UserId.ToString(),
+				//                   NickName = JoinedUser.NickName,	// NickName 만 JoinedUser 에 저장할까나?... 아니면 위에 같이 조인시킬까?
+				//                   Email = JoinedUser.LoginId,
+				//                   //Email = JoinedUser.aspnet_User.UserName,	// squence 가 하나 여야 성공한다.
 
-							   }).SingleOrDefault<NDb.NData.ChatMessage>();
+				//               }).SingleOrDefault<NDb.NData.ChatMessage>();
 
-				if (message == null)
+				//if (message == null)
+				//{
+				//    Console.WriteLine("Invalid ChatMsg...");
+				//    chat_list.local_index = local_index;
+				//    return chat_list;
+				//}
+
+				var matched_user = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+									where (JoinedUser.RoomIndex == room_index && JoinedUser.UserId == UserId)
+									select JoinedUser).SingleOrDefault();
+
+				if (matched_user == null)
 				{
-					Console.WriteLine("Invalid ChatMsg...");
+					Console.WriteLine("Invalid User...");
 					chat_list.local_index = local_index;
 					return chat_list;
 				}
 
+				//int lastMessage = (from Message in db.GetTable<NDb.Message>()
+				//                   where Message.RoomIndex == room_index
+				//                   select Message.MsgId).Count();
+
 				NDb.Message insert_message = new NDb.Message();
 
-				insert_message.MsgId = ++ message.MsgId;
+				//insert_message.MsgId = ++ message.MsgId;
+				//insert_message.IptTime = DateTime.Now;
+				//insert_message.Contents = message.Contents;
+				//insert_message.RoomIndex = (int)room_index;
+				//insert_message.NickName = message.NickName;
+				//insert_message.Email = message.Email;
+
 				insert_message.IptTime = DateTime.Now;
-				insert_message.Contents = message.Contents;
+				insert_message.Contents = content;
 				insert_message.RoomIndex = (int)room_index;
-				insert_message.NickName = message.NickName;
-				insert_message.Email = message.Email;
+				insert_message.NickName = matched_user.NickName;
+				insert_message.Email = matched_user.LoginId;
 
 				db.Messages.InsertOnSubmit(insert_message);
 				db.SubmitChanges();
@@ -1519,7 +1548,7 @@ namespace RoomService
 												 select DeviceInfo).ToList<NDb.UserDeviceInfo>();
 
 				Console.WriteLine("Push Notification to room {0} ", room_index );
-
+				
 
 				foreach (NDb.UserDeviceInfo device_info in device_info_list)
 				{
@@ -1930,6 +1959,221 @@ namespace RoomService
 		public void UpdateRoomInfo(int room_index, String user_no, RoomSearchKey key)
 		{
 			Console.WriteLine("Update Room Info {0}", key._category);
+		}
+
+		public ROOM_RESULT UpdatePenaltyInfo(UInt32 room_index, String user_no, int deposit, int absenceA, int absenceB, int lateness, int homework)
+		{
+			ROOM_RESULT room_result = new ROOM_RESULT();
+			room_result.crud = "UP";
+			room_result.room_index = room_index;
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				Guid UserId = new Guid(user_no);
+				var matched_room = (from Master in db.GetTable<NDb.CreateRoom>()
+									where (Master.UserId == UserId && Master.RoomIndex == room_index)
+									select Master).SingleOrDefault();
+
+				if (matched_room == null)
+				{
+					room_result.reason_sort = -1;   // not found user
+					return room_result;
+				}
+
+				if (matched_room.Commited == false )
+				{
+					room_result.reason_sort = -2; // not commited room
+					return room_result;
+				}
+
+				matched_room.Deposit = deposit;
+				matched_room.AbsenceA = absenceA;
+				matched_room.AbsenceB = absenceB;
+				matched_room.Lateness = lateness;
+				matched_room.Homework = homework;
+
+				db.SubmitChanges();
+
+				room_result.reason_sort = 0;
+				room_result.room_index = room_index;
+
+				return room_result;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("================== UpdatePenalty Error ==================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+
+				room_result.reason_sort = -3;
+				room_result.room_index = 0;
+
+				return room_result;
+			}
+		}
+
+		public MEMBER_DETAIL_INFO CheckUserPenalty(Int32 room_index, String user_no, String member_LoginId, int penalty)
+		{
+			MEMBER_DETAIL_INFO result = new MEMBER_DETAIL_INFO();
+			result.room_index = room_index;
+			result.reason_sort = 0;
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				Guid UserId = new Guid(user_no);
+				var matched_room = (from Master in db.GetTable<NDb.CreateRoom>()
+									where (Master.UserId == UserId && Master.RoomIndex == room_index)
+									select Master).SingleOrDefault();
+
+				if (matched_room == null)
+				{
+					result.reason_sort = -1;   // not master user
+					return result;
+				}
+
+				if (matched_room.Commited == false)
+				{
+					result.reason_sort = -2;	// not commited room
+					return result;
+				}
+
+				//List<NDb.RoomJoinedUser> user_list = (	from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+				//                                        where RoomUser.RoomIndex == matched_room.RoomIndex && RoomUser.LoginId == member_LoginId
+				//                                        select RoomUser).ToList<NDb.RoomJoinedUser>();
+
+				NDb.RoomJoinedUser mached_user = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+												 where RoomUser.RoomIndex == matched_room.RoomIndex && 
+													RoomUser.LoginId == member_LoginId
+												 select RoomUser ).SingleOrDefault();
+				if (mached_user == null)
+				{
+					result.reason_sort = -3;   // not found user
+					return result;
+				}
+
+				int total_penalty = 0;
+				if ((penalty & 0x01) > 0)
+				{
+					total_penalty += matched_room.AbsenceA;
+				}
+				if ((penalty & 0x02) > 0)
+				{
+					total_penalty += matched_room.AbsenceB;
+				}
+				if ((penalty & 0x04) > 0)
+				{
+					total_penalty += matched_room.Lateness;
+				}
+				if ((penalty & 0x08) > 0)
+				{
+					total_penalty += matched_room.Homework;
+				}
+
+				mached_user.Penalty += total_penalty;
+				db.SubmitChanges();
+
+				/////???????????
+				DateTime Birth = DateTime.Parse(db.fn_GetProfileElement("BirthYear", mached_user.aspnet_User.aspnet_Profile.PropertyNames,
+																					mached_user.aspnet_User.aspnet_Profile.PropertyValuesString));
+
+				result.reason_sort = 0;
+
+				result.penalty_total = matched_room.RoomJoinedUsers.Sum<NDb.RoomJoinedUser>( UserPenalty => UserPenalty.Penalty );
+				// 전체 Deposit 를 저장할지 결정...
+				result.deposit_total = matched_room.RoomJoinedUsers.Count * matched_room.Deposit;
+				result.count = 1;
+
+				result.MEMBER = new MEMBER_DETAIL_INFOMEMBER[1];
+				result.MEMBER[0] = new MEMBER_DETAIL_INFOMEMBER();
+				result.MEMBER[0].loginid = mached_user.LoginId;
+				result.MEMBER[0].user_name = mached_user.NickName;
+				result.MEMBER[0].gender = mached_user.Gender;
+				result.MEMBER[0].panalty = mached_user.Penalty;
+				result.MEMBER[0].rank_no = 0;
+				result.MEMBER[0].age = (byte)(DateTime.Now.Year - Birth.Year);
+
+				return result;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("================== CheckUserPenalty Error ==================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+
+				result.reason_sort = -4;
+				result.room_index = 0;
+
+				return result;
+			}
+		}
+
+		public MEMBER_DETAIL_INFO MemberDetailInfo(Int32 room_index, String user_no )
+		{
+			MEMBER_DETAIL_INFO result = new MEMBER_DETAIL_INFO();
+			result.room_index = room_index;
+			result.reason_sort = 0;
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				Guid UserId = new Guid(user_no);
+			
+				var matched_room = (from Master in db.GetTable<NDb.CreateRoom>()
+									where  Master.RoomIndex == room_index
+									select Master).SingleOrDefault();
+
+				if (matched_room == null)
+				{
+					result.reason_sort = -1;   // not found user
+					return result;
+				}
+
+				List<NDb.RoomJoinedUser> user_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+													  where RoomUser.RoomIndex == room_index
+													  select RoomUser).ToList<NDb.RoomJoinedUser>();
+
+
+				result.reason_sort = 0;
+				result.count = (byte)user_list.Count;
+				result.penalty_total = user_list.Sum<NDb.RoomJoinedUser>(UserPenalty => UserPenalty.Penalty);
+
+				//// 전체 Deposit 를 저장할지 결정...
+				result.deposit_total = user_list.Count * matched_room.Deposit;
+
+				result.MEMBER = new MEMBER_DETAIL_INFOMEMBER[user_list.Count];
+
+				int index = 0;
+				foreach (NDb.RoomJoinedUser JoinedUser in user_list)
+				{
+					result.MEMBER[index] = new MEMBER_DETAIL_INFOMEMBER();
+					result.MEMBER[index].loginid = JoinedUser.LoginId;
+					result.MEMBER[index].user_name = JoinedUser.NickName;
+					result.MEMBER[index].gender = JoinedUser.Gender;
+					result.MEMBER[index].panalty = JoinedUser.Penalty;
+					result.MEMBER[index].rank_no = 0;
+					DateTime Birth = DateTime.Parse(db.fn_GetProfileElement("BirthYear", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+																				JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString));
+
+					result.MEMBER[index].age = (byte)(DateTime.Now.Year - Birth.Year);
+					index++;
+				}
+
+				return result;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("================== MemberDetailInfo Error ====================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+
+				result.reason_sort = -4;
+				result.room_index = 0;
+
+				return result;
+			}
 		}
 	}
 }

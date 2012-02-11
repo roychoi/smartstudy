@@ -71,6 +71,9 @@
     <Compile Include="NSchemas\JoinRoomDetail.cs">
       <DependentUpon>JoinRoomDetail.xsd</DependentUpon>
     </Compile>
+    <Compile Include="NSchemas\MemberDetailInfo.cs">
+      <DependentUpon>MemberDetailInfo.xsd</DependentUpon>
+    </Compile>
     <Compile Include="NSchemas\Notice.cs">
       <DependentUpon>Notice.xsd</DependentUpon>
     </Compile>
@@ -111,6 +114,9 @@
     <None Include="NSchemas\JoinRoomDetail.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="NSchemas\MemberDetailInfo.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NSchemas\Notice.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -138,6 +144,7 @@
     <Content Include="NSchemas\JoinRoomDetail.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="NSchemas\MemberDetailInfo.xml" />
     <Content Include="NSchemas\Notice.xml">
       <SubType>Designer</SubType>
     </Content>
