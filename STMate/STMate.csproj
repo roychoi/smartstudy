@@ -59,6 +59,7 @@
     <Content Include="Service\RoomManager.asmx" />
     <Content Include="Service\RoomManager.svc" />
     <Content Include="Service\RoomService.RoomWCFService.svc" />
+    <Content Include="Studyheyo_Admin_Procedures.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
