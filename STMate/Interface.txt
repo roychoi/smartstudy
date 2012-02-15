@@ -59,19 +59,29 @@ comment:  string
 duration:  string
 maxuser:  int
   
-<ROOM_RESULT reason_sort="0" room_index = "1000020" crud="CR"/>
-
+<ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+
 <!-- DR : DRop -->
+<!-- DR : -1 : 해당 유저를 찾을수 없음 -->
+<!-- DR : -2 : 해당 방정보를 찾을수 없음 -->
+
 <!-- CM :CoMmit-->
 <!-- CM : -1 : -->
-<!-- CM : -2 : -->
+<!-- CM	: -2 : -->
 <!-- CM : -3 :-->
+
+<!-- UP : UpdatePenalty-->
+<!-- UP : -1 : 방장권한이 없거나 해당 방정보를 찾을수 없음-->
+<!-- UP : -2 : 커밋된 방이 아니다-->
+<!-- UP : -3 : 기타 System 오류-->
+
 
 Result
 
@@ -86,19 +96,29 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/Join
 
 Result
   
-<ROOM_RESULT reason_sort="0" room_index = "1000020" crud="CR"/>
-
+<ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+
 <!-- DR : DRop -->
+<!-- DR : -1 : 해당 유저를 찾을수 없음 -->
+<!-- DR : -2 : 해당 방정보를 찾을수 없음 -->
+
 <!-- CM :CoMmit-->
 <!-- CM : -1 : -->
-<!-- CM	 : -2 : -->
+<!-- CM	: -2 : -->
 <!-- CM : -3 :-->
+
+<!-- UP : UpdatePenalty-->
+<!-- UP : -1 : 방장권한이 없거나 해당 방정보를 찾을수 없음-->
+<!-- UP : -2 : 커밋된 방이 아니다-->
+<!-- UP : -3 : 기타 System 오류-->
+
 
 
 ---------------------------------------------------------------
@@ -110,14 +130,15 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/Leave
 
 Result
   
-<ROOM_RESULT reason_sort="0" room_index = "1000020" crud="DR"/>
-
+<ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
 <!-- DR : -2 : 해당 방정보를 찾을수 없음 -->
@@ -126,6 +147,11 @@ Result
 <!-- CM : -1 : -->
 <!-- CM	: -2 : -->
 <!-- CM : -3 :-->
+
+<!-- UP : UpdatePenalty-->
+<!-- UP : -1 : 방장권한이 없거나 해당 방정보를 찾을수 없음-->
+<!-- UP : -2 : 커밋된 방이 아니다-->
+<!-- UP : -3 : 기타 System 오류-->
 
 ---------------------------------------------------------------
 5. 스터디 가입 -> 대기중인 방 선택시 상세 정보.
@@ -167,12 +193,15 @@ room_index:  int
 Result
 <ROOM_RESULT reason_sort="0" room_index = "1000020" crud="CM"/>
 
+<ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
 <!-- DR : -2 : 해당 방정보를 찾을수 없음 -->
@@ -181,6 +210,11 @@ Result
 <!-- CM : -1 : -->
 <!-- CM	: -2 : -->
 <!-- CM : -3 :-->
+
+<!-- UP : UpdatePenalty-->
+<!-- UP : -1 : 방장권한이 없거나 해당 방정보를 찾을수 없음-->
+<!-- UP : -2 : 커밋된 방이 아니다-->
+<!-- UP : -3 : 기타 System 오류-->
 
 
 ---------------------------------------------------------------
@@ -399,4 +433,85 @@ Result
 <!--  -2 : device token 의 포맷이 잘못됨  -->
 <!--  -3 : 로그인 되지않은 user_no -->
 
+---------------------------------------------------------------
+13. 방 보증금 및 벌금 설정
+---------------------------------------------------------------
+
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/UpdatePenaltyInfo
+
+매개 변수 값 
+
+room_index:  int
+user_no:  string	// 방장권한 (나)
+deposit:  int		// 개인별 보증금
+absenceA:  int		// 무단결석 벌금
+absenceB:  int		// 예고결석 벌금
+lateness:  int		// 지각 벌금
+homework:  int		// 숙제 벌금
+
+Result
+
+<ROOM_RESULT crud ="UP" room_index ="100001" reason_sort="0" />
+
+<!-- UP : UpdatePenalty-->
+<!-- UP : -1 : 방장권한이 없거나 해당 방정보를 찾을수 없음-->
+<!-- UP : -2 : 커밋된 방이 아니다-->
+<!-- UP : -3 : 기타 System 오류-->
+
+---------------------------------------------------------------
+14. 유저 벌금정보 업데이트 
+---------------------------------------------------------------
+
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/CheckUserPenalty
+
+매개 변수 값 
+
+room_index:  int
+user_no:  string			// 방장권한 (나)
+member_LoginId:  string		// 대상 유저 LoginId
+penalty:  int				// 벌금정보 조합 ( AbsenceA = 0x01, 
+												AbsenceB = 0x02,
+												Lateness = 0x04,
+												Homework = 0x08 의 Bit 조합)
+
+
+Result
+
+<MEMBER_DETAIL_INFO reason_sort ="-1" index ="1002000" deposit_total ="200000" penalty_total ="142000" count ="1">
+	<!-- 공통 error -->
+	<!-- -1 : 방장권한이 없다-->
+	<!-- -2 : 커밋된 방이 아니다-->
+	<!-- -3 : 올바르지 않은 대상 유저 정보 -->
+	<!-- -4 : 기타 System Error -->
+	
+    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1"/>
+</MEMBER_DETAIL_INFO>
+
+
+---------------------------------------------------------------
+15. 방 상세정보 요청
+---------------------------------------------------------------
+
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/MemberDetailInfo
+
+매개 변수 값 
+
+room_index:  int
+user_no:  string			// 나
+
+Result
+
+<MEMBER_DETAIL_INFO reason_sort ="-1" index ="1002000" deposit_total ="200000" penalty_total ="142000" count ="1">
+	<!-- 공통 error -->
+	<!-- -1 : 올바르지 않은 유저 정보-->
+	<!-- -4 : 기타 System Error -->
+	
+    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1"/>
+	  <MEMBER loginid="roychoi@gmail.com" user_name="최진혁" gender="0" age="31" panalty ="30000" rank_no ="1" />
+    <MEMBER loginid="gusupa@hanmail.net" user_name="이규진" gender="0" age="31" panalty ="30000" rank_no ="1" />
+    <MEMBER loginid="yskown@hanmail.net" user_name="권연수" gender="1" age="25" panalty ="30000" rank_no ="2" />
+</MEMBER_DETAIL_INFO>
 

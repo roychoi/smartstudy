@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DataSource" Class="RoomDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=db.studyheyo.co.kr;Persist Security Info=True;User ID=studyheyo" SettingsObjectName="RoomService.Properties.Settings" SettingsPropertyName="DataSourceConnectionString" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="dbstudyheyo" Class="RoomDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=db.studyheyo.co.kr;Initial Catalog=dbstudyheyo;Persist Security Info=True;User ID=studyheyo" SettingsObjectName="RoomService.Properties.Settings" SettingsPropertyName="dbstudyheyoConnectionString1" Provider="System.Data.SqlClient" />
   <Table Name="dbo.aspnet_Users" Member="aspnet_Users">
     <Type Name="aspnet_User">
       <Column Name="ApplicationId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
@@ -11,9 +11,9 @@
       <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Association Name="aspnet_User_aspnet_Membership" Member="aspnet_Membership" ThisKey="UserId" OtherKey="UserId" Type="aspnet_Membership" Cardinality="One" />
       <Association Name="aspnet_User_aspnet_Profile" Member="aspnet_Profile" ThisKey="UserId" OtherKey="UserId" Type="aspnet_Profile" Cardinality="One" />
+      <Association Name="aspnet_User_UserDeviceInfo" Member="UserDeviceInfo" ThisKey="UserId" OtherKey="UserId" Type="UserDeviceInfo" Cardinality="One" />
       <Association Name="aspnet_User_CreateRoom" Member="CreateRooms" ThisKey="UserId" OtherKey="UserId" Type="CreateRoom" />
       <Association Name="aspnet_User_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="UserId" OtherKey="UserId" Type="RoomJoinedUser" />
-      <Association Name="aspnet_User_UserDeviceInfo" Member="UserDeviceInfo" ThisKey="UserId" OtherKey="UserId" Type="UserDeviceInfo" Cardinality="One" />
     </Type>
   </Table>
   <Table Name="dbo.aspnet_Membership" Member="aspnet_Memberships">
@@ -52,49 +52,6 @@
       <Association Name="aspnet_User_aspnet_Profile" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.CreateRoom" Member="CreateRooms">
-    <Type Name="CreateRoom">
-      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="Comment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="Category" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Column Name="Location_Main" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Column Name="Location_Sub" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Column Name="MaxUser" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Column Name="Duration" Type="System.String" DbType="VarChar(7) NOT NULL" CanBeNull="false" />
-      <Column Name="Commited" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="CreateDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="CommitedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Association Name="CreateRoom_Message" Member="Messages" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Message" />
-      <Association Name="CreateRoom_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="RoomJoinedUser" />
-      <Association Name="CreateRoom_Notice" Member="Notices" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Notice" />
-      <Association Name="aspnet_User_CreateRoom" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Message" Member="Messages">
-    <Type Name="Message">
-      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="MsgId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Contents" Type="System.String" DbType="VarChar(512)" CanBeNull="true" />
-      <Column Name="IptTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="NickName" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
-      <Column Name="Email" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
-      <Association Name="CreateRoom_Message" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.RoomJoinedUser" Member="RoomJoinedUsers">
-    <Type Name="RoomJoinedUser">
-      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="LoginId" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
-      <Column Name="NickName" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
-      <Column Name="Gender" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Column Name="JoinDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Association Name="aspnet_User_RoomJoinedUser" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
-      <Association Name="CreateRoom_RoomJoinedUser" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.UserDeviceInfo" Member="UserDeviceInfos">
     <Type Name="UserDeviceInfo">
       <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -112,6 +69,55 @@
       <Column Name="Contents" Type="System.String" DbType="VarChar(512)" CanBeNull="true" />
       <Column Name="IptTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Association Name="CreateRoom_Notice" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CreateRoom" Member="CreateRooms">
+    <Type Name="CreateRoom">
+      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Comment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Category" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Location_Main" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Location_Sub" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="MaxUser" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Duration" Type="System.String" DbType="VarChar(7) NOT NULL" CanBeNull="false" />
+      <Column Name="Commited" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CommitedDateTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Deposit" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AbsenceA" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AbsenceB" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Lateness" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Homework" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="CreateRoom_Notice" Member="Notices" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Notice" />
+      <Association Name="CreateRoom_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="RoomJoinedUser" />
+      <Association Name="CreateRoom_Message" Member="Messages" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Message" />
+      <Association Name="aspnet_User_CreateRoom" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.RoomJoinedUser" Member="RoomJoinedUsers">
+    <Type Name="RoomJoinedUser">
+      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="LoginId" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="NickName" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Gender" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Penalty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="JoinDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="aspnet_User_RoomJoinedUser" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
+      <Association Name="CreateRoom_RoomJoinedUser" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Message" Member="Messages">
+    <Type Name="Message">
+      <Column Name="MsgId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Contents" Type="System.String" DbType="VarChar(512)" CanBeNull="true" />
+      <Column Name="IptTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="NickName" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Association Name="CreateRoom_Message" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.fn_GetProfileElement" Method="fn_GetProfileElement" IsComposable="true">

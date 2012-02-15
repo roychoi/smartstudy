@@ -17,57 +17,59 @@ namespace RoomService
 	public interface IRoomDb
 	{
 		[OperationContract]
-		[WebInvoke(Method = "POST", UriTemplate = "/Test", ResponseFormat =  WebMessageFormat.Xml )]
+		[WebGet]
+		//[WebInvoke(Method = "POST", UriTemplate = "RoomManager.svc" )]
 		ROOM_INFO_LIST Test();
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "/Update?user_guid={user_guid}&deviceToken={deviceToken}")]
-		UPDATE_DEVICE_INFO UpdateUserDeviceDb(String user_guid, String deviceToken);
+		//[OperationContract]
+		//[WebInvoke(Method = "POST", UriTemplate = "RoomManager.svc")]
+		////[WebInvoke(Method = "POST", UriTemplate = "/Update?user_guid={user_guid}&deviceToken={deviceToken}")]
+		//UPDATE_DEVICE_INFO UpdateUserDeviceDb(String user_guid, String deviceToken);
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		ROOM_RESULT CreateRoomDb(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser);
+		//[OperationContract]
+		////[WebInvoke(Method = "POST", UriTemplate = "")]
+		//ROOM_RESULT CreateRoomDb(String user_no, RoomSearchKey key, String name, String comment, String duration, int maxuser);
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		ROOM_INFO_LIST MyRoomListDb(String user_no);
+		//[OperationContract]
+		////[WebInvoke(Method = "POST", UriTemplate = "")]
+		//ROOM_INFO_LIST MyRoomListDb(String user_no);
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int Skip);
+		//[OperationContract]
+		////[WebInvoke(Method = "POST", UriTemplate = "")]
+		//ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int Skip);
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		JOIN_ROOM_DETAIL JoinRoomDetailDb(UInt32 room_index, String user_no);
+		//[OperationContract]
+		////[WebInvoke(Method = "POST", UriTemplate = "")]
+		//JOIN_ROOM_DETAIL JoinRoomDetailDb(UInt32 room_index, String user_no);
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		ROOM_RESULT JoinRoomDb(String user_no, UInt32 room_index);
+		//[OperationContract]
+		////[WebInvoke(Method = "POST", UriTemplate = "")]
+		//ROOM_RESULT JoinRoomDb(String user_no, UInt32 room_index);
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		ROOM_RESULT LeaveRoomDb(String user_no, UInt32 room_index);
+		//[OperationContract]
+		////[WebInvoke(Method = "POST", UriTemplate = "")]
+		//ROOM_RESULT LeaveRoomDb(String user_no, UInt32 room_index);
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		ROOM_RESULT CommitRoomDb(String user_no, UInt32 room_index);
+		//[OperationContract]
+		////[WebInvoke(Method = "POST", UriTemplate = "")]
+		//ROOM_RESULT CommitRoomDb(String user_no, UInt32 room_index);
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content);
+		//[OperationContract]
+		////[WebInvoke(Method = "POST", UriTemplate = "")]
+		//CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content);
 
-		[OperationContract]
-		//[WebInvoke(Method = "POST", UriTemplate = "")]
-		CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update);
+		//[OperationContract]
+		////[WebInvoke(Method = "POST", UriTemplate = "")]
+		//CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update);
 
-		[OperationContract]
-		NOTICE_LIST CreateNotice(UInt32 room_index, String user_no, int group, String title, String content);
+		//[OperationContract]
+		//NOTICE_LIST CreateNotice(UInt32 room_index, String user_no, int group, String title, String content);
 
-		[OperationContract]
-		NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int group, int notice_index);
+		//[OperationContract]
+		//NOTICE_LIST DeleteNotice(UInt32 room_index, String user_no, int group, int notice_index);
 
-		[OperationContract]
-		NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update);
+		//[OperationContract]
+		//NOTICE_LIST UpdateNotice(UInt32 room_index, String user_no, int group, int last_update);
 	}
 
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
@@ -977,7 +979,15 @@ namespace RoomService
 
 		public ROOM_INFO_LIST Test()
 		{
-			return new ROOM_INFO_LIST();
+			ROOM_INFO_LIST test = new ROOM_INFO_LIST();
+			test.CREATE_INFO = new ROOM_INFO_LISTCREATE_INFO();
+			test.CREATE_INFO.count = 3;
+			test.CREATE_INFO.ROOM = new ROOM_INFO_LISTCREATE_INFOROOM[3];
+
+			test.CREATE_INFO.ROOM[0] = new ROOM_INFO_LISTCREATE_INFOROOM();
+			test.CREATE_INFO.ROOM[0].category =1;
+
+			return test;
 		}
 	}
 }

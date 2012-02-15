@@ -22,7 +22,7 @@ namespace RoomService.NDb
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="DataSource")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="dbstudyheyo")]
 	public partial class RoomDataClassesDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -39,25 +39,25 @@ namespace RoomService.NDb
     partial void Insertaspnet_Profile(aspnet_Profile instance);
     partial void Updateaspnet_Profile(aspnet_Profile instance);
     partial void Deleteaspnet_Profile(aspnet_Profile instance);
-    partial void InsertCreateRoom(CreateRoom instance);
-    partial void UpdateCreateRoom(CreateRoom instance);
-    partial void DeleteCreateRoom(CreateRoom instance);
-    partial void InsertMessage(Message instance);
-    partial void UpdateMessage(Message instance);
-    partial void DeleteMessage(Message instance);
-    partial void InsertRoomJoinedUser(RoomJoinedUser instance);
-    partial void UpdateRoomJoinedUser(RoomJoinedUser instance);
-    partial void DeleteRoomJoinedUser(RoomJoinedUser instance);
     partial void InsertUserDeviceInfo(UserDeviceInfo instance);
     partial void UpdateUserDeviceInfo(UserDeviceInfo instance);
     partial void DeleteUserDeviceInfo(UserDeviceInfo instance);
     partial void InsertNotice(Notice instance);
     partial void UpdateNotice(Notice instance);
     partial void DeleteNotice(Notice instance);
+    partial void InsertCreateRoom(CreateRoom instance);
+    partial void UpdateCreateRoom(CreateRoom instance);
+    partial void DeleteCreateRoom(CreateRoom instance);
+    partial void InsertRoomJoinedUser(RoomJoinedUser instance);
+    partial void UpdateRoomJoinedUser(RoomJoinedUser instance);
+    partial void DeleteRoomJoinedUser(RoomJoinedUser instance);
+    partial void InsertMessage(Message instance);
+    partial void UpdateMessage(Message instance);
+    partial void DeleteMessage(Message instance);
     #endregion
 		
 		public RoomDataClassesDataContext() : 
-				base(global::RoomService.Properties.Settings.Default.DataSourceConnectionString, mappingSource)
+				base(global::RoomService.Properties.Settings.Default.dbstudyheyoConnectionString1, mappingSource)
 		{
 			OnCreated();
 		}
@@ -110,30 +110,6 @@ namespace RoomService.NDb
 			}
 		}
 		
-		public System.Data.Linq.Table<CreateRoom> CreateRooms
-		{
-			get
-			{
-				return this.GetTable<CreateRoom>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Message> Messages
-		{
-			get
-			{
-				return this.GetTable<Message>();
-			}
-		}
-		
-		public System.Data.Linq.Table<RoomJoinedUser> RoomJoinedUsers
-		{
-			get
-			{
-				return this.GetTable<RoomJoinedUser>();
-			}
-		}
-		
 		public System.Data.Linq.Table<UserDeviceInfo> UserDeviceInfos
 		{
 			get
@@ -147,6 +123,30 @@ namespace RoomService.NDb
 			get
 			{
 				return this.GetTable<Notice>();
+			}
+		}
+		
+		public System.Data.Linq.Table<CreateRoom> CreateRooms
+		{
+			get
+			{
+				return this.GetTable<CreateRoom>();
+			}
+		}
+		
+		public System.Data.Linq.Table<RoomJoinedUser> RoomJoinedUsers
+		{
+			get
+			{
+				return this.GetTable<RoomJoinedUser>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Message> Messages
+		{
+			get
+			{
+				return this.GetTable<Message>();
 			}
 		}
 		
@@ -181,11 +181,11 @@ namespace RoomService.NDb
 		
 		private EntityRef<aspnet_Profile> _aspnet_Profile;
 		
+		private EntityRef<UserDeviceInfo> _UserDeviceInfo;
+		
 		private EntitySet<CreateRoom> _CreateRooms;
 		
 		private EntitySet<RoomJoinedUser> _RoomJoinedUsers;
-		
-		private EntityRef<UserDeviceInfo> _UserDeviceInfo;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -211,9 +211,9 @@ namespace RoomService.NDb
 		{
 			this._aspnet_Membership = default(EntityRef<aspnet_Membership>);
 			this._aspnet_Profile = default(EntityRef<aspnet_Profile>);
+			this._UserDeviceInfo = default(EntityRef<UserDeviceInfo>);
 			this._CreateRooms = new EntitySet<CreateRoom>(new Action<CreateRoom>(this.attach_CreateRooms), new Action<CreateRoom>(this.detach_CreateRooms));
 			this._RoomJoinedUsers = new EntitySet<RoomJoinedUser>(new Action<RoomJoinedUser>(this.attach_RoomJoinedUsers), new Action<RoomJoinedUser>(this.detach_RoomJoinedUsers));
-			this._UserDeviceInfo = default(EntityRef<UserDeviceInfo>);
 			OnCreated();
 		}
 		
@@ -415,32 +415,6 @@ namespace RoomService.NDb
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_CreateRoom", Storage="_CreateRooms", ThisKey="UserId", OtherKey="UserId")]
-		public EntitySet<CreateRoom> CreateRooms
-		{
-			get
-			{
-				return this._CreateRooms;
-			}
-			set
-			{
-				this._CreateRooms.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_RoomJoinedUser", Storage="_RoomJoinedUsers", ThisKey="UserId", OtherKey="UserId")]
-		public EntitySet<RoomJoinedUser> RoomJoinedUsers
-		{
-			get
-			{
-				return this._RoomJoinedUsers;
-			}
-			set
-			{
-				this._RoomJoinedUsers.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_UserDeviceInfo", Storage="_UserDeviceInfo", ThisKey="UserId", OtherKey="UserId", IsUnique=true, IsForeignKey=false)]
 		public UserDeviceInfo UserDeviceInfo
 		{
@@ -467,6 +441,32 @@ namespace RoomService.NDb
 					}
 					this.SendPropertyChanged("UserDeviceInfo");
 				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_CreateRoom", Storage="_CreateRooms", ThisKey="UserId", OtherKey="UserId")]
+		public EntitySet<CreateRoom> CreateRooms
+		{
+			get
+			{
+				return this._CreateRooms;
+			}
+			set
+			{
+				this._CreateRooms.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_RoomJoinedUser", Storage="_RoomJoinedUsers", ThisKey="UserId", OtherKey="UserId")]
+		public EntitySet<RoomJoinedUser> RoomJoinedUsers
+		{
+			get
+			{
+				return this._RoomJoinedUsers;
+			}
+			set
+			{
+				this._RoomJoinedUsers.Assign(value);
 			}
 		}
 		
@@ -1297,944 +1297,6 @@ namespace RoomService.NDb
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CreateRoom")]
-	public partial class CreateRoom : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _RoomIndex;
-		
-		private System.Guid _UserId;
-		
-		private string _Name;
-		
-		private string _Comment;
-		
-		private byte _Category;
-		
-		private byte _Location_Main;
-		
-		private byte _Location_Sub;
-		
-		private byte _MaxUser;
-		
-		private string _Duration;
-		
-		private bool _Commited;
-		
-		private System.DateTime _CreateDateTime;
-		
-		private System.Nullable<System.DateTime> _CommitedDateTime;
-		
-		private EntitySet<Message> _Messages;
-		
-		private EntitySet<RoomJoinedUser> _RoomJoinedUsers;
-		
-		private EntitySet<Notice> _Notices;
-		
-		private EntityRef<aspnet_User> _aspnet_User;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnRoomIndexChanging(int value);
-    partial void OnRoomIndexChanged();
-    partial void OnUserIdChanging(System.Guid value);
-    partial void OnUserIdChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
-    partial void OnCommentChanging(string value);
-    partial void OnCommentChanged();
-    partial void OnCategoryChanging(byte value);
-    partial void OnCategoryChanged();
-    partial void OnLocation_MainChanging(byte value);
-    partial void OnLocation_MainChanged();
-    partial void OnLocation_SubChanging(byte value);
-    partial void OnLocation_SubChanged();
-    partial void OnMaxUserChanging(byte value);
-    partial void OnMaxUserChanged();
-    partial void OnDurationChanging(string value);
-    partial void OnDurationChanged();
-    partial void OnCommitedChanging(bool value);
-    partial void OnCommitedChanged();
-    partial void OnCreateDateTimeChanging(System.DateTime value);
-    partial void OnCreateDateTimeChanged();
-    partial void OnCommitedDateTimeChanging(System.Nullable<System.DateTime> value);
-    partial void OnCommitedDateTimeChanged();
-    #endregion
-		
-		public CreateRoom()
-		{
-			this._Messages = new EntitySet<Message>(new Action<Message>(this.attach_Messages), new Action<Message>(this.detach_Messages));
-			this._RoomJoinedUsers = new EntitySet<RoomJoinedUser>(new Action<RoomJoinedUser>(this.attach_RoomJoinedUsers), new Action<RoomJoinedUser>(this.detach_RoomJoinedUsers));
-			this._Notices = new EntitySet<Notice>(new Action<Notice>(this.attach_Notices), new Action<Notice>(this.detach_Notices));
-			this._aspnet_User = default(EntityRef<aspnet_User>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomIndex", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int RoomIndex
-		{
-			get
-			{
-				return this._RoomIndex;
-			}
-			set
-			{
-				if ((this._RoomIndex != value))
-				{
-					this.OnRoomIndexChanging(value);
-					this.SendPropertyChanging();
-					this._RoomIndex = value;
-					this.SendPropertyChanged("RoomIndex");
-					this.OnRoomIndexChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid UserId
-		{
-			get
-			{
-				return this._UserId;
-			}
-			set
-			{
-				if ((this._UserId != value))
-				{
-					if (this._aspnet_User.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnUserIdChanging(value);
-					this.SendPropertyChanging();
-					this._UserId = value;
-					this.SendPropertyChanged("UserId");
-					this.OnUserIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="VarChar(50)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
-			set
-			{
-				if ((this._Name != value))
-				{
-					this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Comment", DbType="VarChar(50)")]
-		public string Comment
-		{
-			get
-			{
-				return this._Comment;
-			}
-			set
-			{
-				if ((this._Comment != value))
-				{
-					this.OnCommentChanging(value);
-					this.SendPropertyChanging();
-					this._Comment = value;
-					this.SendPropertyChanged("Comment");
-					this.OnCommentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Category", DbType="TinyInt NOT NULL")]
-		public byte Category
-		{
-			get
-			{
-				return this._Category;
-			}
-			set
-			{
-				if ((this._Category != value))
-				{
-					this.OnCategoryChanging(value);
-					this.SendPropertyChanging();
-					this._Category = value;
-					this.SendPropertyChanged("Category");
-					this.OnCategoryChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Location_Main", DbType="TinyInt NOT NULL")]
-		public byte Location_Main
-		{
-			get
-			{
-				return this._Location_Main;
-			}
-			set
-			{
-				if ((this._Location_Main != value))
-				{
-					this.OnLocation_MainChanging(value);
-					this.SendPropertyChanging();
-					this._Location_Main = value;
-					this.SendPropertyChanged("Location_Main");
-					this.OnLocation_MainChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Location_Sub", DbType="TinyInt NOT NULL")]
-		public byte Location_Sub
-		{
-			get
-			{
-				return this._Location_Sub;
-			}
-			set
-			{
-				if ((this._Location_Sub != value))
-				{
-					this.OnLocation_SubChanging(value);
-					this.SendPropertyChanging();
-					this._Location_Sub = value;
-					this.SendPropertyChanged("Location_Sub");
-					this.OnLocation_SubChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaxUser", DbType="TinyInt NOT NULL")]
-		public byte MaxUser
-		{
-			get
-			{
-				return this._MaxUser;
-			}
-			set
-			{
-				if ((this._MaxUser != value))
-				{
-					this.OnMaxUserChanging(value);
-					this.SendPropertyChanging();
-					this._MaxUser = value;
-					this.SendPropertyChanged("MaxUser");
-					this.OnMaxUserChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Duration", DbType="VarChar(7) NOT NULL", CanBeNull=false)]
-		public string Duration
-		{
-			get
-			{
-				return this._Duration;
-			}
-			set
-			{
-				if ((this._Duration != value))
-				{
-					this.OnDurationChanging(value);
-					this.SendPropertyChanging();
-					this._Duration = value;
-					this.SendPropertyChanged("Duration");
-					this.OnDurationChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Commited", DbType="Bit NOT NULL")]
-		public bool Commited
-		{
-			get
-			{
-				return this._Commited;
-			}
-			set
-			{
-				if ((this._Commited != value))
-				{
-					this.OnCommitedChanging(value);
-					this.SendPropertyChanging();
-					this._Commited = value;
-					this.SendPropertyChanged("Commited");
-					this.OnCommitedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDateTime", DbType="DateTime NOT NULL")]
-		public System.DateTime CreateDateTime
-		{
-			get
-			{
-				return this._CreateDateTime;
-			}
-			set
-			{
-				if ((this._CreateDateTime != value))
-				{
-					this.OnCreateDateTimeChanging(value);
-					this.SendPropertyChanging();
-					this._CreateDateTime = value;
-					this.SendPropertyChanged("CreateDateTime");
-					this.OnCreateDateTimeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CommitedDateTime", DbType="DateTime")]
-		public System.Nullable<System.DateTime> CommitedDateTime
-		{
-			get
-			{
-				return this._CommitedDateTime;
-			}
-			set
-			{
-				if ((this._CommitedDateTime != value))
-				{
-					this.OnCommitedDateTimeChanging(value);
-					this.SendPropertyChanging();
-					this._CommitedDateTime = value;
-					this.SendPropertyChanged("CommitedDateTime");
-					this.OnCommitedDateTimeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_Message", Storage="_Messages", ThisKey="RoomIndex", OtherKey="RoomIndex")]
-		public EntitySet<Message> Messages
-		{
-			get
-			{
-				return this._Messages;
-			}
-			set
-			{
-				this._Messages.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_RoomJoinedUser", Storage="_RoomJoinedUsers", ThisKey="RoomIndex", OtherKey="RoomIndex")]
-		public EntitySet<RoomJoinedUser> RoomJoinedUsers
-		{
-			get
-			{
-				return this._RoomJoinedUsers;
-			}
-			set
-			{
-				this._RoomJoinedUsers.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_Notice", Storage="_Notices", ThisKey="RoomIndex", OtherKey="RoomIndex")]
-		public EntitySet<Notice> Notices
-		{
-			get
-			{
-				return this._Notices;
-			}
-			set
-			{
-				this._Notices.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_CreateRoom", Storage="_aspnet_User", ThisKey="UserId", OtherKey="UserId", IsForeignKey=true)]
-		public aspnet_User aspnet_User
-		{
-			get
-			{
-				return this._aspnet_User.Entity;
-			}
-			set
-			{
-				aspnet_User previousValue = this._aspnet_User.Entity;
-				if (((previousValue != value) 
-							|| (this._aspnet_User.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._aspnet_User.Entity = null;
-						previousValue.CreateRooms.Remove(this);
-					}
-					this._aspnet_User.Entity = value;
-					if ((value != null))
-					{
-						value.CreateRooms.Add(this);
-						this._UserId = value.UserId;
-					}
-					else
-					{
-						this._UserId = default(System.Guid);
-					}
-					this.SendPropertyChanged("aspnet_User");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Messages(Message entity)
-		{
-			this.SendPropertyChanging();
-			entity.CreateRoom = this;
-		}
-		
-		private void detach_Messages(Message entity)
-		{
-			this.SendPropertyChanging();
-			entity.CreateRoom = null;
-		}
-		
-		private void attach_RoomJoinedUsers(RoomJoinedUser entity)
-		{
-			this.SendPropertyChanging();
-			entity.CreateRoom = this;
-		}
-		
-		private void detach_RoomJoinedUsers(RoomJoinedUser entity)
-		{
-			this.SendPropertyChanging();
-			entity.CreateRoom = null;
-		}
-		
-		private void attach_Notices(Notice entity)
-		{
-			this.SendPropertyChanging();
-			entity.CreateRoom = this;
-		}
-		
-		private void detach_Notices(Notice entity)
-		{
-			this.SendPropertyChanging();
-			entity.CreateRoom = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Message")]
-	public partial class Message : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _RoomIndex;
-		
-		private int _MsgId;
-		
-		private string _Contents;
-		
-		private System.DateTime _IptTime;
-		
-		private string _NickName;
-		
-		private string _Email;
-		
-		private EntityRef<CreateRoom> _CreateRoom;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnRoomIndexChanging(int value);
-    partial void OnRoomIndexChanged();
-    partial void OnMsgIdChanging(int value);
-    partial void OnMsgIdChanged();
-    partial void OnContentsChanging(string value);
-    partial void OnContentsChanged();
-    partial void OnIptTimeChanging(System.DateTime value);
-    partial void OnIptTimeChanged();
-    partial void OnNickNameChanging(string value);
-    partial void OnNickNameChanged();
-    partial void OnEmailChanging(string value);
-    partial void OnEmailChanged();
-    #endregion
-		
-		public Message()
-		{
-			this._CreateRoom = default(EntityRef<CreateRoom>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomIndex", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int RoomIndex
-		{
-			get
-			{
-				return this._RoomIndex;
-			}
-			set
-			{
-				if ((this._RoomIndex != value))
-				{
-					if (this._CreateRoom.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnRoomIndexChanging(value);
-					this.SendPropertyChanging();
-					this._RoomIndex = value;
-					this.SendPropertyChanged("RoomIndex");
-					this.OnRoomIndexChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MsgId", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int MsgId
-		{
-			get
-			{
-				return this._MsgId;
-			}
-			set
-			{
-				if ((this._MsgId != value))
-				{
-					this.OnMsgIdChanging(value);
-					this.SendPropertyChanging();
-					this._MsgId = value;
-					this.SendPropertyChanged("MsgId");
-					this.OnMsgIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Contents", DbType="VarChar(512)")]
-		public string Contents
-		{
-			get
-			{
-				return this._Contents;
-			}
-			set
-			{
-				if ((this._Contents != value))
-				{
-					this.OnContentsChanging(value);
-					this.SendPropertyChanging();
-					this._Contents = value;
-					this.SendPropertyChanged("Contents");
-					this.OnContentsChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IptTime", DbType="DateTime NOT NULL")]
-		public System.DateTime IptTime
-		{
-			get
-			{
-				return this._IptTime;
-			}
-			set
-			{
-				if ((this._IptTime != value))
-				{
-					this.OnIptTimeChanging(value);
-					this.SendPropertyChanging();
-					this._IptTime = value;
-					this.SendPropertyChanged("IptTime");
-					this.OnIptTimeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NickName", DbType="VarChar(64) NOT NULL", CanBeNull=false)]
-		public string NickName
-		{
-			get
-			{
-				return this._NickName;
-			}
-			set
-			{
-				if ((this._NickName != value))
-				{
-					this.OnNickNameChanging(value);
-					this.SendPropertyChanging();
-					this._NickName = value;
-					this.SendPropertyChanged("NickName");
-					this.OnNickNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="NVarChar(64) NOT NULL", CanBeNull=false)]
-		public string Email
-		{
-			get
-			{
-				return this._Email;
-			}
-			set
-			{
-				if ((this._Email != value))
-				{
-					this.OnEmailChanging(value);
-					this.SendPropertyChanging();
-					this._Email = value;
-					this.SendPropertyChanged("Email");
-					this.OnEmailChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_Message", Storage="_CreateRoom", ThisKey="RoomIndex", OtherKey="RoomIndex", IsForeignKey=true)]
-		public CreateRoom CreateRoom
-		{
-			get
-			{
-				return this._CreateRoom.Entity;
-			}
-			set
-			{
-				CreateRoom previousValue = this._CreateRoom.Entity;
-				if (((previousValue != value) 
-							|| (this._CreateRoom.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._CreateRoom.Entity = null;
-						previousValue.Messages.Remove(this);
-					}
-					this._CreateRoom.Entity = value;
-					if ((value != null))
-					{
-						value.Messages.Add(this);
-						this._RoomIndex = value.RoomIndex;
-					}
-					else
-					{
-						this._RoomIndex = default(int);
-					}
-					this.SendPropertyChanged("CreateRoom");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.RoomJoinedUser")]
-	public partial class RoomJoinedUser : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _RoomIndex;
-		
-		private System.Guid _UserId;
-		
-		private string _LoginId;
-		
-		private string _NickName;
-		
-		private byte _Gender;
-		
-		private System.DateTime _JoinDateTime;
-		
-		private EntityRef<aspnet_User> _aspnet_User;
-		
-		private EntityRef<CreateRoom> _CreateRoom;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnRoomIndexChanging(int value);
-    partial void OnRoomIndexChanged();
-    partial void OnUserIdChanging(System.Guid value);
-    partial void OnUserIdChanged();
-    partial void OnLoginIdChanging(string value);
-    partial void OnLoginIdChanged();
-    partial void OnNickNameChanging(string value);
-    partial void OnNickNameChanged();
-    partial void OnGenderChanging(byte value);
-    partial void OnGenderChanged();
-    partial void OnJoinDateTimeChanging(System.DateTime value);
-    partial void OnJoinDateTimeChanged();
-    #endregion
-		
-		public RoomJoinedUser()
-		{
-			this._aspnet_User = default(EntityRef<aspnet_User>);
-			this._CreateRoom = default(EntityRef<CreateRoom>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomIndex", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int RoomIndex
-		{
-			get
-			{
-				return this._RoomIndex;
-			}
-			set
-			{
-				if ((this._RoomIndex != value))
-				{
-					if (this._CreateRoom.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnRoomIndexChanging(value);
-					this.SendPropertyChanging();
-					this._RoomIndex = value;
-					this.SendPropertyChanged("RoomIndex");
-					this.OnRoomIndexChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
-		public System.Guid UserId
-		{
-			get
-			{
-				return this._UserId;
-			}
-			set
-			{
-				if ((this._UserId != value))
-				{
-					if (this._aspnet_User.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnUserIdChanging(value);
-					this.SendPropertyChanging();
-					this._UserId = value;
-					this.SendPropertyChanged("UserId");
-					this.OnUserIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LoginId", DbType="VarChar(64) NOT NULL", CanBeNull=false)]
-		public string LoginId
-		{
-			get
-			{
-				return this._LoginId;
-			}
-			set
-			{
-				if ((this._LoginId != value))
-				{
-					this.OnLoginIdChanging(value);
-					this.SendPropertyChanging();
-					this._LoginId = value;
-					this.SendPropertyChanged("LoginId");
-					this.OnLoginIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NickName", DbType="VarChar(64) NOT NULL", CanBeNull=false)]
-		public string NickName
-		{
-			get
-			{
-				return this._NickName;
-			}
-			set
-			{
-				if ((this._NickName != value))
-				{
-					this.OnNickNameChanging(value);
-					this.SendPropertyChanging();
-					this._NickName = value;
-					this.SendPropertyChanged("NickName");
-					this.OnNickNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Gender", DbType="TinyInt NOT NULL")]
-		public byte Gender
-		{
-			get
-			{
-				return this._Gender;
-			}
-			set
-			{
-				if ((this._Gender != value))
-				{
-					this.OnGenderChanging(value);
-					this.SendPropertyChanging();
-					this._Gender = value;
-					this.SendPropertyChanged("Gender");
-					this.OnGenderChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_JoinDateTime", DbType="DateTime NOT NULL")]
-		public System.DateTime JoinDateTime
-		{
-			get
-			{
-				return this._JoinDateTime;
-			}
-			set
-			{
-				if ((this._JoinDateTime != value))
-				{
-					this.OnJoinDateTimeChanging(value);
-					this.SendPropertyChanging();
-					this._JoinDateTime = value;
-					this.SendPropertyChanged("JoinDateTime");
-					this.OnJoinDateTimeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_RoomJoinedUser", Storage="_aspnet_User", ThisKey="UserId", OtherKey="UserId", IsForeignKey=true)]
-		public aspnet_User aspnet_User
-		{
-			get
-			{
-				return this._aspnet_User.Entity;
-			}
-			set
-			{
-				aspnet_User previousValue = this._aspnet_User.Entity;
-				if (((previousValue != value) 
-							|| (this._aspnet_User.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._aspnet_User.Entity = null;
-						previousValue.RoomJoinedUsers.Remove(this);
-					}
-					this._aspnet_User.Entity = value;
-					if ((value != null))
-					{
-						value.RoomJoinedUsers.Add(this);
-						this._UserId = value.UserId;
-					}
-					else
-					{
-						this._UserId = default(System.Guid);
-					}
-					this.SendPropertyChanged("aspnet_User");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_RoomJoinedUser", Storage="_CreateRoom", ThisKey="RoomIndex", OtherKey="RoomIndex", IsForeignKey=true)]
-		public CreateRoom CreateRoom
-		{
-			get
-			{
-				return this._CreateRoom.Entity;
-			}
-			set
-			{
-				CreateRoom previousValue = this._CreateRoom.Entity;
-				if (((previousValue != value) 
-							|| (this._CreateRoom.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._CreateRoom.Entity = null;
-						previousValue.RoomJoinedUsers.Remove(this);
-					}
-					this._CreateRoom.Entity = value;
-					if ((value != null))
-					{
-						value.RoomJoinedUsers.Add(this);
-						this._RoomIndex = value.RoomIndex;
-					}
-					else
-					{
-						this._RoomIndex = default(int);
-					}
-					this.SendPropertyChanged("CreateRoom");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.UserDeviceInfo")]
 	public partial class UserDeviceInfo : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -2577,6 +1639,1088 @@ namespace RoomService.NDb
 					if ((value != null))
 					{
 						value.Notices.Add(this);
+						this._RoomIndex = value.RoomIndex;
+					}
+					else
+					{
+						this._RoomIndex = default(int);
+					}
+					this.SendPropertyChanged("CreateRoom");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CreateRoom")]
+	public partial class CreateRoom : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RoomIndex;
+		
+		private System.Guid _UserId;
+		
+		private string _Name;
+		
+		private string _Comment;
+		
+		private byte _Category;
+		
+		private byte _Location_Main;
+		
+		private byte _Location_Sub;
+		
+		private byte _MaxUser;
+		
+		private string _Duration;
+		
+		private bool _Commited;
+		
+		private System.DateTime _CreateDateTime;
+		
+		private System.Nullable<System.DateTime> _CommitedDateTime;
+		
+		private int _Deposit;
+		
+		private int _AbsenceA;
+		
+		private int _AbsenceB;
+		
+		private int _Lateness;
+		
+		private int _Homework;
+		
+		private EntitySet<Notice> _Notices;
+		
+		private EntitySet<RoomJoinedUser> _RoomJoinedUsers;
+		
+		private EntitySet<Message> _Messages;
+		
+		private EntityRef<aspnet_User> _aspnet_User;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRoomIndexChanging(int value);
+    partial void OnRoomIndexChanged();
+    partial void OnUserIdChanging(System.Guid value);
+    partial void OnUserIdChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnCommentChanging(string value);
+    partial void OnCommentChanged();
+    partial void OnCategoryChanging(byte value);
+    partial void OnCategoryChanged();
+    partial void OnLocation_MainChanging(byte value);
+    partial void OnLocation_MainChanged();
+    partial void OnLocation_SubChanging(byte value);
+    partial void OnLocation_SubChanged();
+    partial void OnMaxUserChanging(byte value);
+    partial void OnMaxUserChanged();
+    partial void OnDurationChanging(string value);
+    partial void OnDurationChanged();
+    partial void OnCommitedChanging(bool value);
+    partial void OnCommitedChanged();
+    partial void OnCreateDateTimeChanging(System.DateTime value);
+    partial void OnCreateDateTimeChanged();
+    partial void OnCommitedDateTimeChanging(System.Nullable<System.DateTime> value);
+    partial void OnCommitedDateTimeChanged();
+    partial void OnDepositChanging(int value);
+    partial void OnDepositChanged();
+    partial void OnAbsenceAChanging(int value);
+    partial void OnAbsenceAChanged();
+    partial void OnAbsenceBChanging(int value);
+    partial void OnAbsenceBChanged();
+    partial void OnLatenessChanging(int value);
+    partial void OnLatenessChanged();
+    partial void OnHomeworkChanging(int value);
+    partial void OnHomeworkChanged();
+    #endregion
+		
+		public CreateRoom()
+		{
+			this._Notices = new EntitySet<Notice>(new Action<Notice>(this.attach_Notices), new Action<Notice>(this.detach_Notices));
+			this._RoomJoinedUsers = new EntitySet<RoomJoinedUser>(new Action<RoomJoinedUser>(this.attach_RoomJoinedUsers), new Action<RoomJoinedUser>(this.detach_RoomJoinedUsers));
+			this._Messages = new EntitySet<Message>(new Action<Message>(this.attach_Messages), new Action<Message>(this.detach_Messages));
+			this._aspnet_User = default(EntityRef<aspnet_User>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomIndex", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int RoomIndex
+		{
+			get
+			{
+				return this._RoomIndex;
+			}
+			set
+			{
+				if ((this._RoomIndex != value))
+				{
+					this.OnRoomIndexChanging(value);
+					this.SendPropertyChanging();
+					this._RoomIndex = value;
+					this.SendPropertyChanged("RoomIndex");
+					this.OnRoomIndexChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					if (this._aspnet_User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="VarChar(50)")]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Comment", DbType="VarChar(50)")]
+		public string Comment
+		{
+			get
+			{
+				return this._Comment;
+			}
+			set
+			{
+				if ((this._Comment != value))
+				{
+					this.OnCommentChanging(value);
+					this.SendPropertyChanging();
+					this._Comment = value;
+					this.SendPropertyChanged("Comment");
+					this.OnCommentChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Category", DbType="TinyInt NOT NULL")]
+		public byte Category
+		{
+			get
+			{
+				return this._Category;
+			}
+			set
+			{
+				if ((this._Category != value))
+				{
+					this.OnCategoryChanging(value);
+					this.SendPropertyChanging();
+					this._Category = value;
+					this.SendPropertyChanged("Category");
+					this.OnCategoryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Location_Main", DbType="TinyInt NOT NULL")]
+		public byte Location_Main
+		{
+			get
+			{
+				return this._Location_Main;
+			}
+			set
+			{
+				if ((this._Location_Main != value))
+				{
+					this.OnLocation_MainChanging(value);
+					this.SendPropertyChanging();
+					this._Location_Main = value;
+					this.SendPropertyChanged("Location_Main");
+					this.OnLocation_MainChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Location_Sub", DbType="TinyInt NOT NULL")]
+		public byte Location_Sub
+		{
+			get
+			{
+				return this._Location_Sub;
+			}
+			set
+			{
+				if ((this._Location_Sub != value))
+				{
+					this.OnLocation_SubChanging(value);
+					this.SendPropertyChanging();
+					this._Location_Sub = value;
+					this.SendPropertyChanged("Location_Sub");
+					this.OnLocation_SubChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MaxUser", DbType="TinyInt NOT NULL")]
+		public byte MaxUser
+		{
+			get
+			{
+				return this._MaxUser;
+			}
+			set
+			{
+				if ((this._MaxUser != value))
+				{
+					this.OnMaxUserChanging(value);
+					this.SendPropertyChanging();
+					this._MaxUser = value;
+					this.SendPropertyChanged("MaxUser");
+					this.OnMaxUserChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Duration", DbType="VarChar(7) NOT NULL", CanBeNull=false)]
+		public string Duration
+		{
+			get
+			{
+				return this._Duration;
+			}
+			set
+			{
+				if ((this._Duration != value))
+				{
+					this.OnDurationChanging(value);
+					this.SendPropertyChanging();
+					this._Duration = value;
+					this.SendPropertyChanged("Duration");
+					this.OnDurationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Commited", DbType="Bit NOT NULL")]
+		public bool Commited
+		{
+			get
+			{
+				return this._Commited;
+			}
+			set
+			{
+				if ((this._Commited != value))
+				{
+					this.OnCommitedChanging(value);
+					this.SendPropertyChanging();
+					this._Commited = value;
+					this.SendPropertyChanged("Commited");
+					this.OnCommitedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDateTime", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDateTime
+		{
+			get
+			{
+				return this._CreateDateTime;
+			}
+			set
+			{
+				if ((this._CreateDateTime != value))
+				{
+					this.OnCreateDateTimeChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDateTime = value;
+					this.SendPropertyChanged("CreateDateTime");
+					this.OnCreateDateTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CommitedDateTime", DbType="DateTime")]
+		public System.Nullable<System.DateTime> CommitedDateTime
+		{
+			get
+			{
+				return this._CommitedDateTime;
+			}
+			set
+			{
+				if ((this._CommitedDateTime != value))
+				{
+					this.OnCommitedDateTimeChanging(value);
+					this.SendPropertyChanging();
+					this._CommitedDateTime = value;
+					this.SendPropertyChanged("CommitedDateTime");
+					this.OnCommitedDateTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Deposit", DbType="Int NOT NULL")]
+		public int Deposit
+		{
+			get
+			{
+				return this._Deposit;
+			}
+			set
+			{
+				if ((this._Deposit != value))
+				{
+					this.OnDepositChanging(value);
+					this.SendPropertyChanging();
+					this._Deposit = value;
+					this.SendPropertyChanged("Deposit");
+					this.OnDepositChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AbsenceA", DbType="Int NOT NULL")]
+		public int AbsenceA
+		{
+			get
+			{
+				return this._AbsenceA;
+			}
+			set
+			{
+				if ((this._AbsenceA != value))
+				{
+					this.OnAbsenceAChanging(value);
+					this.SendPropertyChanging();
+					this._AbsenceA = value;
+					this.SendPropertyChanged("AbsenceA");
+					this.OnAbsenceAChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AbsenceB", DbType="Int NOT NULL")]
+		public int AbsenceB
+		{
+			get
+			{
+				return this._AbsenceB;
+			}
+			set
+			{
+				if ((this._AbsenceB != value))
+				{
+					this.OnAbsenceBChanging(value);
+					this.SendPropertyChanging();
+					this._AbsenceB = value;
+					this.SendPropertyChanged("AbsenceB");
+					this.OnAbsenceBChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Lateness", DbType="Int NOT NULL")]
+		public int Lateness
+		{
+			get
+			{
+				return this._Lateness;
+			}
+			set
+			{
+				if ((this._Lateness != value))
+				{
+					this.OnLatenessChanging(value);
+					this.SendPropertyChanging();
+					this._Lateness = value;
+					this.SendPropertyChanged("Lateness");
+					this.OnLatenessChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Homework", DbType="Int NOT NULL")]
+		public int Homework
+		{
+			get
+			{
+				return this._Homework;
+			}
+			set
+			{
+				if ((this._Homework != value))
+				{
+					this.OnHomeworkChanging(value);
+					this.SendPropertyChanging();
+					this._Homework = value;
+					this.SendPropertyChanged("Homework");
+					this.OnHomeworkChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_Notice", Storage="_Notices", ThisKey="RoomIndex", OtherKey="RoomIndex")]
+		public EntitySet<Notice> Notices
+		{
+			get
+			{
+				return this._Notices;
+			}
+			set
+			{
+				this._Notices.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_RoomJoinedUser", Storage="_RoomJoinedUsers", ThisKey="RoomIndex", OtherKey="RoomIndex")]
+		public EntitySet<RoomJoinedUser> RoomJoinedUsers
+		{
+			get
+			{
+				return this._RoomJoinedUsers;
+			}
+			set
+			{
+				this._RoomJoinedUsers.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_Message", Storage="_Messages", ThisKey="RoomIndex", OtherKey="RoomIndex")]
+		public EntitySet<Message> Messages
+		{
+			get
+			{
+				return this._Messages;
+			}
+			set
+			{
+				this._Messages.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_CreateRoom", Storage="_aspnet_User", ThisKey="UserId", OtherKey="UserId", IsForeignKey=true)]
+		public aspnet_User aspnet_User
+		{
+			get
+			{
+				return this._aspnet_User.Entity;
+			}
+			set
+			{
+				aspnet_User previousValue = this._aspnet_User.Entity;
+				if (((previousValue != value) 
+							|| (this._aspnet_User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._aspnet_User.Entity = null;
+						previousValue.CreateRooms.Remove(this);
+					}
+					this._aspnet_User.Entity = value;
+					if ((value != null))
+					{
+						value.CreateRooms.Add(this);
+						this._UserId = value.UserId;
+					}
+					else
+					{
+						this._UserId = default(System.Guid);
+					}
+					this.SendPropertyChanged("aspnet_User");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Notices(Notice entity)
+		{
+			this.SendPropertyChanging();
+			entity.CreateRoom = this;
+		}
+		
+		private void detach_Notices(Notice entity)
+		{
+			this.SendPropertyChanging();
+			entity.CreateRoom = null;
+		}
+		
+		private void attach_RoomJoinedUsers(RoomJoinedUser entity)
+		{
+			this.SendPropertyChanging();
+			entity.CreateRoom = this;
+		}
+		
+		private void detach_RoomJoinedUsers(RoomJoinedUser entity)
+		{
+			this.SendPropertyChanging();
+			entity.CreateRoom = null;
+		}
+		
+		private void attach_Messages(Message entity)
+		{
+			this.SendPropertyChanging();
+			entity.CreateRoom = this;
+		}
+		
+		private void detach_Messages(Message entity)
+		{
+			this.SendPropertyChanging();
+			entity.CreateRoom = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.RoomJoinedUser")]
+	public partial class RoomJoinedUser : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _RoomIndex;
+		
+		private System.Guid _UserId;
+		
+		private string _LoginId;
+		
+		private string _NickName;
+		
+		private byte _Gender;
+		
+		private int _Penalty;
+		
+		private System.DateTime _JoinDateTime;
+		
+		private EntityRef<aspnet_User> _aspnet_User;
+		
+		private EntityRef<CreateRoom> _CreateRoom;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRoomIndexChanging(int value);
+    partial void OnRoomIndexChanged();
+    partial void OnUserIdChanging(System.Guid value);
+    partial void OnUserIdChanged();
+    partial void OnLoginIdChanging(string value);
+    partial void OnLoginIdChanged();
+    partial void OnNickNameChanging(string value);
+    partial void OnNickNameChanged();
+    partial void OnGenderChanging(byte value);
+    partial void OnGenderChanged();
+    partial void OnPenaltyChanging(int value);
+    partial void OnPenaltyChanged();
+    partial void OnJoinDateTimeChanging(System.DateTime value);
+    partial void OnJoinDateTimeChanged();
+    #endregion
+		
+		public RoomJoinedUser()
+		{
+			this._aspnet_User = default(EntityRef<aspnet_User>);
+			this._CreateRoom = default(EntityRef<CreateRoom>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomIndex", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int RoomIndex
+		{
+			get
+			{
+				return this._RoomIndex;
+			}
+			set
+			{
+				if ((this._RoomIndex != value))
+				{
+					if (this._CreateRoom.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnRoomIndexChanging(value);
+					this.SendPropertyChanging();
+					this._RoomIndex = value;
+					this.SendPropertyChanged("RoomIndex");
+					this.OnRoomIndexChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					if (this._aspnet_User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LoginId", DbType="NVarChar(256) NOT NULL", CanBeNull=false)]
+		public string LoginId
+		{
+			get
+			{
+				return this._LoginId;
+			}
+			set
+			{
+				if ((this._LoginId != value))
+				{
+					this.OnLoginIdChanging(value);
+					this.SendPropertyChanging();
+					this._LoginId = value;
+					this.SendPropertyChanged("LoginId");
+					this.OnLoginIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NickName", DbType="VarChar(64) NOT NULL", CanBeNull=false)]
+		public string NickName
+		{
+			get
+			{
+				return this._NickName;
+			}
+			set
+			{
+				if ((this._NickName != value))
+				{
+					this.OnNickNameChanging(value);
+					this.SendPropertyChanging();
+					this._NickName = value;
+					this.SendPropertyChanged("NickName");
+					this.OnNickNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Gender", DbType="TinyInt NOT NULL")]
+		public byte Gender
+		{
+			get
+			{
+				return this._Gender;
+			}
+			set
+			{
+				if ((this._Gender != value))
+				{
+					this.OnGenderChanging(value);
+					this.SendPropertyChanging();
+					this._Gender = value;
+					this.SendPropertyChanged("Gender");
+					this.OnGenderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Penalty", DbType="Int NOT NULL")]
+		public int Penalty
+		{
+			get
+			{
+				return this._Penalty;
+			}
+			set
+			{
+				if ((this._Penalty != value))
+				{
+					this.OnPenaltyChanging(value);
+					this.SendPropertyChanging();
+					this._Penalty = value;
+					this.SendPropertyChanged("Penalty");
+					this.OnPenaltyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_JoinDateTime", DbType="DateTime NOT NULL")]
+		public System.DateTime JoinDateTime
+		{
+			get
+			{
+				return this._JoinDateTime;
+			}
+			set
+			{
+				if ((this._JoinDateTime != value))
+				{
+					this.OnJoinDateTimeChanging(value);
+					this.SendPropertyChanging();
+					this._JoinDateTime = value;
+					this.SendPropertyChanged("JoinDateTime");
+					this.OnJoinDateTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_RoomJoinedUser", Storage="_aspnet_User", ThisKey="UserId", OtherKey="UserId", IsForeignKey=true)]
+		public aspnet_User aspnet_User
+		{
+			get
+			{
+				return this._aspnet_User.Entity;
+			}
+			set
+			{
+				aspnet_User previousValue = this._aspnet_User.Entity;
+				if (((previousValue != value) 
+							|| (this._aspnet_User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._aspnet_User.Entity = null;
+						previousValue.RoomJoinedUsers.Remove(this);
+					}
+					this._aspnet_User.Entity = value;
+					if ((value != null))
+					{
+						value.RoomJoinedUsers.Add(this);
+						this._UserId = value.UserId;
+					}
+					else
+					{
+						this._UserId = default(System.Guid);
+					}
+					this.SendPropertyChanged("aspnet_User");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_RoomJoinedUser", Storage="_CreateRoom", ThisKey="RoomIndex", OtherKey="RoomIndex", IsForeignKey=true)]
+		public CreateRoom CreateRoom
+		{
+			get
+			{
+				return this._CreateRoom.Entity;
+			}
+			set
+			{
+				CreateRoom previousValue = this._CreateRoom.Entity;
+				if (((previousValue != value) 
+							|| (this._CreateRoom.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CreateRoom.Entity = null;
+						previousValue.RoomJoinedUsers.Remove(this);
+					}
+					this._CreateRoom.Entity = value;
+					if ((value != null))
+					{
+						value.RoomJoinedUsers.Add(this);
+						this._RoomIndex = value.RoomIndex;
+					}
+					else
+					{
+						this._RoomIndex = default(int);
+					}
+					this.SendPropertyChanged("CreateRoom");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Message")]
+	public partial class Message : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _MsgId;
+		
+		private int _RoomIndex;
+		
+		private string _Contents;
+		
+		private System.DateTime _IptTime;
+		
+		private string _NickName;
+		
+		private string _Email;
+		
+		private EntityRef<CreateRoom> _CreateRoom;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnMsgIdChanging(int value);
+    partial void OnMsgIdChanged();
+    partial void OnRoomIndexChanging(int value);
+    partial void OnRoomIndexChanged();
+    partial void OnContentsChanging(string value);
+    partial void OnContentsChanged();
+    partial void OnIptTimeChanging(System.DateTime value);
+    partial void OnIptTimeChanged();
+    partial void OnNickNameChanging(string value);
+    partial void OnNickNameChanged();
+    partial void OnEmailChanging(string value);
+    partial void OnEmailChanged();
+    #endregion
+		
+		public Message()
+		{
+			this._CreateRoom = default(EntityRef<CreateRoom>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MsgId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int MsgId
+		{
+			get
+			{
+				return this._MsgId;
+			}
+			set
+			{
+				if ((this._MsgId != value))
+				{
+					this.OnMsgIdChanging(value);
+					this.SendPropertyChanging();
+					this._MsgId = value;
+					this.SendPropertyChanged("MsgId");
+					this.OnMsgIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomIndex", DbType="Int NOT NULL")]
+		public int RoomIndex
+		{
+			get
+			{
+				return this._RoomIndex;
+			}
+			set
+			{
+				if ((this._RoomIndex != value))
+				{
+					if (this._CreateRoom.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnRoomIndexChanging(value);
+					this.SendPropertyChanging();
+					this._RoomIndex = value;
+					this.SendPropertyChanged("RoomIndex");
+					this.OnRoomIndexChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Contents", DbType="VarChar(512)")]
+		public string Contents
+		{
+			get
+			{
+				return this._Contents;
+			}
+			set
+			{
+				if ((this._Contents != value))
+				{
+					this.OnContentsChanging(value);
+					this.SendPropertyChanging();
+					this._Contents = value;
+					this.SendPropertyChanged("Contents");
+					this.OnContentsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IptTime", DbType="DateTime NOT NULL")]
+		public System.DateTime IptTime
+		{
+			get
+			{
+				return this._IptTime;
+			}
+			set
+			{
+				if ((this._IptTime != value))
+				{
+					this.OnIptTimeChanging(value);
+					this.SendPropertyChanging();
+					this._IptTime = value;
+					this.SendPropertyChanged("IptTime");
+					this.OnIptTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NickName", DbType="VarChar(64) NOT NULL", CanBeNull=false)]
+		public string NickName
+		{
+			get
+			{
+				return this._NickName;
+			}
+			set
+			{
+				if ((this._NickName != value))
+				{
+					this.OnNickNameChanging(value);
+					this.SendPropertyChanging();
+					this._NickName = value;
+					this.SendPropertyChanged("NickName");
+					this.OnNickNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="VarChar(64) NOT NULL", CanBeNull=false)]
+		public string Email
+		{
+			get
+			{
+				return this._Email;
+			}
+			set
+			{
+				if ((this._Email != value))
+				{
+					this.OnEmailChanging(value);
+					this.SendPropertyChanging();
+					this._Email = value;
+					this.SendPropertyChanged("Email");
+					this.OnEmailChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_Message", Storage="_CreateRoom", ThisKey="RoomIndex", OtherKey="RoomIndex", IsForeignKey=true)]
+		public CreateRoom CreateRoom
+		{
+			get
+			{
+				return this._CreateRoom.Entity;
+			}
+			set
+			{
+				CreateRoom previousValue = this._CreateRoom.Entity;
+				if (((previousValue != value) 
+							|| (this._CreateRoom.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CreateRoom.Entity = null;
+						previousValue.Messages.Remove(this);
+					}
+					this._CreateRoom.Entity = value;
+					if ((value != null))
+					{
+						value.Messages.Add(this);
 						this._RoomIndex = value.RoomIndex;
 					}
 					else

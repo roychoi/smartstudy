@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="RoomService.RoomDb" %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="RoomService.RoomDb" Factory = "System.ServiceModel.Activation.WebServiceHostFactory" %>
