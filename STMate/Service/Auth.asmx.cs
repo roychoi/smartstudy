@@ -145,7 +145,8 @@ namespace STMate.Service
 	
 
         [WebMethod(EnableSession = true)]
-		public CREATE_USER CreateUser( String loginEmail, String passWord, String userName, Byte gender, UInt16 birthYear )
+		public CREATE_USER CreateUser( String loginEmail, String passWord, String userName, Byte gender, UInt16 birthYear 
+											, String imageUrl )
         {
             CREATE_USER create_user = new CREATE_USER();
 
@@ -191,6 +192,7 @@ namespace STMate.Service
                 userProfile["Gender"] = gender;
                 userProfile["BirthYear"] = new DateTime(birthYear, 1, 1);
 				userProfile["NickName"] = userName;
+				userProfile["ImageUrl"] = imageUrl;
 
                 userProfile.Save();
 
@@ -265,6 +267,7 @@ namespace STMate.Service
                     auth_user_result.gender = (byte)userProfile.GetPropertyValue("Gender");
 					DateTime birth = (DateTime)userProfile.GetPropertyValue("BirthYear");
 					String userName = (String)userProfile.GetPropertyValue("NickName");
+					String imageUrl = (String)userProfile.GetPropertyValue("ImageUrl");
 
 					userProfile["DeviceToken"] = deviceToken;	// last logined device
 					userProfile.Save();
@@ -333,7 +336,8 @@ namespace STMate.Service
             {
                 ProfileBase userProfile = ProfileBase.Create(update_device_info.login_id, true);
 
-                userProfile["DeviceToken"] = deviceToken;	// last logined device
+				userProfile["DeviceToken"] = deviceToken;	// last logined device
+				//userProfile["ImageUrl"] = "http://testtest.asp/image.jpg";	// last logined device
                 userProfile.Save();
 
                 (proxy as IDisposable).Dispose();
