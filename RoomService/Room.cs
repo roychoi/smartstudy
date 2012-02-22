@@ -155,6 +155,8 @@ namespace RoomService
 
 		[OperationContract]
 		ROOM_RESULT EntrustMaster(int room_index, String user_no, String dest_member_id );
+		[OperationContract]
+		ROOM_MAIN_INFO GetRoomMainInfo(int room_index, String user_no, int last_chat_index );
 	
 		[OperationContract]
 		void UpdateRoomInfo(int room_index, String user_no, RoomSearchKey key);
@@ -2361,6 +2363,87 @@ namespace RoomService
 
 				return result;
 			}
+		}
+
+		public ROOM_MAIN_INFO GetRoomMainInfo(int room_index, String user_no, int last_chat_index )
+		{
+			ROOM_MAIN_INFO result = new ROOM_MAIN_INFO();
+			result.reason_sort = 0;
+			result.room_index = room_index;
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				Guid UserId = new Guid(user_no);
+
+				var matched_room = (from Master in db.GetTable<NDb.CreateRoom>()
+									where Master.RoomIndex == room_index
+									select Master).SingleOrDefault();
+
+				if (matched_room == null)
+				{
+					result.reason_sort = -1;   // not found user
+					return result;
+				}
+
+				TimeSpan checkOneDaySpan = new TimeSpan( 2,0,0,0 );
+				DateTime checkOneDayTime = DateTime.Now - checkOneDaySpan;
+
+				const int maxCategory = 3;
+
+				result.NOTICE_ALERT_LIST = new ROOM_MAIN_INFONOTICE_ALERT[maxCategory];
+
+				for (int index = 0; index < maxCategory; index++)
+				{
+					result.NOTICE_ALERT_LIST[index] = new ROOM_MAIN_INFONOTICE_ALERT();
+					result.NOTICE_ALERT_LIST[index].type = (byte)(index + 1);
+				}
+
+				List<NDb.Notice> notice_list = matched_room.Notices.ToList<NDb.Notice>();
+				foreach( NDb.Notice notice in notice_list )
+				{
+					if (notice.IptTime > checkOneDayTime)
+					{
+						Console.WriteLine(String.Format("New Notice : {0} - {1}", notice.NoticeId, notice.Contents));
+
+						int index = notice.Category - 1;
+						result.NOTICE_ALERT_LIST[index].unread_count++;
+					}
+				}
+
+				if (matched_room.Messages.Count() == 0)
+				{
+					result.chat_last_index = 0;
+					result.chat_unread_count = 0;
+				}
+				else
+				{
+					result.chat_last_index = matched_room.Messages.Max<NDb.Message>(Message => Message.MsgId);
+					result.chat_unread_count = matched_room.Messages.Count<NDb.Message>(Message => Message.MsgId > last_chat_index);
+				}
+
+				// JoinedRoomUser 가 0 일때 체크 하기
+				List<NDb.RoomJoinedUser> user_list = matched_room.RoomJoinedUsers.ToList<NDb.RoomJoinedUser>();
+
+				foreach (NDb.RoomJoinedUser JoinedUser in user_list)
+				{
+					String loginId = JoinedUser.LoginId;
+					String imageUrl = db.fn_GetProfileElement("ImageUrl", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+																JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString);
+
+					Console.WriteLine(String.Format("ImageUrl User : {0} - {1}", JoinedUser.LoginId, imageUrl));
+					//index++;
+				}
+
+			}
+
+			catch (Exception e)
+			{
+				return result;
+			}
+
+			return result;
 		}
 
 	}

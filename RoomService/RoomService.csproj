@@ -78,6 +78,9 @@
       <DependentUpon>Notice.xsd</DependentUpon>
     </Compile>
     <Compile Include="NSchemas\RoomInfoList.cs" />
+    <Compile Include="NSchemas\RoomMainInfo.cs">
+      <DependentUpon>RoomMainInfo.xsd</DependentUpon>
+    </Compile>
     <Compile Include="NSchemas\RoomPenalty.cs">
       <DependentUpon>RoomPenalty.xsd</DependentUpon>
     </Compile>
@@ -124,6 +127,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="NSchemas\RoomInfoList.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NSchemas\RoomMainInfo.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="NSchemas\RoomPenalty.xsd">

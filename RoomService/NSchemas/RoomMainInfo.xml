@@ -6,12 +6,12 @@
     <NOTICE_ALERT type ="3" unread_count ="4"/>
   </NOTICE_ALERT_LIST>
 
-  <MEMBER_PROFILE_INFO room_index ="1002000" count ="4">
+  <!--<MEMBER_PROFILE_INFO room_index ="1002000" count ="4">
     <MEMBER_PROFILE login_id ="roy1669@gmail.com" image ="roy1669abcd123.jpg"/>
     <MEMBER_PROFILE login_id ="gusupa@gmail.com" image ="gusupaabcd123.jpg"/>
     <MEMBER_PROFILE login_id ="azasaw@me.com" image =""/>
     <MEMBER_PROFILE login_id ="ysskwon@nate.com" image =""/>
-  </MEMBER_PROFILE_INFO>
+  </MEMBER_PROFILE_INFO>-->
 
 
 </ROOM_MAIN_INFO>
