@@ -157,6 +157,7 @@
     <Content Include="NSchemas\RoomInfoList.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="NSchemas\RoomMainInfo.xml" />
     <Content Include="NSchemas\RoomPenalty.xml" />
     <Content Include="NSchemas\RoomResult.xml" />
     <Content Include="NSchemas\RoomSummaryList.xml" />

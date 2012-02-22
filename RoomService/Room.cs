@@ -2248,9 +2248,11 @@ namespace RoomService
 					return result;
 				}
 
-				List<NDb.RoomJoinedUser> user_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
-													  where RoomUser.RoomIndex == room_index
-													  select RoomUser).ToList<NDb.RoomJoinedUser>();
+				// JoinedRoomUser 가 0 일때 체크 하기
+				List<NDb.RoomJoinedUser> user_list = matched_room.RoomJoinedUsers.ToList<NDb.RoomJoinedUser>();
+				//List<NDb.RoomJoinedUser> user_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+				//                                      where RoomUser.RoomIndex == room_index
+				//                                      select RoomUser).ToList<NDb.RoomJoinedUser>();
 
 
 				result.reason_sort = 0;
