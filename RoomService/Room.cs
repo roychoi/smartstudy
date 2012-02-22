@@ -116,6 +116,9 @@ namespace RoomService
 		ROOM_RESULT CommitRoomDb(String user_no, UInt32 room_index);
 
 		[OperationContract]
+		ROOM_RESULT RecruitMember(String user_no , int room_index );
+
+		[OperationContract]
 		CHAT_LIST Chat(UInt32 room_index, String user_no, int local_index, int last_update, String content);
 		[OperationContract]
 		CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content);
@@ -143,10 +146,15 @@ namespace RoomService
 		[OperationContract]
 		ROOM_RESULT UpdatePenaltyInfo(UInt32 room_index, String user_no, int deposit, int absenceA, int absenceB, int lateness, int homework);
 		[OperationContract]
+		ROOM_PENALTY GetPenaltyInfo(int room_index, String user_no );
+
+		[OperationContract]
 		MEMBER_DETAIL_INFO CheckUserPenalty(Int32 room_index, String user_no, String member_id, int penalty);
 		[OperationContract]
 		MEMBER_DETAIL_INFO MemberDetailInfo(Int32 room_index, String user_no);
 
+		[OperationContract]
+		ROOM_RESULT EntrustMaster(int room_index, String user_no, String dest_member_id );
 	
 		[OperationContract]
 		void UpdateRoomInfo(int room_index, String user_no, RoomSearchKey key);
@@ -1373,8 +1381,63 @@ namespace RoomService
 			}
 
 			return room_result;
-
 		}
+
+
+		public ROOM_RESULT RecruitMember(String user_no, int room_index)
+		{
+			ROOM_RESULT room_result = new ROOM_RESULT();
+			room_result.crud = "RC";
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				Guid UserId = new Guid(user_no);
+				var matched_room = (from Master in db.GetTable<NDb.CreateRoom>()
+									where Master.RoomIndex == room_index
+									select Master).SingleOrDefault();
+
+				if (matched_room == null)
+				{
+					room_result.reason_sort = -1;   // not found room
+					return room_result;
+				}
+
+				if (matched_room.UserId.Equals(UserId) == false )
+				{
+					room_result.reason_sort = -2;	// not master user
+					return room_result;
+				}
+
+				if (matched_room.Commited == false )
+				{
+					room_result.reason_sort = -3;	// already commited room
+					return room_result;
+				}
+
+				matched_room.Commited = false;
+				matched_room.CommitedDateTime = null;
+
+				db.SubmitChanges();
+
+				room_result.reason_sort = 0;
+				room_result.room_index = (uint)room_index;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("RecruitMember - error {0}", e.Message);
+
+				room_result.reason_sort = -4;
+				room_result.room_index = 0;
+
+				return room_result;
+			}
+
+			return room_result;
+		}
+
+
 		public CHAT_LIST Chat(UInt32 room_index, String user_no, int local_index, int last_update, String content)
 		{
 			CHAT_LIST chat_list = new CHAT_LIST();
@@ -2014,6 +2077,60 @@ namespace RoomService
 			}
 		}
 
+		public ROOM_PENALTY GetPenaltyInfo(int room_index, String user_no)
+		{
+			ROOM_PENALTY room_penalty = new ROOM_PENALTY();
+			room_penalty.room_index = room_index;
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				Guid UserId = new Guid(user_no);
+
+				var matched_room = (from Master in db.GetTable<NDb.CreateRoom>()
+									where Master.RoomIndex == room_index
+									select Master).SingleOrDefault();
+
+				if (matched_room == null)
+				{
+					room_penalty.reason_sort = -1;   // not found user
+					return room_penalty;
+				}
+
+				if (matched_room.Commited == false)
+				{
+					room_penalty.reason_sort = -2; // not commited room
+					return room_penalty;
+				}
+
+				room_penalty.deposit = matched_room.Deposit;
+				room_penalty.absenceA = matched_room.AbsenceA;
+				room_penalty.absenceB = matched_room.AbsenceB;
+				room_penalty.lateness = matched_room.Lateness;
+				room_penalty.homework = matched_room.Homework;
+
+				db.SubmitChanges();
+
+				room_penalty.reason_sort = 0;
+				room_penalty.room_index = room_index;
+
+				return room_penalty;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("================== GetPenaltyInfo Error ==================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+
+				room_penalty.reason_sort = -3;
+				room_penalty.room_index = 0;
+
+				return room_penalty;
+			}
+		}
+
+
 		public MEMBER_DETAIL_INFO CheckUserPenalty(Int32 room_index, String user_no, String member_LoginId, int penalty)
 		{
 			MEMBER_DETAIL_INFO result = new MEMBER_DETAIL_INFO();
@@ -2175,5 +2292,74 @@ namespace RoomService
 				return result;
 			}
 		}
+
+		public ROOM_RESULT EntrustMaster(int room_index, String user_no, String dest_member_id)
+		{
+			ROOM_RESULT result = new ROOM_RESULT();
+			result.crud = "ET";
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				Guid UserId = new Guid(user_no);
+				var matched_room = (from Master in db.GetTable<NDb.CreateRoom>()
+									where Master.RoomIndex == room_index
+									select Master).SingleOrDefault();
+
+				if (matched_room == null)
+				{
+					result.reason_sort = -1;   // not found room
+					return result;
+				}
+
+				if (matched_room.UserId.Equals(UserId) == false)
+				{
+					result.reason_sort = -2;   // not master user
+					return result;
+				}
+
+				if (matched_room.Commited == false)
+				{
+					result.reason_sort = -3;	// not commited room
+					return result;
+				}
+
+				NDb.RoomJoinedUser mached_user = (from RoomUser in matched_room.RoomJoinedUsers
+												  where RoomUser.LoginId == dest_member_id
+												  select RoomUser).SingleOrDefault();
+				
+				if (mached_user == null)
+				{
+					result.reason_sort = -4;   // not found dest user
+					return result;
+				}
+				
+				if (mached_user.UserId.Equals(UserId) == true)
+				{
+					result.reason_sort = -5;
+					return result;				// can't enturst to same user
+				}
+
+				matched_room.UserId = mached_user.UserId;
+				db.SubmitChanges();
+
+				result.reason_sort = 0;
+
+				return result;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("================== CheckUserPenalty Error ==================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+
+				result.reason_sort = -6;
+				result.room_index = 0;
+
+				return result;
+			}
+		}
+
 	}
 }

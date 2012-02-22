@@ -515,3 +515,71 @@ Result
     <MEMBER loginid="yskown@hanmail.net" user_name="권연수" gender="1" age="25" panalty ="30000" rank_no ="2" />
 </MEMBER_DETAIL_INFO>
 
+
+---------------------------------------------------------------
+16. 방 현재 벌금정보 요청
+---------------------------------------------------------------
+
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/GetPenaltyInfo
+
+매개 변수 값 
+
+room_index:  int
+user_no:  string			// 나
+
+Result
+
+<ROOM_PENALTY reason_sort ="-1" room_index ="1002000" deposit ="10002000" absenceA ="10020000"	absenceB ="10000000" lateness ="1000000" homework =" 1000000"/>
+
+<!-- reason_sort : -1 : 해당 방정보를 찾을수 없음-->
+<!-- reason_sort : -2 : 커밋된 방이 아니다-->
+<!-- reason_sort : -3 : 기타 System 오류-->
+
+---------------------------------------------------------------
+17. 회원 재모집 요청 ( not commited 상태로 변경 )
+---------------------------------------------------------------
+
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/RecruitMember
+
+매개 변수 값 
+
+room_index:  int
+user_no:  string			// 나
+
+Result
+
+<ROOM_RESULT crud ="RC" room_index ="100001" reason_sort="0" />
+
+<!-- RC : ReCruit-->
+<!-- RC : -1 : 해당 방정보를 찾을수 없음-->
+<!-- RC : -2 : 방장권한이 없다.-->
+<!-- RC : -3 : 커밋된 방이 아니다-->
+<!-- RC : -4 : 기타 System 오류-->
+
+---------------------------------------------------------------
+18. 방장권한 위임 ( 자기자신 제외, 방에 속해있는 유저중 )
+---------------------------------------------------------------
+
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/EntrustMaster
+
+매개 변수 값 
+
+room_index:  int
+user_no:  string			// 나
+dest_member_id: string
+
+Result
+
+<ROOM_RESULT crud ="ET" room_index ="100001" reason_sort="0" />
+
+<!-- RC : EnTrust -->
+<!-- RC : -1 : 해당 방정보를 찾을수 없음-->
+<!-- RC : -2 : 방장권한이 없다.-->
+<!-- RC : -3 : 커밋된 방이 아니다-->
+<!-- RC : -4 : 권한을 주고자 하는 대상 유저를 찾을수 없다.-->
+<!-- RC : -5 : 같은 유저에게 권한을 주려고시도 ( 자기자신에게 요청 )-->
+<!-- RC : -6 : 기타 System 오류-->
+

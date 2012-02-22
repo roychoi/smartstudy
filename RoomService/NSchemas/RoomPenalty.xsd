@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ROOM_PENALTY">
+    <xs:complexType>
+      <xs:attribute name="room_index" type="xs:int" use="required" />
+      <xs:attribute name="reason_sort" type="xs:int" use="required" />
+      <xs:attribute name="deposit" type="xs:int" use="required" />
+      <xs:attribute name="absenceA" type="xs:int" use="required" />
+      <xs:attribute name="absenceB" type="xs:int" use="required" />
+      <xs:attribute name="lateness" type="xs:int" use="required" />
+      <xs:attribute name="homework" type="xs:int" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

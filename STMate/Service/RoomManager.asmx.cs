@@ -204,6 +204,35 @@ namespace STMate.Service
 		}
 
 		[WebMethod(EnableSession = true)]
+		public ROOM_PENALTY GetPenaltyInfo(Int32 room_index, String user_no)
+		{
+			IRoom proxy = factory.CreateChannel();
+			ROOM_PENALTY result = proxy.GetPenaltyInfo(room_index, user_no);
+			(proxy as IDisposable).Dispose();
+
+			return result;
+		}
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_RESULT RecruitMember(Int32 room_index, String user_no)
+		{
+			IRoom proxy = factory.CreateChannel();
+			ROOM_RESULT result = proxy.RecruitMember(user_no, room_index);
+			(proxy as IDisposable).Dispose();
+
+			return result;
+		}
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_RESULT EntrustMaster(int room_index, String user_no, String dest_member_id)
+		{
+			IRoom proxy = factory.CreateChannel();
+			ROOM_RESULT result = proxy.EntrustMaster(room_index, user_no, dest_member_id);
+			(proxy as IDisposable).Dispose();
+
+			return result;
+		}
+		[WebMethod(EnableSession = true)]
 		public JOIN_ROOM_DETAIL GetUser()
 		{
 			IRoom proxy = factory.CreateChannel();
@@ -223,5 +252,6 @@ namespace STMate.Service
 
 			return res;
 		}
+
     }
 }
