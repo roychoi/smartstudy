@@ -2390,16 +2390,6 @@ namespace RoomService
 				TimeSpan checkOneDaySpan = new TimeSpan( 2,0,0,0 );
 				DateTime checkOneDayTime = DateTime.Now - checkOneDaySpan;
 
-				const int maxCategory = 3;
-
-				result.NOTICE_ALERT_LIST = new ROOM_MAIN_INFONOTICE_ALERT[maxCategory];
-
-				for (int index = 0; index < maxCategory; index++)
-				{
-					result.NOTICE_ALERT_LIST[index] = new ROOM_MAIN_INFONOTICE_ALERT();
-					result.NOTICE_ALERT_LIST[index].type = (byte)(index + 1);
-				}
-
 				List<NDb.Notice> notice_list = matched_room.Notices.ToList<NDb.Notice>();
 				foreach( NDb.Notice notice in notice_list )
 				{
@@ -2407,8 +2397,18 @@ namespace RoomService
 					{
 						Console.WriteLine(String.Format("New Notice : {0} - {1}", notice.NoticeId, notice.Contents));
 
-						int index = notice.Category - 1;
-						result.NOTICE_ALERT_LIST[index].unread_count++;
+						switch (notice.Category)
+						{
+							case 1:
+								result.notice_a_cnt++;
+								break;
+							case 2:
+								result.notice_b_cnt++;
+								break;
+							case 3:
+								result.notice_c_cnt++;
+								break;
+						}
 					}
 				}
 

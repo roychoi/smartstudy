@@ -1,19 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ROOM_MAIN_INFO reason_sort ="-1" room_index ="1002000" chat_last_index ="192" chat_unread_count ="4">
-  <NOTICE_ALERT_LIST>
-    <NOTICE_ALERT type ="1" unread_count ="2"/>
-    <NOTICE_ALERT type ="2" unread_count ="1"/>
-    <NOTICE_ALERT type ="3" unread_count ="4"/>
-  </NOTICE_ALERT_LIST>
+<ROOM_MAIN_INFO reason_sort ="-1" room_index ="1002000" chat_last_index ="192" chat_unread_count ="4" notice_a_cnt ="1"
+notice_b_cnt ="2" notice_c_cnt ="0" >
+  <!-- reason_sort -1 :  해당 방정보를 찾을수 없음 -->
+  <!-- reason_sort -2 :  기타 System 오류 -->
+</ROOM_MAIN_INFO>
 
-  <!--<MEMBER_PROFILE_INFO room_index ="1002000" count ="4">
+
+
+<!--<MEMBER_PROFILE_INFO room_index ="1002000" count ="4">
     <MEMBER_PROFILE login_id ="roy1669@gmail.com" image ="roy1669abcd123.jpg"/>
     <MEMBER_PROFILE login_id ="gusupa@gmail.com" image ="gusupaabcd123.jpg"/>
     <MEMBER_PROFILE login_id ="azasaw@me.com" image =""/>
     <MEMBER_PROFILE login_id ="ysskwon@nate.com" image =""/>
   </MEMBER_PROFILE_INFO>-->
-
-
-</ROOM_MAIN_INFO>
 
 

@@ -24,8 +24,6 @@ using System.Xml.Serialization;
 [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
 public partial class ROOM_MAIN_INFO {
     
-    private ROOM_MAIN_INFONOTICE_ALERT[] nOTICE_ALERT_LISTField;
-    
     private int reason_sortField;
     
     private int room_indexField;
@@ -34,16 +32,13 @@ public partial class ROOM_MAIN_INFO {
     
     private int chat_unread_countField;
     
-    /// <remarks/>
-    [System.Xml.Serialization.XmlArrayItemAttribute("NOTICE_ALERT", IsNullable=false)]
-    public ROOM_MAIN_INFONOTICE_ALERT[] NOTICE_ALERT_LIST {
-        get {
-            return this.nOTICE_ALERT_LISTField;
-        }
-        set {
-            this.nOTICE_ALERT_LISTField = value;
-        }
-    }
+    private int notice_a_cntField;
+    
+    private int notice_b_cntField;
+    
+    private int notice_c_cntField;
+    
+    private string valueField;
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -88,39 +83,48 @@ public partial class ROOM_MAIN_INFO {
             this.chat_unread_countField = value;
         }
     }
-}
-
-/// <remarks/>
-[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.1")]
-[System.SerializableAttribute()]
-[System.Diagnostics.DebuggerStepThroughAttribute()]
-[System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
-public partial class ROOM_MAIN_INFONOTICE_ALERT {
-    
-    private byte typeField;
-    
-    private int unread_countField;
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte type {
+    public int notice_a_cnt {
         get {
-            return this.typeField;
+            return this.notice_a_cntField;
         }
         set {
-            this.typeField = value;
+            this.notice_a_cntField = value;
         }
     }
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int unread_count {
+    public int notice_b_cnt {
         get {
-            return this.unread_countField;
+            return this.notice_b_cntField;
         }
         set {
-            this.unread_countField = value;
+            this.notice_b_cntField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public int notice_c_cnt {
+        get {
+            return this.notice_c_cntField;
+        }
+        set {
+            this.notice_c_cntField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlTextAttribute()]
+    public string Value {
+        get {
+            return this.valueField;
+        }
+        set {
+            this.valueField = value;
         }
     }
 }
