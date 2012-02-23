@@ -232,6 +232,17 @@ namespace STMate.Service
 
 			return result;
 		}
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_MAIN_INFO GetRoomMainInfo(int room_index, String user_no, int last_chat_index)
+		{
+			IRoom proxy = factory.CreateChannel();
+			ROOM_MAIN_INFO result = proxy.GetRoomMainInfo(room_index, user_no, last_chat_index);
+			(proxy as IDisposable).Dispose();
+
+			return result;
+		}
+
 		[WebMethod(EnableSession = true)]
 		public JOIN_ROOM_DETAIL GetUser()
 		{
@@ -252,6 +263,7 @@ namespace STMate.Service
 
 			return res;
 		}
+
 
     }
 }

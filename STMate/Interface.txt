@@ -583,3 +583,31 @@ Result
 <!-- RC : -5 : 같은 유저에게 권한을 주려고시도 ( 자기자신에게 요청 )-->
 <!-- RC : -6 : 기타 System 오류-->
 
+
+---------------------------------------------------------------
+19. 방 기본 정보 요청 
+---------------------------------------------------------------
+
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/GetRoomMainInfo
+
+매개 변수 값 
+
+room_index:  int
+user_no:  string			// 나
+last_chat_index: int		// 현재 로컬에서 저장하고 있는 마지막 Chat index
+
+Result
+
+<ROOM_MAIN_INFO reason_sort ="-1" room_index ="1002000" chat_last_index ="192" chat_unread_count ="4">
+<!-- reason_sort -1 :  해당 방정보를 찾을수 없음 -->
+<!-- reason_sort -2 :  기타 System 오류 -->
+
+  <NOTICE_ALERT_LIST>
+    <NOTICE_ALERT type ="1" unread_count ="2"/>
+    <NOTICE_ALERT type ="2" unread_count ="1"/>
+    <NOTICE_ALERT type ="3" unread_count ="4"/>
+  </NOTICE_ALERT_LIST>
+
+</ROOM_MAIN_INFO>
+
