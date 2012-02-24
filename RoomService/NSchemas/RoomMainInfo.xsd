@@ -11,6 +11,7 @@
           <xs:attribute name="notice_a_cnt" type="xs:int" use="required" />
           <xs:attribute name="notice_b_cnt" type="xs:int" use="required" />
           <xs:attribute name="notice_c_cnt" type="xs:int" use="required" />
+          <xs:attribute name="cm_date" type="xs:dateTime" use="required" />
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>

@@ -22,25 +22,28 @@ using System.Xml.Serialization;
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
 [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
-public partial class ROOM_MAIN_INFO {
+public partial class MEMBER_PROFILE_INFO {
+    
+    private MEMBER_PROFILE_INFOMEMBER_PROFILE[] mEMBER_PROFILEField;
     
     private int reason_sortField;
     
     private int room_indexField;
     
-    private int chat_last_indexField;
-    
-    private int chat_unread_countField;
-    
-    private int notice_a_cntField;
-    
-    private int notice_b_cntField;
-    
-    private int notice_c_cntField;
+    private int countField;
     
     private System.DateTime cm_dateField;
     
-    private string valueField;
+    /// <remarks/>
+    [System.Xml.Serialization.XmlElementAttribute("MEMBER_PROFILE")]
+    public MEMBER_PROFILE_INFOMEMBER_PROFILE[] MEMBER_PROFILE {
+        get {
+            return this.mEMBER_PROFILEField;
+        }
+        set {
+            this.mEMBER_PROFILEField = value;
+        }
+    }
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -66,56 +69,12 @@ public partial class ROOM_MAIN_INFO {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int chat_last_index {
+    public int count {
         get {
-            return this.chat_last_indexField;
+            return this.countField;
         }
         set {
-            this.chat_last_indexField = value;
-        }
-    }
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int chat_unread_count {
-        get {
-            return this.chat_unread_countField;
-        }
-        set {
-            this.chat_unread_countField = value;
-        }
-    }
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int notice_a_cnt {
-        get {
-            return this.notice_a_cntField;
-        }
-        set {
-            this.notice_a_cntField = value;
-        }
-    }
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int notice_b_cnt {
-        get {
-            return this.notice_b_cntField;
-        }
-        set {
-            this.notice_b_cntField = value;
-        }
-    }
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int notice_c_cnt {
-        get {
-            return this.notice_c_cntField;
-        }
-        set {
-            this.notice_c_cntField = value;
+            this.countField = value;
         }
     }
     
@@ -129,15 +88,39 @@ public partial class ROOM_MAIN_INFO {
             this.cm_dateField = value;
         }
     }
+}
+
+/// <remarks/>
+[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.1")]
+[System.SerializableAttribute()]
+[System.Diagnostics.DebuggerStepThroughAttribute()]
+[System.ComponentModel.DesignerCategoryAttribute("code")]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+public partial class MEMBER_PROFILE_INFOMEMBER_PROFILE {
+    
+    private string login_idField;
+    
+    private string imageUrlField;
     
     /// <remarks/>
-    [System.Xml.Serialization.XmlTextAttribute()]
-    public string Value {
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public string login_id {
         get {
-            return this.valueField;
+            return this.login_idField;
         }
         set {
-            this.valueField = value;
+            this.login_idField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public string imageUrl {
+        get {
+            return this.imageUrlField;
+        }
+        set {
+            this.imageUrlField = value;
         }
     }
 }

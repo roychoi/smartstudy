@@ -116,6 +116,10 @@ public partial class ROOM_INFO_LISTCREATE_INFOROOM {
     
     private bool is_dirtyFieldSpecified;
     
+    private System.DateTime cm_dateField;
+    
+    private bool cm_dateFieldSpecified;
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
     public uint index {
@@ -245,6 +249,28 @@ public partial class ROOM_INFO_LISTCREATE_INFOROOM {
         }
         set {
             this.is_dirtyFieldSpecified = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public System.DateTime cm_date {
+        get {
+            return this.cm_dateField;
+        }
+        set {
+            this.cm_dateField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlIgnoreAttribute()]
+    public bool cm_dateSpecified {
+        get {
+            return this.cm_dateFieldSpecified;
+        }
+        set {
+            this.cm_dateFieldSpecified = value;
         }
     }
 }
@@ -316,6 +342,10 @@ public partial class ROOM_INFO_LISTJOIN_INFOROOM {
     
     private bool is_dirtyFieldSpecified;
     
+    private System.DateTime cm_dateField;
+    
+    private bool cm_dateFieldSpecified;
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
     public uint index {
@@ -445,6 +475,28 @@ public partial class ROOM_INFO_LISTJOIN_INFOROOM {
         }
         set {
             this.is_dirtyFieldSpecified = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public System.DateTime cm_date {
+        get {
+            return this.cm_dateField;
+        }
+        set {
+            this.cm_dateField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlIgnoreAttribute()]
+    public bool cm_dateSpecified {
+        get {
+            return this.cm_dateFieldSpecified;
+        }
+        set {
+            this.cm_dateFieldSpecified = value;
         }
     }
 }

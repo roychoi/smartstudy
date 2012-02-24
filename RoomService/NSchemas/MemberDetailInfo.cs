@@ -36,6 +36,8 @@ public partial class MEMBER_DETAIL_INFO {
     
     private byte countField;
     
+    private System.DateTime cm_dateField;
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute("MEMBER")]
     public MEMBER_DETAIL_INFOMEMBER[] MEMBER {
@@ -99,6 +101,17 @@ public partial class MEMBER_DETAIL_INFO {
         }
         set {
             this.countField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public System.DateTime cm_date {
+        get {
+            return this.cm_dateField;
+        }
+        set {
+            this.cm_dateField = value;
         }
     }
 }

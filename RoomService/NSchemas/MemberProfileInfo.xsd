@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="MEMBER_PROFILE_INFO">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="MEMBER_PROFILE">
+          <xs:complexType>
+            <xs:attribute name="login_id" type="xs:string" use="required" />
+            <xs:attribute name="imageUrl" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="reason_sort" type="xs:int" use="required" />
+      <xs:attribute name="room_index" type="xs:int" use="required" />
+      <xs:attribute name="count" type="xs:int" use="required" />
+      <xs:attribute name="cm_date" type="xs:dateTime" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

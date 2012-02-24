@@ -19,6 +19,7 @@
       <xs:attribute name="deposit_total" type="xs:int" use="required" />
       <xs:attribute name="penalty_total" type="xs:int" use="required" />
       <xs:attribute name="count" type="xs:unsignedByte" use="required" />
+      <xs:attribute name="cm_date" type="xs:dateTime" use="required" />
     </xs:complexType>
   </xs:element>
 </xs:schema>

@@ -17,8 +17,9 @@
                   <xs:attribute name="location_sub" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="current_user" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="max_user" type="xs:unsignedByte" use="required" />
-                  <xs:attribute name="commited" type="xs:boolean" use="required" />
+                  <xs:attribute name="commited" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="is_dirty" type="xs:unsignedByte" use="optional" />
+                  <xs:attribute name="cm_date" type="xs:dateTime" use="optional" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -39,8 +40,9 @@
                   <xs:attribute name="location_sub" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="current_user" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="max_user" type="xs:unsignedByte" use="required" />
-                  <xs:attribute name="commited" type="xs:boolean" use="required" />
+                  <xs:attribute name="commited" type="xs:unsignedByte" use="required" />
                   <xs:attribute name="is_dirty" type="xs:unsignedByte" use="optional" />
+                  <xs:attribute name="cm_date" type="xs:dateTime" use="optional" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

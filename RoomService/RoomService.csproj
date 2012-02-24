@@ -74,6 +74,9 @@
     <Compile Include="NSchemas\MemberDetailInfo.cs">
       <DependentUpon>MemberDetailInfo.xsd</DependentUpon>
     </Compile>
+    <Compile Include="NSchemas\MemberProfileInfo.cs">
+      <DependentUpon>MemberProfileInfo.xsd</DependentUpon>
+    </Compile>
     <Compile Include="NSchemas\Notice.cs">
       <DependentUpon>Notice.xsd</DependentUpon>
     </Compile>
@@ -123,6 +126,9 @@
     <None Include="NSchemas\MemberDetailInfo.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="NSchemas\MemberProfileInfo.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NSchemas\Notice.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -157,6 +163,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="NSchemas\MemberDetailInfo.xml" />
+    <Content Include="NSchemas\MemberProfileInfo.xml" />
     <Content Include="NSchemas\Notice.xml">
       <SubType>Designer</SubType>
     </Content>

@@ -2,12 +2,14 @@
 <ROOM_INFO_LIST>
   <CREATE_INFO count ="2">
     <!-- 방장일경우 -->
-    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="true" is_dirty ="1"/>
-    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="false"/>
+    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="1" is_dirty ="1" 
+              cm_date="2011-09-22T13:55:00.000"/>
+    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="0"/>
   </CREATE_INFO>
   <JOIN_INFO count ="2">
     <!-- 그냥 가입해있는 경우 -->
-    <ROOM index="100012" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="true" is_dirty ="1"/>
-    <ROOM index="100013" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="false"/>
+    <ROOM index="100012" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="1" is_dirty ="1"
+        cm_date="2011-09-22T13:55:00.000" />
+    <ROOM index="100013" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="0"/>
   </JOIN_INFO>
 </ROOM_INFO_LIST>

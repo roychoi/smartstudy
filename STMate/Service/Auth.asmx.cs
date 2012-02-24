@@ -283,20 +283,20 @@ namespace STMate.Service
                         auth_user_result.age = (byte)(current.Year - birth.Year);
                     }
 
-                    IRoom proxy = factory.CreateChannel();
+					//IRoom proxy = factory.CreateChannel();
 
-                    bool bResult = proxy.LoginUser(user_guid.ToString("N"),
-                        loginEmail,		// from membership
-                        userName,		// from profile
-                        birth, // from profile
-                        auth_user_result.gender, // from profile 
-                        deviceToken
-                        );
+					//bool bResult = proxy.LoginUser(user_guid.ToString("N"),
+					//    loginEmail,		// from membership
+					//    userName,		// from profile
+					//    birth, // from profile
+					//    auth_user_result.gender, // from profile 
+					//    deviceToken
+					//    );
 
-                    (proxy as IDisposable).Dispose();
+					//(proxy as IDisposable).Dispose();
 
-                    SqlProfileProvider sqlProfile = ProfileManager.Provider as SqlProfileProvider;
-                    String Name = sqlProfile.ApplicationName;
+					//SqlProfileProvider sqlProfile = ProfileManager.Provider as SqlProfileProvider;
+					//String Name = sqlProfile.ApplicationName;
 
                     return auth_user_result;
                 }
@@ -337,7 +337,6 @@ namespace STMate.Service
                 ProfileBase userProfile = ProfileBase.Create(update_device_info.login_id, true);
 
 				userProfile["DeviceToken"] = deviceToken;	// last logined device
-				//userProfile["ImageUrl"] = "http://testtest.asp/image.jpg";	// last logined device
                 userProfile.Save();
 
                 (proxy as IDisposable).Dispose();
@@ -349,6 +348,27 @@ namespace STMate.Service
                 update_device_info.result_code = -1;
                 return update_device_info;
             }
+		}
+
+		[WebMethod(EnableSession = true)]
+		public UPDATE_DEVICE_INFO UpdateImageUrl(String userNo, String imageUrl )
+		{
+			UPDATE_DEVICE_INFO update_device_info = new UPDATE_DEVICE_INFO();
+
+			try
+			{
+				ProfileBase userProfile = ProfileBase.Create(userNo, true);
+
+				userProfile["ImageUrl"] = imageUrl;	// last logined device
+				userProfile.Save();
+
+				return update_device_info;
+			}
+			catch ( Exception )
+			{
+				update_device_info.result_code = -1;
+				return update_device_info;
+			}
 		}
     }
 }

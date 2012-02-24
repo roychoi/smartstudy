@@ -1,3 +1,63 @@
+
+---------------------------------------------------------------
+**. History
+---------------------------------------------------------------
+---------------------------------------------------------------
+2012/02/10
+---------------------------------------------------------------
+
+1. EntrustMaster 추가
+
+2. RecruitMember 추가
+
+3. GetPenaltyInfo 추가
+
+4. MemberDetailInfo 추가
+
+5. CheckUserPenalty 추가
+
+6. UpdatePenaltyInfo 추가
+
+---------------------------------------------------------------
+2012/02/24
+---------------------------------------------------------------
+1. CreateUser 수정
+- imageUrl 매개변수 추가
+
+2. MyRoomList 추가 ( 누락항목 추가)
+
+- 커밋 DateTime 추가
+	
+	<ROOM_INFO_LIST>
+		<CREATE_INFO>
+			<ROOM commited = "1" cm_date = "2011-09-22T13:55:00.000" > 추가 (Optional [commited = 1] )
+			<ROOM commited = "0" > 
+			...
+
+3. CheckUserPenalty , MemberDetailInfo 수정
+
+	<MEMBER_DETAIL_INFO cm_date = "2011-09-22T13:55:00.000" > 추가 (Required)
+		...
+
+4. GetRoomMainInfo 수정
+	<ROOM_MAIN_INFO cm_date = "2011-09-22T13:55:00.000" > 추가 (Required)
+
+- 방 처음뷰에서 매번 호출한다. cm_date 를 update 하여 새로 커밋된 방인지 아닌지 검사 할수 있음
+
+5. MemberProfileInfo 추가
+
+- RoomList 에서 저장된 혹은 cm_date 와 다르거나, 필요시에 호출
+	
+	MEMBER_DETAIL_INFO 와 별도로 간단한 이미지 정보등 프로필정보만 가져온다.
+	필요시 언제든 호출 가능하나 
+
+		a. 로컬에 저장된 cm_date ( RoomMainInfo 에서 저장된 ) 날짜와 다르거나,
+		b. 1-2 일정도 지났을시에, (사진정보 변경 검사를 위해 ) 한번씩 호출
+		
+
+
+
+
 ---------------------------------------------------------------
 1. 회원가입
 ---------------------------------------------------------------
@@ -12,7 +72,7 @@ passWord:  string
 userName:  string
 gender:  byte
 birthYear:  int
-
+imageUrl: string
 
 Result
 
@@ -88,7 +148,34 @@ Result
 - RoomResult.xml
 
 ---------------------------------------------------------------
-3. 방가입
+4. 내가 가입한 방정보 보기
+---------------------------------------------------------------
+
+- Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/MyRoomList
+
+user_no:  string
+
+
+- Result
+
+<ROOM_INFO_LIST>
+  <CREATE_INFO count ="2">
+    <!-- 방장일경우 -->
+    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="1" is_dirty ="1" 
+              cm_date="2011-09-22T13:55:00.000"/>
+    <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="0"/>
+  </CREATE_INFO>
+  <JOIN_INFO count ="2">
+    <!-- 그냥 가입해있는 경우 -->
+    <ROOM index="100012" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="1" is_dirty ="1"
+        cm_date="2011-09-22T13:55:00.000" />
+    <ROOM index="100013" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="0"/>
+  </JOIN_INFO>
+</ROOM_INFO_LIST>
+
+---------------------------------------------------------------
+5. 방가입
 ---------------------------------------------------------------
 
 Method
@@ -122,7 +209,7 @@ Result
 
 
 ---------------------------------------------------------------
-4. 방 나가기
+6. 방 나가기
 ---------------------------------------------------------------
 
 Method
@@ -154,7 +241,7 @@ Result
 <!-- UP : -3 : 기타 System 오류-->
 
 ---------------------------------------------------------------
-5. 스터디 가입 -> 대기중인 방 선택시 상세 정보.
+7. 스터디 가입 -> 대기중인 방 선택시 상세 정보.
 ---------------------------------------------------------------
 Method
 http://www.studyheyo.co.kr/Service/RoomManager.asmx/JoinRoomDetail 
@@ -179,7 +266,7 @@ Result
 
 
 ---------------------------------------------------------------
-6. 스터디 생성완료 
+8. 스터디 생성완료 
 ---------------------------------------------------------------
 Method
 http://www.studyheyo.co.kr/Service/RoomManager.asmx/Commit
@@ -218,7 +305,7 @@ Result
 
 
 ---------------------------------------------------------------
-7. 공지사항 쓰기
+9. 공지사항 쓰기
 ---------------------------------------------------------------
 Method
 http://www.studyheyo.co.kr/Service/RoomManager.asmx/CreateNotice
@@ -262,7 +349,7 @@ Result
 
 
 ---------------------------------------------------------------
-8. 공지사항 지우기
+10. 공지사항 지우기
 ---------------------------------------------------------------
 Method
 http://www.studyheyo.co.kr/Service/RoomManager.asmx/DeleteNotice
@@ -306,7 +393,7 @@ Result
 
 
 ---------------------------------------------------------------
-9. 공지사항 확인( 업데이트 )
+11. 공지사항 확인( 업데이트 )
 
 - NOTICE 인덱스는 순차적으로 증가하나,
  중간에 지우거나 했을경우 리스트에서 중간에 값이 빌수 있음
@@ -349,7 +436,7 @@ Result
 </NOTICE_LIST>
 
 ---------------------------------------------------------------
-10. 채팅 쓰기
+12. 채팅 쓰기
 
 - 내가 새로운 채팅을 작성할때 항상 마지막 last_update 인덱스를
 서버로 전송한다. ( 그 이후에 채팅 메세지들이 같이옴 )
@@ -383,7 +470,7 @@ Result
 
 
 ---------------------------------------------------------------
-11. 채팅 업데이트
+13. 채팅 업데이트
 
 - 마지막 last_update 인덱스를 서버로 전송한다. 
 - 채팅 Push 알림을 받았을 경우도 호출해서 항상 최신 리스트가 유지
@@ -412,7 +499,7 @@ Result
 
 
 ---------------------------------------------------------------
-12. 디바이스 정보 업데이트
+14. 디바이스 정보 업데이트
 ---------------------------------------------------------------
 Method
 http://www.studyheyo.co.kr/Service/Auth.asmx/UpdateDeviceInfo
@@ -434,7 +521,7 @@ Result
 <!--  -3 : 로그인 되지않은 user_no -->
 
 ---------------------------------------------------------------
-13. 방 보증금 및 벌금 설정
+15. 방 보증금 및 벌금 설정
 ---------------------------------------------------------------
 
 Method
@@ -460,7 +547,7 @@ Result
 <!-- UP : -3 : 기타 System 오류-->
 
 ---------------------------------------------------------------
-14. 유저 벌금정보 업데이트 
+16. 유저 벌금정보 업데이트 
 ---------------------------------------------------------------
 
 Method
@@ -479,7 +566,7 @@ penalty:  int				// 벌금정보 조합 ( AbsenceA = 0x01,
 
 Result
 
-<MEMBER_DETAIL_INFO reason_sort ="-1" index ="1002000" deposit_total ="200000" penalty_total ="142000" count ="1">
+<MEMBER_DETAIL_INFO reason_sort ="-1"index ="1002000" cm_date = "2011-09-22T13:55:00.000" deposit_total ="200000" penalty_total ="142000" count ="1" >
 	<!-- 공통 error -->
 	<!-- -1 : 방장권한이 없다-->
 	<!-- -2 : 커밋된 방이 아니다-->
@@ -491,7 +578,7 @@ Result
 
 
 ---------------------------------------------------------------
-15. 방 상세정보 요청
+17. 방 상세정보 요청
 ---------------------------------------------------------------
 
 Method
@@ -504,9 +591,10 @@ user_no:  string			// 나
 
 Result
 
-<MEMBER_DETAIL_INFO reason_sort ="-1" index ="1002000" deposit_total ="200000" penalty_total ="142000" count ="1">
+<MEMBER_DETAIL_INFO reason_sort ="-1" index ="1002000" deposit_total ="200000" penalty_total ="142000" count ="1" cm_date ="2011-09-22T13:55:00.000" >
 	<!-- 공통 error -->
 	<!-- -1 : 올바르지 않은 유저 정보-->
+	<!-- -2 : 커밋된 방이 아니다.-->
 	<!-- -4 : 기타 System Error -->
 	
     <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1"/>
@@ -517,7 +605,7 @@ Result
 
 
 ---------------------------------------------------------------
-16. 방 현재 벌금정보 요청
+18. 방 현재 벌금정보 요청
 ---------------------------------------------------------------
 
 Method
@@ -537,7 +625,7 @@ Result
 <!-- reason_sort : -3 : 기타 System 오류-->
 
 ---------------------------------------------------------------
-17. 회원 재모집 요청 ( not commited 상태로 변경 )
+19. 회원 재모집 요청 ( not commited 상태로 변경 )
 ---------------------------------------------------------------
 
 Method
@@ -559,7 +647,7 @@ Result
 <!-- RC : -4 : 기타 System 오류-->
 
 ---------------------------------------------------------------
-18. 방장권한 위임 ( 자기자신 제외, 방에 속해있는 유저중 )
+20. 방장권한 위임 ( 자기자신 제외, 방에 속해있는 유저중 )
 ---------------------------------------------------------------
 
 Method
@@ -585,7 +673,7 @@ Result
 
 
 ---------------------------------------------------------------
-19. 방 기본 정보 요청 
+21. 방 기본 정보 요청 
 ---------------------------------------------------------------
 
 Method
@@ -600,8 +688,43 @@ last_chat_index: int		// 현재 로컬에서 저장하고 있는 마지막 Chat index
 Result
 
 <ROOM_MAIN_INFO reason_sort ="-1" room_index ="1002000" chat_last_index ="192" chat_unread_count ="4" notice_a_cnt ="1"
-notice_b_cnt ="2" notice_c_cnt ="0" >
-<!-- reason_sort -1 :  해당 방정보를 찾을수 없음 -->
-<!-- reason_sort -2 :  기타 System 오류 -->
-</ROOM_MAIN_INFO>
+notice_b_cnt ="2" notice_c_cnt ="0"  cm_date ="2011-09-22T13:55:00.000" />
 
+<!-- reason_sort -1 :  해당 방정보를 찾을수 없음 -->
+<!-- reason_sort -2 :  커밋된 방이 아니다.-->
+<!-- reason_sort -3 : 기타 System 오류-->
+
+
+
+---------------------------------------------------------------
+22. 회원 프로필 정보 요청 
+
+-	RoomList 에서 저장된 혹은 cm_date 와 다르거나, 필요시에 호출
+	
+-	MEMBER_DETAIL_INFO 와 별도로 간단한 이미지 정보등 프로필정보만 가져온다.
+	필요시 언제든 호출 가능하나 
+
+		a. 로컬에 저장된 cm_date ( RoomMainInfo 에서 저장된 ) 날짜와 다르거나,
+		b. 1-2 일정도 지났을시에, ( 사진정보 변경 검사를 위해 ) 한번씩 호출
+
+---------------------------------------------------------------
+
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/MemberProfileInfo
+
+매개 변수 값 
+
+room_index:  int
+
+Result
+
+<MEMBER_PROFILE_INFO room_index ="1002000" reason_sort = "0" count ="4" cm_date ="2011-09-22T13:55:00.000">
+    <MEMBER_PROFILE login_id ="roy1669@gmail.com" imageUrl ="roy1669abcd123.jpg"/>
+    <MEMBER_PROFILE login_id ="gusupa@gmail.com" imageUrl ="gusupaabcd123.jpg"/>
+    <MEMBER_PROFILE login_id ="azasaw@me.com" imageUrl ="default_1"/>
+    <MEMBER_PROFILE login_id ="ysskwon@nate.com" imageUrl ="default_2"/>
+</MEMBER_PROFILE_INFO>
+
+<!-- reason_sort -1 : 해당 방정보를 찾을수 없음 -->
+<!-- reason_sort -2 : 커밋된 방이 아니다.-->
+<!-- reason_sort -3 : 기타 System 오류-->

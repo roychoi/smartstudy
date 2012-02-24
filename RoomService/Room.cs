@@ -160,6 +160,8 @@ namespace RoomService
 	
 		[OperationContract]
 		void UpdateRoomInfo(int room_index, String user_no, RoomSearchKey key);
+		[OperationContract]
+		MEMBER_PROFILE_INFO MemberProfileInfo(int room_index);
 
 		//[OperationContract]
 		//void UpdateBadge(UInt32 room_index, String user_no, int last_update);
@@ -657,93 +659,131 @@ namespace RoomService
 				Guid UserId = new Guid(user_no);
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
 
-				List<NDb.NData.JoinedRoom> room_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
-														join room in db.GetTable<NDb.CreateRoom>()
-														on RoomUser.RoomIndex equals room.RoomIndex
-														where (RoomUser.UserId == UserId)
-														select new NDb.NData.JoinedRoom
-														{
-															Index = room.RoomIndex,
-															Name = room.Name,
-															Comment = room.Comment,
-															Duration = room.Duration,
-															MaxUser = room.MaxUser,
-															Category = room.Category,
-															LocationMain = room.Location_Main,
-															LocationSub = room.Location_Sub,
-															Commited = room.Commited,
-															CreateDate = room.CreateDateTime,
-															CurrentUser = (byte)(from RoomUserCount in db.GetTable<NDb.RoomJoinedUser>()
-																				 where RoomUserCount.RoomIndex == room.RoomIndex
-																				 select RoomUserCount).Count<NDb.RoomJoinedUser>(),
-															MasterUserId = room.UserId
+				List<NDb.RoomJoinedUser> room_user = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+													  where RoomUser.UserId == UserId
+													  select RoomUser).ToList();
 
-														}).ToList<NDb.NData.JoinedRoom>();
+				foreach (NDb.RoomJoinedUser RoomUser in room_user)
+				{
+					Console.WriteLine("RoomList count...and RoomIndex {0} UserCount {1} ", RoomUser.CreateRoom.RoomIndex,
+						RoomUser.CreateRoom.RoomJoinedUsers.Count);
+				}
 
-				Console.WriteLine("MyRoomListDb count...{0} and Requester {1} ", room_list.Count, user_no );
-				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb count...{0} and Requester {1} ", room_list.Count, user_no );
+				//List<NDb.NData.JoinedRoom> room_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+				//                                        join room in db.GetTable<NDb.CreateRoom>()
+				//                                        on RoomUser.RoomIndex equals room.RoomIndex
+				//                                        where (RoomUser.UserId == UserId)
+				//                                        select new NDb.NData.JoinedRoom
+				//                                        {
+				//                                            Index = room.RoomIndex,
+				//                                            Name = room.Name,
+				//                                            Comment = room.Comment,
+				//                                            Duration = room.Duration,
+				//                                            MaxUser = room.MaxUser,
+				//                                            Category = room.Category,
+				//                                            LocationMain = room.Location_Main,
+				//                                            LocationSub = room.Location_Sub,
+				//                                            Commited = room.Commited,
+				//                                            CreateDate = room.CreateDateTime,
+				//                                            CurrentUser = (byte)(from RoomUserCount in db.GetTable<NDb.RoomJoinedUser>()
+				//                                                                 where RoomUserCount.RoomIndex == room.RoomIndex
+				//                                                                 select RoomUserCount).Count<NDb.RoomJoinedUser>(),
+				//                                            MasterUserId = room.UserId,
+				//                                            CommitedDate = room.CommitedDateTime
 
-				IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list
-																  where create_room.MasterUserId.Equals(UserId) 
-																  select create_room;
+				//                                        }).ToList<NDb.NData.JoinedRoom>();
 
+				//Console.WriteLine("MyRoomListDb count...{0} and Requester {1} ", room_list.Count, user_no );
+				//NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb count...{0} and Requester {1} ", room_list.Count, user_no );
 
-				int create_count = query_created.Count<NDb.NData.JoinedRoom>();
+				//IEnumerable<NDb.NData.JoinedRoom> query_created = from create_room in room_list
+				//                                                  where create_room.MasterUserId.Equals(UserId) 
+				//                                                  select create_room;
+
+				IEnumerable<NDb.CreateRoom> query_created = from JoinedUser in room_user
+																	where JoinedUser.CreateRoom.UserId.Equals(UserId)
+																	select JoinedUser.CreateRoom;
+				
+				//int create_count = query_created.Count<NDb.NData.JoinedRoom>();
+				int create_count = query_created.Count();
 				room_info_list.CREATE_INFO = new ROOM_INFO_LISTCREATE_INFO();
 				room_info_list.CREATE_INFO.count = (byte)create_count;
 				room_info_list.CREATE_INFO.ROOM = new ROOM_INFO_LISTCREATE_INFOROOM[create_count];
 				int index = 0;
 
-				foreach (NDb.NData.JoinedRoom joinedRoom in query_created)
+				//foreach (NDb.NData.JoinedRoom joinedRoom in query_created)
+				foreach (NDb.CreateRoom joinedRoom in query_created)
 				{
-					Console.WriteLine("MyRoomListDb Create Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
-					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Create Room {0} Name {1} Date {2} User :{3}", joinedRoom.Index, 
+					Console.WriteLine("MyRoomListDb Create Room {0} Name {1} Date {2}", joinedRoom.RoomIndex, joinedRoom.Name, joinedRoom.CreateDateTime);
+					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Create Room {0} Name {1} Date {2} User :{3}", joinedRoom.RoomIndex, 
 						joinedRoom.Name,
-						joinedRoom.CreateDate,
-						joinedRoom.MasterUserId );
+						joinedRoom.CreateDateTime,
+						joinedRoom.UserId );
 
 					room_info_list.CREATE_INFO.ROOM[index] = new ROOM_INFO_LISTCREATE_INFOROOM();
-					room_info_list.CREATE_INFO.ROOM[index].index = (uint)joinedRoom.Index;
+					room_info_list.CREATE_INFO.ROOM[index].index = (uint)joinedRoom.RoomIndex;
 					room_info_list.CREATE_INFO.ROOM[index].name = joinedRoom.Name;
 					room_info_list.CREATE_INFO.ROOM[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
+					room_info_list.CREATE_INFO.ROOM[index].cm_dateSpecified = false;
+					if (joinedRoom.Commited == true)
+					{
+						room_info_list.CREATE_INFO.ROOM[index].cm_dateSpecified = true;
+						room_info_list.CREATE_INFO.ROOM[index].cm_date = joinedRoom.CommitedDateTime.Value;
+					}
+
 					room_info_list.CREATE_INFO.ROOM[index].comment = joinedRoom.Comment;
 					room_info_list.CREATE_INFO.ROOM[index].category = joinedRoom.Category;
-					room_info_list.CREATE_INFO.ROOM[index].location_main = joinedRoom.LocationMain;
-					room_info_list.CREATE_INFO.ROOM[index].location_sub = joinedRoom.LocationSub;
-					room_info_list.CREATE_INFO.ROOM[index].current_user = joinedRoom.CurrentUser;
+					room_info_list.CREATE_INFO.ROOM[index].location_main = joinedRoom.Location_Main;
+					room_info_list.CREATE_INFO.ROOM[index].location_sub = joinedRoom.Location_Sub;
+					room_info_list.CREATE_INFO.ROOM[index].current_user = (byte)joinedRoom.RoomJoinedUsers.Count;
 					room_info_list.CREATE_INFO.ROOM[index].max_user = joinedRoom.MaxUser;
 					room_info_list.CREATE_INFO.ROOM[index].duration = joinedRoom.Duration;
+
 					index++;
 				}
 
-				IEnumerable<NDb.NData.JoinedRoom> query_joined = from join_room in room_list 
-																 where !join_room.MasterUserId.Equals(UserId) 
-																 select join_room;
-
-				int join_count = query_joined.Count<NDb.NData.JoinedRoom>();
+				//IEnumerable<NDb.NData.JoinedRoom> query_joined = from join_room in room_list 
+				//                                                 where !join_room.MasterUserId.Equals(UserId) 
+				//                                                 select join_room;
+				IEnumerable<NDb.CreateRoom> query_joined = from JoinedUser in room_user
+															where !JoinedUser.CreateRoom.UserId.Equals(UserId)
+															select JoinedUser.CreateRoom;
+		
+				//int join_count = query_joined.Count<NDb.NData.JoinedRoom>();
+				int join_count = query_joined.Count();
 				room_info_list.JOIN_INFO = new ROOM_INFO_LISTJOIN_INFO();
 				room_info_list.JOIN_INFO.count = (byte)join_count;
 				room_info_list.JOIN_INFO.ROOM = new ROOM_INFO_LISTJOIN_INFOROOM[join_count];
 				
 				index = 0;
 
-				foreach (NDb.NData.JoinedRoom joinedRoom in query_joined)
+				//foreach (NDb.NData.JoinedRoom joinedRoom in query_joined)
+				foreach (NDb.CreateRoom joinedRoom in query_joined)
 				{
-					Console.WriteLine("MyRoomListDb Joined Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
-					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Joined Room {0} Name {1} Date {2} User :{3}", joinedRoom.Index,
+					Console.WriteLine("MyRoomListDb Joined Room {0} Name {1} Date {2}", joinedRoom.RoomIndex, joinedRoom.Name, joinedRoom.CreateDateTime);
+					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Joined Room {0} Name {1} Date {2} User :{3}", joinedRoom.RoomIndex,
 										joinedRoom.Name,
-										joinedRoom.CreateDate,
-										joinedRoom.MasterUserId);
+										joinedRoom.CreateDateTime,
+										joinedRoom.UserId);
 
 					room_info_list.JOIN_INFO.ROOM[index] = new ROOM_INFO_LISTJOIN_INFOROOM();
-					room_info_list.JOIN_INFO.ROOM[index].index = (uint)joinedRoom.Index;
+					room_info_list.JOIN_INFO.ROOM[index].index = (uint)joinedRoom.RoomIndex;
 					room_info_list.JOIN_INFO.ROOM[index].name = joinedRoom.Name;
 					room_info_list.JOIN_INFO.ROOM[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
+
+					room_info_list.JOIN_INFO.ROOM[index].cm_dateSpecified = false;
+					if (joinedRoom.Commited == true)
+					{
+						room_info_list.JOIN_INFO.ROOM[index].cm_dateSpecified = true;
+						room_info_list.JOIN_INFO.ROOM[index].cm_date = joinedRoom.CommitedDateTime.Value;
+					}
+
 					room_info_list.JOIN_INFO.ROOM[index].comment = joinedRoom.Comment;
 					room_info_list.JOIN_INFO.ROOM[index].category = joinedRoom.Category;
-					room_info_list.JOIN_INFO.ROOM[index].location_main = joinedRoom.LocationMain;
-					room_info_list.JOIN_INFO.ROOM[index].location_sub = joinedRoom.LocationSub;
-					room_info_list.JOIN_INFO.ROOM[index].current_user = joinedRoom.CurrentUser;
+					room_info_list.JOIN_INFO.ROOM[index].location_main = joinedRoom.Location_Main;
+					room_info_list.JOIN_INFO.ROOM[index].location_sub = joinedRoom.Location_Sub;
+					// RoomJoinedUser 가 없을때 Null 인지 체크
+					room_info_list.JOIN_INFO.ROOM[index].current_user = (byte)joinedRoom.RoomJoinedUsers.Count;
 					room_info_list.JOIN_INFO.ROOM[index].max_user = joinedRoom.MaxUser;
 					room_info_list.JOIN_INFO.ROOM[index].duration = joinedRoom.Duration;
 					index++;
@@ -2199,6 +2239,7 @@ namespace RoomService
 																					mached_user.aspnet_User.aspnet_Profile.PropertyValuesString));
 
 				result.reason_sort = 0;
+				result.cm_date = matched_room.CommitedDateTime.Value;
 
 				result.penalty_total = matched_room.RoomJoinedUsers.Sum<NDb.RoomJoinedUser>( UserPenalty => UserPenalty.Penalty );
 				// 전체 Deposit 를 저장할지 결정...
@@ -2250,6 +2291,12 @@ namespace RoomService
 					return result;
 				}
 
+				if (matched_room.Commited == false)
+				{
+					result.reason_sort = -2;   // not commited room
+					return result;
+				}
+
 				// JoinedRoomUser 가 0 일때 체크 하기
 				List<NDb.RoomJoinedUser> user_list = matched_room.RoomJoinedUsers.ToList<NDb.RoomJoinedUser>();
 				//List<NDb.RoomJoinedUser> user_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
@@ -2258,6 +2305,7 @@ namespace RoomService
 
 
 				result.reason_sort = 0;
+				result.cm_date = matched_room.CommitedDateTime.Value;
 				result.count = (byte)user_list.Count;
 				result.penalty_total = user_list.Sum<NDb.RoomJoinedUser>(UserPenalty => UserPenalty.Penalty);
 
@@ -2387,6 +2435,14 @@ namespace RoomService
 					return result;
 				}
 
+				if (matched_room.Commited == false)
+				{
+					result.reason_sort = -2;
+					return result;
+				}
+
+				result.cm_date = matched_room.CommitedDateTime.Value;
+
 				TimeSpan checkOneDaySpan = new TimeSpan( 2,0,0,0 );
 				DateTime checkOneDayTime = DateTime.Now - checkOneDaySpan;
 
@@ -2440,6 +2496,65 @@ namespace RoomService
 
 			catch (Exception e)
 			{
+				result.reason_sort = -3;
+				return result;
+			}
+
+			return result;
+		}
+
+
+		public MEMBER_PROFILE_INFO MemberProfileInfo(int room_index )
+		{
+			MEMBER_PROFILE_INFO result = new MEMBER_PROFILE_INFO();
+			result.reason_sort = 0;
+			result.room_index = room_index;
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				var matched_room = (from Master in db.GetTable<NDb.CreateRoom>()
+									where Master.RoomIndex == room_index
+									select Master).SingleOrDefault();
+
+				if (matched_room == null)
+				{
+					result.reason_sort = -1;   // not found user
+					return result;
+				}
+
+				if (matched_room.Commited == false)
+				{
+					result.reason_sort = -2;
+					return result;
+				}
+
+				result.cm_date = matched_room.CommitedDateTime.Value;
+
+				// JoinedRoomUser 가 0 일때 체크 하기
+				List<NDb.RoomJoinedUser> user_list = matched_room.RoomJoinedUsers.ToList<NDb.RoomJoinedUser>();
+				
+				int user_count = user_list.Count;
+				result.count = user_count;
+				result.MEMBER_PROFILE = new MEMBER_PROFILE_INFOMEMBER_PROFILE[user_count];
+
+				int index = 0;
+				foreach (NDb.RoomJoinedUser JoinedUser in user_list)
+				{
+					result.MEMBER_PROFILE[index] = new MEMBER_PROFILE_INFOMEMBER_PROFILE();
+
+					result.MEMBER_PROFILE[index].login_id = JoinedUser.LoginId;
+					result.MEMBER_PROFILE[index].imageUrl = db.fn_GetProfileElement("ImageUrl", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+																JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString);
+
+					index++;
+				}
+			}
+
+			catch (Exception e)
+			{
+				result.reason_sort = -3;
 				return result;
 			}
 

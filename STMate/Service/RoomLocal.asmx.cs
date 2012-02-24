@@ -298,5 +298,15 @@ namespace STMate.Service
 
 			return result;
 		}
+
+		[WebMethod(EnableSession = true)]
+		public MEMBER_PROFILE_INFO MemberProfileInfo(int room_index)
+		{
+			IRoom proxy = factory.CreateChannel();
+			MEMBER_PROFILE_INFO result = proxy.MemberProfileInfo(room_index);
+			(proxy as IDisposable).Dispose();
+
+			return result;
+		}
 	}
 }
