@@ -2667,7 +2667,11 @@ namespace RoomService
 												   where InviteUser.UserId == UserId
 												   select InviteUser).ToList();
 
+				
 				int join_count = invited_user.Count();
+
+				room_info_list.invited_count = join_count;
+
 				room_info_list.JOIN_INFO = new ROOM_INFO_LISTJOIN_INFO();
 				room_info_list.JOIN_INFO.count = (byte)join_count;
 				room_info_list.JOIN_INFO.ROOM = new ROOM_INFO_LISTJOIN_INFOROOM[join_count];
