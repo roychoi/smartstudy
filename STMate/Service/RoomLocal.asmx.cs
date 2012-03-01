@@ -308,5 +308,35 @@ namespace STMate.Service
 
 			return result;
 		}
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_RESULT InviteUser(int room_index, String user_no, String dest_member_id)
+		{
+			IRoom proxy = factory.CreateChannel();
+			ROOM_RESULT result = proxy.InviteUser(room_index, user_no, dest_member_id);
+			(proxy as IDisposable).Dispose();
+
+			return result;
+		}
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_INFO_LIST InviteRoomList(String user_no)
+		{
+			IRoom proxy = factory.CreateChannel();
+			ROOM_INFO_LIST result = proxy.InviteRoomList(user_no);
+			(proxy as IDisposable).Dispose();
+
+			return result;
+		}
+
+		[WebMethod(EnableSession = true)]
+		public ROOM_RESULT DeleteInvitedRoom(String user_no, int room_index)
+		{
+			IRoom proxy = factory.CreateChannel();
+			ROOM_RESULT result = proxy.DeleteInvitedRoom(room_index, user_no);
+			(proxy as IDisposable).Dispose();
+
+			return result;
+		}
 	}
 }

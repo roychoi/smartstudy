@@ -54,6 +54,9 @@ namespace RoomService.NDb
     partial void InsertMessage(Message instance);
     partial void UpdateMessage(Message instance);
     partial void DeleteMessage(Message instance);
+    partial void InsertInvitedUser(InvitedUser instance);
+    partial void UpdateInvitedUser(InvitedUser instance);
+    partial void DeleteInvitedUser(InvitedUser instance);
     #endregion
 		
 		public RoomDataClassesDataContext() : 
@@ -150,6 +153,14 @@ namespace RoomService.NDb
 			}
 		}
 		
+		public System.Data.Linq.Table<InvitedUser> InvitedUsers
+		{
+			get
+			{
+				return this.GetTable<InvitedUser>();
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.fn_GetProfileElement", IsComposable=true)]
 		public string fn_GetProfileElement([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(100)")] string fieldName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(4000)")] string fields, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(4000)")] string values)
 		{
@@ -187,6 +198,8 @@ namespace RoomService.NDb
 		
 		private EntitySet<RoomJoinedUser> _RoomJoinedUsers;
 		
+		private EntitySet<InvitedUser> _InvitedUsers;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -214,6 +227,7 @@ namespace RoomService.NDb
 			this._UserDeviceInfo = default(EntityRef<UserDeviceInfo>);
 			this._CreateRooms = new EntitySet<CreateRoom>(new Action<CreateRoom>(this.attach_CreateRooms), new Action<CreateRoom>(this.detach_CreateRooms));
 			this._RoomJoinedUsers = new EntitySet<RoomJoinedUser>(new Action<RoomJoinedUser>(this.attach_RoomJoinedUsers), new Action<RoomJoinedUser>(this.detach_RoomJoinedUsers));
+			this._InvitedUsers = new EntitySet<InvitedUser>(new Action<InvitedUser>(this.attach_InvitedUsers), new Action<InvitedUser>(this.detach_InvitedUsers));
 			OnCreated();
 		}
 		
@@ -470,6 +484,19 @@ namespace RoomService.NDb
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_InvitedUser", Storage="_InvitedUsers", ThisKey="UserId", OtherKey="UserId")]
+		public EntitySet<InvitedUser> InvitedUsers
+		{
+			get
+			{
+				return this._InvitedUsers;
+			}
+			set
+			{
+				this._InvitedUsers.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -509,6 +536,18 @@ namespace RoomService.NDb
 		}
 		
 		private void detach_RoomJoinedUsers(RoomJoinedUser entity)
+		{
+			this.SendPropertyChanging();
+			entity.aspnet_User = null;
+		}
+		
+		private void attach_InvitedUsers(InvitedUser entity)
+		{
+			this.SendPropertyChanging();
+			entity.aspnet_User = this;
+		}
+		
+		private void detach_InvitedUsers(InvitedUser entity)
 		{
 			this.SendPropertyChanging();
 			entity.aspnet_User = null;
@@ -1717,6 +1756,8 @@ namespace RoomService.NDb
 		
 		private EntitySet<Message> _Messages;
 		
+		private EntitySet<InvitedUser> _InvitedUsers;
+		
 		private EntityRef<aspnet_User> _aspnet_User;
 		
     #region Extensibility Method Definitions
@@ -1764,6 +1805,7 @@ namespace RoomService.NDb
 			this._Notices = new EntitySet<Notice>(new Action<Notice>(this.attach_Notices), new Action<Notice>(this.detach_Notices));
 			this._RoomJoinedUsers = new EntitySet<RoomJoinedUser>(new Action<RoomJoinedUser>(this.attach_RoomJoinedUsers), new Action<RoomJoinedUser>(this.detach_RoomJoinedUsers));
 			this._Messages = new EntitySet<Message>(new Action<Message>(this.attach_Messages), new Action<Message>(this.detach_Messages));
+			this._InvitedUsers = new EntitySet<InvitedUser>(new Action<InvitedUser>(this.attach_InvitedUsers), new Action<InvitedUser>(this.detach_InvitedUsers));
 			this._aspnet_User = default(EntityRef<aspnet_User>);
 			OnCreated();
 		}
@@ -2151,6 +2193,19 @@ namespace RoomService.NDb
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_InvitedUser", Storage="_InvitedUsers", ThisKey="RoomIndex", OtherKey="RoomIndex")]
+		public EntitySet<InvitedUser> InvitedUsers
+		{
+			get
+			{
+				return this._InvitedUsers;
+			}
+			set
+			{
+				this._InvitedUsers.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_CreateRoom", Storage="_aspnet_User", ThisKey="UserId", OtherKey="UserId", IsForeignKey=true)]
 		public aspnet_User aspnet_User
 		{
@@ -2236,6 +2291,18 @@ namespace RoomService.NDb
 		}
 		
 		private void detach_Messages(Message entity)
+		{
+			this.SendPropertyChanging();
+			entity.CreateRoom = null;
+		}
+		
+		private void attach_InvitedUsers(InvitedUser entity)
+		{
+			this.SendPropertyChanging();
+			entity.CreateRoom = this;
+		}
+		
+		private void detach_InvitedUsers(InvitedUser entity)
 		{
 			this.SendPropertyChanging();
 			entity.CreateRoom = null;
@@ -2721,6 +2788,198 @@ namespace RoomService.NDb
 					if ((value != null))
 					{
 						value.Messages.Add(this);
+						this._RoomIndex = value.RoomIndex;
+					}
+					else
+					{
+						this._RoomIndex = default(int);
+					}
+					this.SendPropertyChanged("CreateRoom");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.InvitedUser")]
+	public partial class InvitedUser : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _UserId;
+		
+		private int _RoomIndex;
+		
+		private System.DateTime _InviteDateTime;
+		
+		private EntityRef<aspnet_User> _aspnet_User;
+		
+		private EntityRef<CreateRoom> _CreateRoom;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnUserIdChanging(System.Guid value);
+    partial void OnUserIdChanged();
+    partial void OnRoomIndexChanging(int value);
+    partial void OnRoomIndexChanged();
+    partial void OnInviteDateTimeChanging(System.DateTime value);
+    partial void OnInviteDateTimeChanged();
+    #endregion
+		
+		public InvitedUser()
+		{
+			this._aspnet_User = default(EntityRef<aspnet_User>);
+			this._CreateRoom = default(EntityRef<CreateRoom>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					if (this._aspnet_User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoomIndex", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int RoomIndex
+		{
+			get
+			{
+				return this._RoomIndex;
+			}
+			set
+			{
+				if ((this._RoomIndex != value))
+				{
+					if (this._CreateRoom.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnRoomIndexChanging(value);
+					this.SendPropertyChanging();
+					this._RoomIndex = value;
+					this.SendPropertyChanged("RoomIndex");
+					this.OnRoomIndexChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InviteDateTime", DbType="DateTime NOT NULL")]
+		public System.DateTime InviteDateTime
+		{
+			get
+			{
+				return this._InviteDateTime;
+			}
+			set
+			{
+				if ((this._InviteDateTime != value))
+				{
+					this.OnInviteDateTimeChanging(value);
+					this.SendPropertyChanging();
+					this._InviteDateTime = value;
+					this.SendPropertyChanged("InviteDateTime");
+					this.OnInviteDateTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_InvitedUser", Storage="_aspnet_User", ThisKey="UserId", OtherKey="UserId", IsForeignKey=true)]
+		public aspnet_User aspnet_User
+		{
+			get
+			{
+				return this._aspnet_User.Entity;
+			}
+			set
+			{
+				aspnet_User previousValue = this._aspnet_User.Entity;
+				if (((previousValue != value) 
+							|| (this._aspnet_User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._aspnet_User.Entity = null;
+						previousValue.InvitedUsers.Remove(this);
+					}
+					this._aspnet_User.Entity = value;
+					if ((value != null))
+					{
+						value.InvitedUsers.Add(this);
+						this._UserId = value.UserId;
+					}
+					else
+					{
+						this._UserId = default(System.Guid);
+					}
+					this.SendPropertyChanged("aspnet_User");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CreateRoom_InvitedUser", Storage="_CreateRoom", ThisKey="RoomIndex", OtherKey="RoomIndex", IsForeignKey=true)]
+		public CreateRoom CreateRoom
+		{
+			get
+			{
+				return this._CreateRoom.Entity;
+			}
+			set
+			{
+				CreateRoom previousValue = this._CreateRoom.Entity;
+				if (((previousValue != value) 
+							|| (this._CreateRoom.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CreateRoom.Entity = null;
+						previousValue.InvitedUsers.Remove(this);
+					}
+					this._CreateRoom.Entity = value;
+					if ((value != null))
+					{
+						value.InvitedUsers.Add(this);
 						this._RoomIndex = value.RoomIndex;
 					}
 					else

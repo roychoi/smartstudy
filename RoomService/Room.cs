@@ -163,6 +163,12 @@ namespace RoomService
 		[OperationContract]
 		MEMBER_PROFILE_INFO MemberProfileInfo(int room_index);
 
+		[OperationContract]
+		ROOM_RESULT InviteUser(int room_index, String user_no, String dest_member_id);
+		[OperationContract]
+		ROOM_INFO_LIST InviteRoomList(String user_no);
+		[OperationContract]
+		ROOM_RESULT DeleteInvitedRoom(int room_index, String user_no);
 		//[OperationContract]
 		//void UpdateBadge(UInt32 room_index, String user_no, int last_update);
 	}
@@ -659,6 +665,13 @@ namespace RoomService
 				Guid UserId = new Guid(user_no);
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
 
+
+				int invited_count = (from InviteUser in db.GetTable<NDb.InvitedUser>()
+									 where InviteUser.UserId == UserId
+									 select InviteUser).Count();
+
+				room_info_list.invited_count = invited_count;
+
 				List<NDb.RoomJoinedUser> room_user = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
 													  where RoomUser.UserId == UserId
 													  select RoomUser).ToList();
@@ -721,7 +734,7 @@ namespace RoomService
 						joinedRoom.UserId );
 
 					room_info_list.CREATE_INFO.ROOM[index] = new ROOM_INFO_LISTCREATE_INFOROOM();
-					room_info_list.CREATE_INFO.ROOM[index].index = (uint)joinedRoom.RoomIndex;
+					room_info_list.CREATE_INFO.ROOM[index].index = joinedRoom.RoomIndex;
 					room_info_list.CREATE_INFO.ROOM[index].name = joinedRoom.Name;
 					room_info_list.CREATE_INFO.ROOM[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
 					room_info_list.CREATE_INFO.ROOM[index].cm_dateSpecified = false;
@@ -767,7 +780,7 @@ namespace RoomService
 										joinedRoom.UserId);
 
 					room_info_list.JOIN_INFO.ROOM[index] = new ROOM_INFO_LISTJOIN_INFOROOM();
-					room_info_list.JOIN_INFO.ROOM[index].index = (uint)joinedRoom.RoomIndex;
+					room_info_list.JOIN_INFO.ROOM[index].index = joinedRoom.RoomIndex;
 					room_info_list.JOIN_INFO.ROOM[index].name = joinedRoom.Name;
 					room_info_list.JOIN_INFO.ROOM[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
 
@@ -2561,5 +2574,192 @@ namespace RoomService
 			return result;
 		}
 
+		public ROOM_RESULT InviteUser(int room_index, String user_no, String dest_member_id)
+		{
+			ROOM_RESULT result = new ROOM_RESULT();
+			result.crud = "IV";
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				Guid UserId = new Guid(user_no);
+				var matched_room = (from Master in db.GetTable<NDb.CreateRoom>()
+									where Master.RoomIndex == room_index
+									select Master).SingleOrDefault();
+
+				if (matched_room == null)
+				{
+					result.reason_sort = -1;   // not found room
+					return result;
+				}
+
+				if (matched_room.UserId.Equals(UserId) == false)
+				{
+					result.reason_sort = -2;   // not master user
+					return result;
+				}
+
+				if (matched_room.Commited == false)
+				{
+					result.reason_sort = -3;	// not commited room
+					return result;
+				}
+
+
+				NDb.RoomJoinedUser mached_user = (from RoomUser in matched_room.RoomJoinedUsers
+												  where RoomUser.LoginId == dest_member_id
+												  select RoomUser).SingleOrDefault();
+				if (mached_user != null)
+				{
+					result.reason_sort = -4;   // already joined user
+					return result;
+				}
+
+				NDb.InvitedUser invite_user = new NDb.InvitedUser();
+
+				var invited_user_find = (from User in db.GetTable<NDb.aspnet_User>()
+									where User.UserName == dest_member_id
+									select User ).SingleOrDefault();
+
+				if (invited_user_find == null)
+				{
+					result.reason_sort = -5;	// not found dest user
+					return result;
+				}
+
+				invite_user.RoomIndex = matched_room.RoomIndex;
+				invite_user.UserId = invited_user_find.UserId;
+				invite_user.InviteDateTime = DateTime.Now;
+
+				db.InvitedUsers.InsertOnSubmit(invite_user);
+				db.SubmitChanges();
+
+				result.reason_sort = 0;
+				result.room_index = (uint)matched_room.RoomIndex;
+
+				return result;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("================== InviteUser Error ==================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+
+				result.reason_sort = -6;
+				result.room_index = 0;
+
+				return result;
+			}
+
+		}
+
+		public ROOM_INFO_LIST InviteRoomList(String user_no)
+		{
+			ROOM_INFO_LIST room_info_list = new ROOM_INFO_LIST();
+
+			try
+			{
+				Guid UserId = new Guid(user_no);
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				List<NDb.InvitedUser> invited_user = (from InviteUser in db.GetTable<NDb.InvitedUser>()
+												   where InviteUser.UserId == UserId
+												   select InviteUser).ToList();
+
+				int join_count = invited_user.Count();
+				room_info_list.JOIN_INFO = new ROOM_INFO_LISTJOIN_INFO();
+				room_info_list.JOIN_INFO.count = (byte)join_count;
+				room_info_list.JOIN_INFO.ROOM = new ROOM_INFO_LISTJOIN_INFOROOM[join_count];
+
+				int index = 0;
+
+				foreach (NDb.InvitedUser invitedRoom in invited_user)
+				{
+					Console.WriteLine("InviteRoomList Room {0} Name {1} Date {2}", invitedRoom.CreateRoom.RoomIndex, invitedRoom.CreateRoom.Name, invitedRoom.CreateRoom.CreateDateTime);
+					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "InviteRoomList Room {0} Name {1} Date {2} User :{3}", invitedRoom.CreateRoom.RoomIndex,
+										invitedRoom.CreateRoom.Name,
+										invitedRoom.CreateRoom.CreateDateTime,
+										invitedRoom.CreateRoom.UserId);
+
+					room_info_list.JOIN_INFO.ROOM[index] = new ROOM_INFO_LISTJOIN_INFOROOM();
+					room_info_list.JOIN_INFO.ROOM[index].index = invitedRoom.CreateRoom.RoomIndex;
+					room_info_list.JOIN_INFO.ROOM[index].name = invitedRoom.CreateRoom.Name;
+					room_info_list.JOIN_INFO.ROOM[index].commited = (byte)Convert.ChangeType(invitedRoom.CreateRoom.Commited, TypeCode.Byte);
+
+					room_info_list.JOIN_INFO.ROOM[index].cm_dateSpecified = false;
+					if (invitedRoom.CreateRoom.Commited == true)
+					{
+						room_info_list.JOIN_INFO.ROOM[index].cm_dateSpecified = true;
+						room_info_list.JOIN_INFO.ROOM[index].cm_date = invitedRoom.CreateRoom.CommitedDateTime.Value;
+					}
+
+					room_info_list.JOIN_INFO.ROOM[index].comment = invitedRoom.CreateRoom.Comment;
+					room_info_list.JOIN_INFO.ROOM[index].category = invitedRoom.CreateRoom.Category;
+					room_info_list.JOIN_INFO.ROOM[index].location_main = invitedRoom.CreateRoom.Location_Main;
+					room_info_list.JOIN_INFO.ROOM[index].location_sub = invitedRoom.CreateRoom.Location_Sub;
+
+					// RoomJoinedUser 가 없을때 Null 인지 체크
+					room_info_list.JOIN_INFO.ROOM[index].current_user = (byte)invitedRoom.CreateRoom.RoomJoinedUsers.Count;
+					room_info_list.JOIN_INFO.ROOM[index].max_user = invitedRoom.CreateRoom.MaxUser;
+					room_info_list.JOIN_INFO.ROOM[index].duration = invitedRoom.CreateRoom.Duration;
+					index++;
+				}
+
+				NApns.Provider._source.Flush();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("================== InviteRoomList Error ==================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+
+				return room_info_list;
+			}
+
+			return room_info_list;
+		}
+
+		public ROOM_RESULT DeleteInvitedRoom(int room_index, String user_no)
+		{
+			ROOM_RESULT result = new ROOM_RESULT();
+			result.crud = "DI";
+
+			try
+			{
+				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+
+				Guid UserId = new Guid(user_no);
+
+				var invited_user = (from InviteUser in db.GetTable<NDb.InvitedUser>()
+								  where InviteUser.UserId == UserId && InviteUser.RoomIndex == room_index
+								  select InviteUser).SingleOrDefault();
+
+				if (invited_user == null)
+				{
+					result.reason_sort = -1;
+					return result;
+				}
+
+				db.InvitedUsers.DeleteOnSubmit(invited_user);
+				db.SubmitChanges();
+
+				result.reason_sort = 0;
+				result.room_index = (uint)room_index;
+
+				return result;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("================== InviteUser Error ==================");
+				Console.WriteLine("{0}", e.Message);
+				Console.WriteLine("==============================================================");
+				
+				result.reason_sort = -2;
+				result.room_index = 0;
+
+				return result;
+			}
+		}
 	}
 }

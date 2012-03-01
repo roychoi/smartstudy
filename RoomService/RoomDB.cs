@@ -269,7 +269,7 @@ namespace RoomService
 					Console.WriteLine("MyRoomListDb Joined Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
 
 					room_info_list.JOIN_INFO.ROOM[index] = new ROOM_INFO_LISTJOIN_INFOROOM();
-					room_info_list.JOIN_INFO.ROOM[index].index = (uint)joinedRoom.Index;
+					room_info_list.JOIN_INFO.ROOM[index].index = joinedRoom.Index;
 					room_info_list.JOIN_INFO.ROOM[index].name = joinedRoom.Name;
 					room_info_list.JOIN_INFO.ROOM[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
 					room_info_list.JOIN_INFO.ROOM[index].comment = joinedRoom.Comment;
@@ -293,7 +293,7 @@ namespace RoomService
 				{
 					Console.WriteLine("MyRoomListDb Create Room {0} Name {1} Date {2}", joinedRoom.Index, joinedRoom.Name, joinedRoom.CreateDate);
 					room_info_list.CREATE_INFO.ROOM[index] = new ROOM_INFO_LISTCREATE_INFOROOM();
-					room_info_list.CREATE_INFO.ROOM[index].index = (uint)joinedRoom.Index;
+					room_info_list.CREATE_INFO.ROOM[index].index = joinedRoom.Index;
 					room_info_list.CREATE_INFO.ROOM[index].name = joinedRoom.Name;
 					room_info_list.CREATE_INFO.ROOM[index].commited = (byte)Convert.ChangeType(joinedRoom.Commited, TypeCode.Byte);
 					room_info_list.CREATE_INFO.ROOM[index].comment = joinedRoom.Comment;

@@ -60,6 +60,17 @@
 
 1. UpdateImageUrl 추가
 
+2. MyRoomList 수정
+
+	<ROOM_INFO_LIST invited_count ="10" > 초대받은방 카운트 추가
+		...
+
+3. InviteUser 추가
+
+4. InvitedRoomList 추가
+
+5. DeleteInvitedRoom 추가
+
 ---------------------------------------------------------------
 1. 회원가입
 ---------------------------------------------------------------
@@ -161,7 +172,7 @@ user_no:  string
 
 - Result
 
-<ROOM_INFO_LIST>
+<ROOM_INFO_LIST invited_count ="10" >
   <CREATE_INFO count ="2">
     <!-- 방장일경우 -->
     <ROOM index="100011" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="1" is_dirty ="1" 
@@ -742,11 +753,71 @@ http://www.studyheyo.co.kr/Service/Auth.asmx/UpdateImageUrl
 userNo:  string
 imageUrl:  string
 
-
-
 Result
-
 
 <UPDATE_DEVICE_INFO result_code ="-1" user_no ="81ae5a0f16264de3900a5747ee9e853d" login_id ="roy1669@gmail.com"/>
 <!-- result_code  -->
 <!--  -1 : SystemError -->
+
+---------------------------------------------------------------
+24. 유저 초대하기 
+---------------------------------------------------------------
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/InviteUser
+
+매개 변수 값 
+
+room_index:  int
+user_no:  string			// 나
+dest_member_id: string
+
+Result
+
+<ROOM_RESULT crud ="IV" room_index ="100001" reason_sort="0" />
+
+<!-- IV : InVite -->
+<!-- IV : -1 : 해당 방정보를 찾을수 없음-->
+<!-- IV : -2 : 방장권한이 없다.-->
+<!-- IV : -3 : 커밋된 방이 아니다-->
+<!-- IV : -4 : 이미 방에 가입된 유저를 초대하려고 시도.-->
+<!-- IV : -5 : 해당하는 유저정보를 찾을수 없음 -->
+<!-- IV : -6 : 기타 System 오류-->
+
+---------------------------------------------------------------
+25. 초대받은 방 리스트 검색
+---------------------------------------------------------------
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/InviteRoomList
+
+매개 변수 값 
+
+user_no:  string			// 나
+
+Result
+
+<ROOM_INFO_LIST invited_count ="0" >
+  <JOIN_INFO count ="2">
+    <ROOM index="100012" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="1" is_dirty ="1"
+        cm_date="2011-09-22T13:55:00.000" />
+    <ROOM index="100013" name ="스터디" comment ="토익구만점" category="1"  duration="A100200" location_main ="1" location_sub ="10" current_user ="4" max_user ="10" commited ="0"/>
+  </JOIN_INFO>
+</ROOM_INFO_LIST>
+
+---------------------------------------------------------------
+26. 초대받은 방 리스트 지우기
+---------------------------------------------------------------
+
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/DeleteInvitedRoom
+
+매개 변수 값 
+
+room_index:  int
+user_no:  string			// 나
+
+Result
+<ROOM_RESULT crud ="IV" room_index ="100001" reason_sort="0" />
+
+<!-- IV : InVite -->
+<!-- IV : -1 : 해당 방정보를 찾을수 없음-->
+<!-- IV : -2 :기타 System 오류.-->

@@ -28,6 +28,8 @@ public partial class ROOM_INFO_LIST {
     
     private ROOM_INFO_LISTJOIN_INFO jOIN_INFOField;
     
+    private int invited_countField;
+    
     /// <remarks/>
     public ROOM_INFO_LISTCREATE_INFO CREATE_INFO {
         get {
@@ -45,6 +47,17 @@ public partial class ROOM_INFO_LIST {
         }
         set {
             this.jOIN_INFOField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public int invited_count {
+        get {
+            return this.invited_countField;
+        }
+        set {
+            this.invited_countField = value;
         }
     }
 }
@@ -92,23 +105,23 @@ public partial class ROOM_INFO_LISTCREATE_INFO {
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
 public partial class ROOM_INFO_LISTCREATE_INFOROOM {
     
-    private uint indexField;
+    private int indexField;
     
     private string nameField;
     
     private string commentField;
     
-    private byte categoryField;
+    private int categoryField;
     
     private string durationField;
     
-    private byte location_mainField;
+    private int location_mainField;
     
-    private byte location_subField;
+    private int location_subField;
     
-    private byte current_userField;
+    private int current_userField;
     
-    private byte max_userField;
+    private int max_userField;
     
     private byte commitedField;
     
@@ -122,7 +135,7 @@ public partial class ROOM_INFO_LISTCREATE_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public uint index {
+    public int index {
         get {
             return this.indexField;
         }
@@ -155,7 +168,7 @@ public partial class ROOM_INFO_LISTCREATE_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte category {
+    public int category {
         get {
             return this.categoryField;
         }
@@ -177,7 +190,7 @@ public partial class ROOM_INFO_LISTCREATE_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte location_main {
+    public int location_main {
         get {
             return this.location_mainField;
         }
@@ -188,7 +201,7 @@ public partial class ROOM_INFO_LISTCREATE_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte location_sub {
+    public int location_sub {
         get {
             return this.location_subField;
         }
@@ -199,7 +212,7 @@ public partial class ROOM_INFO_LISTCREATE_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte current_user {
+    public int current_user {
         get {
             return this.current_userField;
         }
@@ -210,7 +223,7 @@ public partial class ROOM_INFO_LISTCREATE_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte max_user {
+    public int max_user {
         get {
             return this.max_userField;
         }
@@ -285,7 +298,7 @@ public partial class ROOM_INFO_LISTJOIN_INFO {
     
     private ROOM_INFO_LISTJOIN_INFOROOM[] rOOMField;
     
-    private byte countField;
+    private int countField;
     
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute("ROOM")]
@@ -300,7 +313,7 @@ public partial class ROOM_INFO_LISTJOIN_INFO {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte count {
+    public int count {
         get {
             return this.countField;
         }
@@ -318,23 +331,23 @@ public partial class ROOM_INFO_LISTJOIN_INFO {
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
 public partial class ROOM_INFO_LISTJOIN_INFOROOM {
     
-    private uint indexField;
+    private int indexField;
     
     private string nameField;
     
     private string commentField;
     
-    private byte categoryField;
+    private int categoryField;
     
     private string durationField;
     
-    private byte location_mainField;
+    private int location_mainField;
     
-    private byte location_subField;
+    private int location_subField;
     
-    private byte current_userField;
+    private int current_userField;
     
-    private byte max_userField;
+    private int max_userField;
     
     private byte commitedField;
     
@@ -348,7 +361,7 @@ public partial class ROOM_INFO_LISTJOIN_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public uint index {
+    public int index {
         get {
             return this.indexField;
         }
@@ -381,7 +394,7 @@ public partial class ROOM_INFO_LISTJOIN_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte category {
+    public int category {
         get {
             return this.categoryField;
         }
@@ -403,7 +416,7 @@ public partial class ROOM_INFO_LISTJOIN_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte location_main {
+    public int location_main {
         get {
             return this.location_mainField;
         }
@@ -414,7 +427,7 @@ public partial class ROOM_INFO_LISTJOIN_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte location_sub {
+    public int location_sub {
         get {
             return this.location_subField;
         }
@@ -425,7 +438,7 @@ public partial class ROOM_INFO_LISTJOIN_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte current_user {
+    public int current_user {
         get {
             return this.current_userField;
         }
@@ -436,7 +449,7 @@ public partial class ROOM_INFO_LISTJOIN_INFOROOM {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte max_user {
+    public int max_user {
         get {
             return this.max_userField;
         }

@@ -64,8 +64,12 @@ namespace WCFClient
 				//ROOM_RESULT result12 = test.CreateRoomDb("9CA1A2F4-AA7C-462C-96D2-1F5FE26D691D", key, "웹에서", "아무나오지말고", "1111111", 10);
 
 				//410fba26-f787-421e-9bbe-1e13f9866da8
-				ROOM_RESULT result111 = test.Push("f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6", "좋다", 1);
-				
+				//ROOM_RESULT result111 = test.Push("f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6", "좋다", 1);
+
+
+				IRoom proxy = factory.CreateChannel();
+				ROOM_RESULT rr2 = proxy.Push("f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6", "잇힝", 1);
+				(proxy as IDisposable).Dispose();
             }
             catch (FaultException<RoomService.MyFaultException> ee)
             {

@@ -14,6 +14,7 @@
       <Association Name="aspnet_User_UserDeviceInfo" Member="UserDeviceInfo" ThisKey="UserId" OtherKey="UserId" Type="UserDeviceInfo" Cardinality="One" />
       <Association Name="aspnet_User_CreateRoom" Member="CreateRooms" ThisKey="UserId" OtherKey="UserId" Type="CreateRoom" />
       <Association Name="aspnet_User_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="UserId" OtherKey="UserId" Type="RoomJoinedUser" />
+      <Association Name="aspnet_User_InvitedUser" Member="InvitedUsers" ThisKey="UserId" OtherKey="UserId" Type="InvitedUser" />
     </Type>
   </Table>
   <Table Name="dbo.aspnet_Membership" Member="aspnet_Memberships">
@@ -93,6 +94,7 @@
       <Association Name="CreateRoom_Notice" Member="Notices" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Notice" />
       <Association Name="CreateRoom_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="RoomJoinedUser" />
       <Association Name="CreateRoom_Message" Member="Messages" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Message" />
+      <Association Name="CreateRoom_InvitedUser" Member="InvitedUsers" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="InvitedUser" />
       <Association Name="aspnet_User_CreateRoom" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
     </Type>
   </Table>
@@ -118,6 +120,15 @@
       <Column Name="NickName" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
       <Column Name="Email" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
       <Association Name="CreateRoom_Message" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.InvitedUser" Member="InvitedUsers">
+    <Type Name="InvitedUser">
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="InviteDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="aspnet_User_InvitedUser" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
+      <Association Name="CreateRoom_InvitedUser" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.fn_GetProfileElement" Method="fn_GetProfileElement" IsComposable="true">
