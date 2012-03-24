@@ -80,6 +80,9 @@
     <Compile Include="NSchemas\Notice.cs">
       <DependentUpon>Notice.xsd</DependentUpon>
     </Compile>
+    <Compile Include="NSchemas\PushNotification.cs">
+      <DependentUpon>PushNotification.xsd</DependentUpon>
+    </Compile>
     <Compile Include="NSchemas\RoomInfoList.cs" />
     <Compile Include="NSchemas\RoomMainInfo.cs">
       <DependentUpon>RoomMainInfo.xsd</DependentUpon>
@@ -132,6 +135,9 @@
     <None Include="NSchemas\Notice.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="NSchemas\PushNotification.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NSchemas\RoomInfoList.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -167,6 +173,7 @@
     <Content Include="NSchemas\Notice.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="NSchemas\PushNotification.xml" />
     <Content Include="NSchemas\RoomInfoList.xml">
       <SubType>Designer</SubType>
     </Content>

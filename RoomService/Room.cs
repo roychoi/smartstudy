@@ -1664,47 +1664,60 @@ namespace RoomService
 												 join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>()
 													 on RoomUser.UserId equals DeviceInfo.UserId
 												 select DeviceInfo).ToList<NDb.UserDeviceInfo>();
-
-				Console.WriteLine("Push Notification to room {0} ", room_index );
 				
+				Console.WriteLine("Push Notification to room {0} ", room_index );
 
+				PUSH_NOTIFICATION pushInfo = new PUSH_NOTIFICATION();
+				pushInfo.INFO = new PUSH_NOTIFICATIONINFO[device_info_list.Count];
+
+				int nPushCount = 0;
 				foreach (NDb.UserDeviceInfo device_info in device_info_list)
 				{
-					Console.WriteLine("DeviceToken {0} ", device_info );
+					pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
+					pushInfo.INFO[nPushCount].DeviceId = device_info.DeviceToken;
+					pushInfo.INFO[nPushCount].type = "iOS";
+					pushInfo.INFO[nPushCount].sound = "default";
 
-					if (device_info.UserId.Equals(UserId))
-					{
-						Console.WriteLine("[ChatRoom Skip user]  : {0}", device_info.UserId);
-						continue;
-					}
-
-					if (device_info.DeviceToken.Equals(""))
-					{
-						Console.WriteLine("[ChatRoom Skip user Invalid DeviceToken ]  : {0}", device_info.UserId);
-						continue;
-					}
-
-					try
-					{
-						//Create a new notification to send
-						JdSoft.Apple.Apns.Notifications.Notification
-						alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(device_info.DeviceToken);
-
-						alertNotification.Payload.Alert.Body = content;
-						alertNotification.Payload.Sound = "default";
-						alertNotification.Payload.Badge = 1;
-
-						//Queue the notification to be sent
-						if (_apnsProvider.Service.QueueNotification(alertNotification))
-							Console.WriteLine("Notification Queued!");
-						else
-							Console.WriteLine("Notification Failed to be Queued!");
-					}
-					catch
-					{
-						continue;
-					}
+					nPushCount++;
 				}
+
+				//foreach (NDb.UserDeviceInfo device_info in device_info_list)
+				//{
+				//    Console.WriteLine("DeviceToken {0} ", device_info );
+
+				//    if (device_info.UserId.Equals(UserId))
+				//    {
+				//        Console.WriteLine("[ChatRoom Skip user]  : {0}", device_info.UserId);
+				//        continue;
+				//    }
+
+				//    if (device_info.DeviceToken.Equals(""))
+				//    {
+				//        Console.WriteLine("[ChatRoom Skip user Invalid DeviceToken ]  : {0}", device_info.UserId);
+				//        continue;
+				//    }
+
+				//    try
+				//    {
+				//        //Create a new notification to send
+				//        JdSoft.Apple.Apns.Notifications.Notification
+				//        alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(device_info.DeviceToken);
+
+				//        alertNotification.Payload.Alert.Body = content;
+				//        alertNotification.Payload.Sound = "default";
+				//        alertNotification.Payload.Badge = 1;
+
+				//        //Queue the notification to be sent
+				//        if (_apnsProvider.Service.QueueNotification(alertNotification))
+				//            Console.WriteLine("Notification Queued!");
+				//        else
+				//            Console.WriteLine("Notification Failed to be Queued!");
+				//    }
+				//    catch
+				//    {
+				//        continue;
+				//    }
+				//}
 
 				return chat_list;
 			}
