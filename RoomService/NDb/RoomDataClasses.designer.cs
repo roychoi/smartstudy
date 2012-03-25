@@ -39,9 +39,6 @@ namespace RoomService.NDb
     partial void Insertaspnet_Profile(aspnet_Profile instance);
     partial void Updateaspnet_Profile(aspnet_Profile instance);
     partial void Deleteaspnet_Profile(aspnet_Profile instance);
-    partial void InsertUserDeviceInfo(UserDeviceInfo instance);
-    partial void UpdateUserDeviceInfo(UserDeviceInfo instance);
-    partial void DeleteUserDeviceInfo(UserDeviceInfo instance);
     partial void InsertNotice(Notice instance);
     partial void UpdateNotice(Notice instance);
     partial void DeleteNotice(Notice instance);
@@ -57,6 +54,9 @@ namespace RoomService.NDb
     partial void InsertInvitedUser(InvitedUser instance);
     partial void UpdateInvitedUser(InvitedUser instance);
     partial void DeleteInvitedUser(InvitedUser instance);
+    partial void InsertUserDeviceInfo(UserDeviceInfo instance);
+    partial void UpdateUserDeviceInfo(UserDeviceInfo instance);
+    partial void DeleteUserDeviceInfo(UserDeviceInfo instance);
     #endregion
 		
 		public RoomDataClassesDataContext() : 
@@ -113,14 +113,6 @@ namespace RoomService.NDb
 			}
 		}
 		
-		public System.Data.Linq.Table<UserDeviceInfo> UserDeviceInfos
-		{
-			get
-			{
-				return this.GetTable<UserDeviceInfo>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Notice> Notices
 		{
 			get
@@ -161,6 +153,14 @@ namespace RoomService.NDb
 			}
 		}
 		
+		public System.Data.Linq.Table<UserDeviceInfo> UserDeviceInfos
+		{
+			get
+			{
+				return this.GetTable<UserDeviceInfo>();
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.fn_GetProfileElement", IsComposable=true)]
 		public string fn_GetProfileElement([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(100)")] string fieldName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(4000)")] string fields, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(4000)")] string values)
 		{
@@ -192,13 +192,13 @@ namespace RoomService.NDb
 		
 		private EntityRef<aspnet_Profile> _aspnet_Profile;
 		
-		private EntityRef<UserDeviceInfo> _UserDeviceInfo;
-		
 		private EntitySet<CreateRoom> _CreateRooms;
 		
 		private EntitySet<RoomJoinedUser> _RoomJoinedUsers;
 		
 		private EntitySet<InvitedUser> _InvitedUsers;
+		
+		private EntityRef<UserDeviceInfo> _UserDeviceInfo;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -224,10 +224,10 @@ namespace RoomService.NDb
 		{
 			this._aspnet_Membership = default(EntityRef<aspnet_Membership>);
 			this._aspnet_Profile = default(EntityRef<aspnet_Profile>);
-			this._UserDeviceInfo = default(EntityRef<UserDeviceInfo>);
 			this._CreateRooms = new EntitySet<CreateRoom>(new Action<CreateRoom>(this.attach_CreateRooms), new Action<CreateRoom>(this.detach_CreateRooms));
 			this._RoomJoinedUsers = new EntitySet<RoomJoinedUser>(new Action<RoomJoinedUser>(this.attach_RoomJoinedUsers), new Action<RoomJoinedUser>(this.detach_RoomJoinedUsers));
 			this._InvitedUsers = new EntitySet<InvitedUser>(new Action<InvitedUser>(this.attach_InvitedUsers), new Action<InvitedUser>(this.detach_InvitedUsers));
+			this._UserDeviceInfo = default(EntityRef<UserDeviceInfo>);
 			OnCreated();
 		}
 		
@@ -429,35 +429,6 @@ namespace RoomService.NDb
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_UserDeviceInfo", Storage="_UserDeviceInfo", ThisKey="UserId", OtherKey="UserId", IsUnique=true, IsForeignKey=false)]
-		public UserDeviceInfo UserDeviceInfo
-		{
-			get
-			{
-				return this._UserDeviceInfo.Entity;
-			}
-			set
-			{
-				UserDeviceInfo previousValue = this._UserDeviceInfo.Entity;
-				if (((previousValue != value) 
-							|| (this._UserDeviceInfo.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._UserDeviceInfo.Entity = null;
-						previousValue.aspnet_User = null;
-					}
-					this._UserDeviceInfo.Entity = value;
-					if ((value != null))
-					{
-						value.aspnet_User = this;
-					}
-					this.SendPropertyChanged("UserDeviceInfo");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_CreateRoom", Storage="_CreateRooms", ThisKey="UserId", OtherKey="UserId")]
 		public EntitySet<CreateRoom> CreateRooms
 		{
@@ -494,6 +465,35 @@ namespace RoomService.NDb
 			set
 			{
 				this._InvitedUsers.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_UserDeviceInfo", Storage="_UserDeviceInfo", ThisKey="UserId", OtherKey="UserId", IsUnique=true, IsForeignKey=false)]
+		public UserDeviceInfo UserDeviceInfo
+		{
+			get
+			{
+				return this._UserDeviceInfo.Entity;
+			}
+			set
+			{
+				UserDeviceInfo previousValue = this._UserDeviceInfo.Entity;
+				if (((previousValue != value) 
+							|| (this._UserDeviceInfo.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._UserDeviceInfo.Entity = null;
+						previousValue.aspnet_User = null;
+					}
+					this._UserDeviceInfo.Entity = value;
+					if ((value != null))
+					{
+						value.aspnet_User = this;
+					}
+					this.SendPropertyChanged("UserDeviceInfo");
+				}
 			}
 		}
 		
@@ -1304,157 +1304,6 @@ namespace RoomService.NDb
 					if ((value != null))
 					{
 						value.aspnet_Profile = this;
-						this._UserId = value.UserId;
-					}
-					else
-					{
-						this._UserId = default(System.Guid);
-					}
-					this.SendPropertyChanged("aspnet_User");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.UserDeviceInfo")]
-	public partial class UserDeviceInfo : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private System.Guid _UserId;
-		
-		private byte _Type;
-		
-		private string _DeviceToken;
-		
-		private EntityRef<aspnet_User> _aspnet_User;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnUserIdChanging(System.Guid value);
-    partial void OnUserIdChanged();
-    partial void OnTypeChanging(byte value);
-    partial void OnTypeChanged();
-    partial void OnDeviceTokenChanging(string value);
-    partial void OnDeviceTokenChanged();
-    #endregion
-		
-		public UserDeviceInfo()
-		{
-			this._aspnet_User = default(EntityRef<aspnet_User>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
-		public System.Guid UserId
-		{
-			get
-			{
-				return this._UserId;
-			}
-			set
-			{
-				if ((this._UserId != value))
-				{
-					if (this._aspnet_User.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnUserIdChanging(value);
-					this.SendPropertyChanging();
-					this._UserId = value;
-					this.SendPropertyChanged("UserId");
-					this.OnUserIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="TinyInt NOT NULL")]
-		public byte Type
-		{
-			get
-			{
-				return this._Type;
-			}
-			set
-			{
-				if ((this._Type != value))
-				{
-					this.OnTypeChanging(value);
-					this.SendPropertyChanging();
-					this._Type = value;
-					this.SendPropertyChanged("Type");
-					this.OnTypeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceToken", DbType="VarChar(128) NOT NULL", CanBeNull=false)]
-		public string DeviceToken
-		{
-			get
-			{
-				return this._DeviceToken;
-			}
-			set
-			{
-				if ((this._DeviceToken != value))
-				{
-					this.OnDeviceTokenChanging(value);
-					this.SendPropertyChanging();
-					this._DeviceToken = value;
-					this.SendPropertyChanged("DeviceToken");
-					this.OnDeviceTokenChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_UserDeviceInfo", Storage="_aspnet_User", ThisKey="UserId", OtherKey="UserId", IsForeignKey=true)]
-		public aspnet_User aspnet_User
-		{
-			get
-			{
-				return this._aspnet_User.Entity;
-			}
-			set
-			{
-				aspnet_User previousValue = this._aspnet_User.Entity;
-				if (((previousValue != value) 
-							|| (this._aspnet_User.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._aspnet_User.Entity = null;
-						previousValue.UserDeviceInfo = null;
-					}
-					this._aspnet_User.Entity = value;
-					if ((value != null))
-					{
-						value.UserDeviceInfo = this;
 						this._UserId = value.UserId;
 					}
 					else
@@ -2987,6 +2836,181 @@ namespace RoomService.NDb
 						this._RoomIndex = default(int);
 					}
 					this.SendPropertyChanged("CreateRoom");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.UserDeviceInfo")]
+	public partial class UserDeviceInfo : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _UserId;
+		
+		private byte _Type;
+		
+		private string _DeviceToken;
+		
+		private bool _Enable;
+		
+		private EntityRef<aspnet_User> _aspnet_User;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnUserIdChanging(System.Guid value);
+    partial void OnUserIdChanged();
+    partial void OnTypeChanging(byte value);
+    partial void OnTypeChanged();
+    partial void OnDeviceTokenChanging(string value);
+    partial void OnDeviceTokenChanged();
+    partial void OnEnableChanging(bool value);
+    partial void OnEnableChanged();
+    #endregion
+		
+		public UserDeviceInfo()
+		{
+			this._aspnet_User = default(EntityRef<aspnet_User>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					if (this._aspnet_User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Type", DbType="TinyInt NOT NULL")]
+		public byte Type
+		{
+			get
+			{
+				return this._Type;
+			}
+			set
+			{
+				if ((this._Type != value))
+				{
+					this.OnTypeChanging(value);
+					this.SendPropertyChanging();
+					this._Type = value;
+					this.SendPropertyChanged("Type");
+					this.OnTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceToken", DbType="VarChar(128) NOT NULL", CanBeNull=false)]
+		public string DeviceToken
+		{
+			get
+			{
+				return this._DeviceToken;
+			}
+			set
+			{
+				if ((this._DeviceToken != value))
+				{
+					this.OnDeviceTokenChanging(value);
+					this.SendPropertyChanging();
+					this._DeviceToken = value;
+					this.SendPropertyChanged("DeviceToken");
+					this.OnDeviceTokenChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Enable", DbType="Bit NOT NULL")]
+		public bool Enable
+		{
+			get
+			{
+				return this._Enable;
+			}
+			set
+			{
+				if ((this._Enable != value))
+				{
+					this.OnEnableChanging(value);
+					this.SendPropertyChanging();
+					this._Enable = value;
+					this.SendPropertyChanged("Enable");
+					this.OnEnableChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="aspnet_User_UserDeviceInfo", Storage="_aspnet_User", ThisKey="UserId", OtherKey="UserId", IsForeignKey=true)]
+		public aspnet_User aspnet_User
+		{
+			get
+			{
+				return this._aspnet_User.Entity;
+			}
+			set
+			{
+				aspnet_User previousValue = this._aspnet_User.Entity;
+				if (((previousValue != value) 
+							|| (this._aspnet_User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._aspnet_User.Entity = null;
+						previousValue.UserDeviceInfo = null;
+					}
+					this._aspnet_User.Entity = value;
+					if ((value != null))
+					{
+						value.UserDeviceInfo = this;
+						this._UserId = value.UserId;
+					}
+					else
+					{
+						this._UserId = default(System.Guid);
+					}
+					this.SendPropertyChanged("aspnet_User");
 				}
 			}
 		}

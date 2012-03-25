@@ -11,10 +11,10 @@
       <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Association Name="aspnet_User_aspnet_Membership" Member="aspnet_Membership" ThisKey="UserId" OtherKey="UserId" Type="aspnet_Membership" Cardinality="One" />
       <Association Name="aspnet_User_aspnet_Profile" Member="aspnet_Profile" ThisKey="UserId" OtherKey="UserId" Type="aspnet_Profile" Cardinality="One" />
-      <Association Name="aspnet_User_UserDeviceInfo" Member="UserDeviceInfo" ThisKey="UserId" OtherKey="UserId" Type="UserDeviceInfo" Cardinality="One" />
       <Association Name="aspnet_User_CreateRoom" Member="CreateRooms" ThisKey="UserId" OtherKey="UserId" Type="CreateRoom" />
       <Association Name="aspnet_User_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="UserId" OtherKey="UserId" Type="RoomJoinedUser" />
       <Association Name="aspnet_User_InvitedUser" Member="InvitedUsers" ThisKey="UserId" OtherKey="UserId" Type="InvitedUser" />
+      <Association Name="aspnet_User_UserDeviceInfo" Member="UserDeviceInfo" ThisKey="UserId" OtherKey="UserId" Type="UserDeviceInfo" Cardinality="One" />
     </Type>
   </Table>
   <Table Name="dbo.aspnet_Membership" Member="aspnet_Memberships">
@@ -51,14 +51,6 @@
       <Column Name="PropertyValuesBinary" Type="System.Data.Linq.Binary" DbType="Image NOT NULL" CanBeNull="false" UpdateCheck="Never" />
       <Column Name="LastUpdatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Association Name="aspnet_User_aspnet_Profile" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.UserDeviceInfo" Member="UserDeviceInfos">
-    <Type Name="UserDeviceInfo">
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Column Name="DeviceToken" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
-      <Association Name="aspnet_User_UserDeviceInfo" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Notice" Member="Notices">
@@ -129,6 +121,15 @@
       <Column Name="InviteDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Association Name="aspnet_User_InvitedUser" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
       <Association Name="CreateRoom_InvitedUser" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserDeviceInfo" Member="UserDeviceInfos">
+    <Type Name="UserDeviceInfo">
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="DeviceToken" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Enable" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="aspnet_User_UserDeviceInfo" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.fn_GetProfileElement" Method="fn_GetProfileElement" IsComposable="true">

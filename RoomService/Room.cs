@@ -8,8 +8,11 @@ using System.ServiceModel.Activation;
 using System.Diagnostics;
 
 using System.Data.Linq;
-using JdSoft.Apple.Apns.Notifications;
+//using JdSoft.Apple.Apns.Notifications;
 using System.Runtime.Serialization;
+using System.IO;
+using System.Xml.Serialization;
+using System.Net;
 
 namespace RoomService
 {
@@ -169,8 +172,11 @@ namespace RoomService
 		ROOM_INFO_LIST InviteRoomList(String user_no);
 		[OperationContract]
 		ROOM_RESULT DeleteInvitedRoom(int room_index, String user_no);
+
 		//[OperationContract]
 		//void UpdateBadge(UInt32 room_index, String user_no, int last_update);
+
+
 	}
 
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
@@ -178,24 +184,34 @@ namespace RoomService
 
 	public class RoomWCFService : IRoom, IDisposable
 	{
+
+		//private const string BaseAddress = "http://a4c818f43a6c4a56bf4f6a4adfd48f6e.cloudapp.net/push.svc";
+		private const string BaseAddress = "http://StudyheyoApns.cloudapp.net/push.svc";
+		//private const string BaseAddressWP7Service = "http://a4c818f43a6c4a56bf4f6a4adfd48f6e.cloudapp.net/WP7Device.svc";
+
+		//private const string BaseAddressIosService = "http://a4c818f43a6c4a56bf4f6a4adfd48f6e.cloudapp.net/IosDevice.svc";
+
+		//private const string BaseAddress = "http://127.0.0.1:81/push.svc";
+
 		static public int nValue = 10;
 		static public NLogic.NRoom.List _roomList = new NLogic.NRoom.List();
 		static public Dictionary<RoomSearchKey, NLogic.NRoom.List> _roomTree = new Dictionary<RoomSearchKey, NLogic.NRoom.List>();
 
 		static public NLogic.NUser.List _userList = new NLogic.NUser.List();
-		public NApns.Provider _apnsProvider = null;
+		//public NApns.Provider _apnsProvider = null;
+		public static TraceSource _source = new TraceSource("TraceSourceSTmate");
 
 		public RoomWCFService()
 		{
-			_apnsProvider = new NApns.Provider("iphone_dev.p12", "roy3513!", true);
-			NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "WCFRoomService() called!!!!!!!!!!!!!!!!!");
-			NApns.Provider._source.Flush();
+			//_apnsProvider = new NApns.Provider("iphone_dev.p12", "roy3513!", true);
+		//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "WCFRoomService() called!!!!!!!!!!!!!!!!!");
+		//    NApns.Provider._source.Flush();
 		}
 
 		public void Dispose()
 		{
-			NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Dispose()!!!!!!!!!!!!!!!!!!");
-			NApns.Provider._source.Flush();
+			//NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Dispose()!!!!!!!!!!!!!!!!!!");
+			//NApns.Provider._source.Flush();
 		}
 
 		public ROOM_RESULT Test(String user_no)
@@ -287,22 +303,22 @@ namespace RoomService
 			alertNotification.Payload.Sound = "default";
 			alertNotification.Payload.Badge = badge;
 
-			//Queue the notification to be sent
-			if (_apnsProvider.Service.QueueNotification(alertNotification))
-			{
-				res.crud = "Notification Queued!";
+			////Queue the notification to be sent
+			//if (_apnsProvider.Service.QueueNotification(alertNotification))
+			//{
+			//    res.crud = "Notification Queued!";
 
-				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Queued! by TraceEvent");
-				NApns.Provider._source.Flush();
-			}
-			else
-			{
-				res.crud = "Notification Failed to be Queued!";
-				Trace.WriteLine("Notification Failed to be Queued by Trace.WriteLine()");
+			//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Queued! by TraceEvent");
+			//    NApns.Provider._source.Flush();
+			//}
+			//else
+			//{
+			//    res.crud = "Notification Failed to be Queued!";
+			//    Trace.WriteLine("Notification Failed to be Queued by Trace.WriteLine()");
 
-				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Failed to be Queued! by TraceEvent()");
-				NApns.Provider._source.Flush();
-			}
+			//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Failed to be Queued! by TraceEvent()");
+			//    NApns.Provider._source.Flush();
+			//}
 
 			return res;
 		}
@@ -334,7 +350,7 @@ namespace RoomService
 				return update_device_info;
 			}
 
-			if (deviceToken.Length != Notification.DEVICE_TOKEN_STRING_SIZE)
+			if (deviceToken.Length != JdSoft.Apple.Apns.Notifications.Notification.DEVICE_TOKEN_STRING_SIZE)
 			{
 				update_device_info.user_no = user_guid;
 				update_device_info.result_code = -2;
@@ -356,11 +372,20 @@ namespace RoomService
 
 			try
 			{
-
 				Guid UserId = new Guid(user_guid);
-
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
-				String LoginId = null;
+
+				List<NDb.UserDeviceInfo> device_logined = (from Device in db.GetTable<NDb.UserDeviceInfo>()
+														where (Device.DeviceToken == deviceToken)
+														select Device).ToList();
+
+				foreach (NDb.UserDeviceInfo userdevice in device_logined)
+				{
+					userdevice.DeviceToken = "";
+					userdevice.Enable = false;
+				}
+
+				db.SubmitChanges();
 
 				var match_info = (from Device in db.GetTable<NDb.UserDeviceInfo>()
 								  where (Device.UserId == UserId)
@@ -369,6 +394,7 @@ namespace RoomService
 				if (match_info != null)
 				{
 					match_info.DeviceToken = deviceToken;
+					match_info.Enable = true;
 					db.SubmitChanges();
 
 					update_device_info.login_id = match_info.aspnet_User.UserName;
@@ -380,7 +406,8 @@ namespace RoomService
 				update_info.DeviceToken = deviceToken;
 				update_info.Type = 0;
 				update_info.UserId = UserId;
-
+				update_info.Enable = true;
+				
 				db.UserDeviceInfos.InsertOnSubmit(update_info);
 				db.SubmitChanges();
 
@@ -728,10 +755,10 @@ namespace RoomService
 				foreach (NDb.CreateRoom joinedRoom in query_created)
 				{
 					Console.WriteLine("MyRoomListDb Create Room {0} Name {1} Date {2}", joinedRoom.RoomIndex, joinedRoom.Name, joinedRoom.CreateDateTime);
-					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Create Room {0} Name {1} Date {2} User :{3}", joinedRoom.RoomIndex, 
-						joinedRoom.Name,
-						joinedRoom.CreateDateTime,
-						joinedRoom.UserId );
+					//NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Create Room {0} Name {1} Date {2} User :{3}", joinedRoom.RoomIndex, 
+					//    joinedRoom.Name,
+					//    joinedRoom.CreateDateTime,
+					//    joinedRoom.UserId );
 
 					room_info_list.CREATE_INFO.ROOM[index] = new ROOM_INFO_LISTCREATE_INFOROOM();
 					room_info_list.CREATE_INFO.ROOM[index].index = joinedRoom.RoomIndex;
@@ -774,10 +801,10 @@ namespace RoomService
 				foreach (NDb.CreateRoom joinedRoom in query_joined)
 				{
 					Console.WriteLine("MyRoomListDb Joined Room {0} Name {1} Date {2}", joinedRoom.RoomIndex, joinedRoom.Name, joinedRoom.CreateDateTime);
-					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Joined Room {0} Name {1} Date {2} User :{3}", joinedRoom.RoomIndex,
-										joinedRoom.Name,
-										joinedRoom.CreateDateTime,
-										joinedRoom.UserId);
+					//NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "MyRoomListDb Joined Room {0} Name {1} Date {2} User :{3}", joinedRoom.RoomIndex,
+					//                    joinedRoom.Name,
+					//                    joinedRoom.CreateDateTime,
+					//                    joinedRoom.UserId);
 
 					room_info_list.JOIN_INFO.ROOM[index] = new ROOM_INFO_LISTJOIN_INFOROOM();
 					room_info_list.JOIN_INFO.ROOM[index].index = joinedRoom.RoomIndex;
@@ -1529,30 +1556,90 @@ namespace RoomService
 					continue;
 				}
 
-				try
-				{
-					//Create a new notification to send
-					JdSoft.Apple.Apns.Notifications.Notification
-					alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(joined_user.DeviceToken);
+				//try
+				//{
+				//    //Create a new notification to send
+				//    JdSoft.Apple.Apns.Notifications.Notification
+				//    alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(joined_user.DeviceToken);
 
-					alertNotification.Payload.Alert.Body = content;
-					alertNotification.Payload.Sound = "default";
-					alertNotification.Payload.Badge = chat_list.count;
+				//    alertNotification.Payload.Alert.Body = content;
+				//    alertNotification.Payload.Sound = "default";
+				//    alertNotification.Payload.Badge = chat_list.count;
 
-					//Queue the notification to be sent
-					if (_apnsProvider.Service.QueueNotification(alertNotification))
-						Console.WriteLine("Notification Queued!");
-					else
-						Console.WriteLine("Notification Failed to be Queued!");
-				}
-				catch
-				{
-					continue;
-				}
+				//    //Queue the notification to be sent
+				//    if (_apnsProvider.Service.QueueNotification(alertNotification))
+				//        Console.WriteLine("Notification Queued!");
+				//    else
+				//        Console.WriteLine("Notification Failed to be Queued!");
+				//}
+				//catch
+				//{
+				//    continue;
+				//}
 			}
 
 			chat_list.local_index = local_index;
 			return chat_list;
+		}
+
+		private static void SendNotificationToAzure( string BaseAddress, PUSH_NOTIFICATION info )
+		{
+			MemoryStream xmlStream = new MemoryStream();
+			XmlSerializer xmlPushNotification = new XmlSerializer(typeof(PUSH_NOTIFICATION));
+			xmlPushNotification.Serialize(xmlStream, info);
+
+			byte[] data = xmlStream.ToArray();
+
+			// Prepare web request...
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(BaseAddress + "/device/push");
+			request.Credentials = new NetworkCredential("", "");
+			request.PreAuthenticate = true;
+			request.Method = "POST";
+			request.ContentType = "application/x-www-form-urlencoded";
+			request.ContentLength = data.Length;
+			Stream newStream = request.GetRequestStream();
+
+			// Send the data.
+			newStream.Write(data, 0, data.Length);
+			try
+			{
+				IAsyncResult result =(IAsyncResult)request.BeginGetResponse(new AsyncCallback(NotificationCallback), request);
+				
+				_source.TraceEvent(TraceEventType.Critical, 3, "Start BeginGetResponse");
+				_source.Flush();
+			}
+			catch (Exception est)
+			{
+				string error = "Exception: " + est.Message;
+			}
+		}
+
+		private static void NotificationCallback(IAsyncResult asynchronousResult)
+		{
+			try
+			{
+				HttpWebRequest myHttpWebRequest = (HttpWebRequest)asynchronousResult.AsyncState;
+				
+				using (HttpWebResponse response = myHttpWebRequest.EndGetResponse(asynchronousResult) as HttpWebResponse)
+				{
+					// Get the response stream  
+					StreamReader reader = new StreamReader(response.GetResponseStream());
+					string result = reader.ReadToEnd();
+
+					_source.TraceEvent(TraceEventType.Critical, 3, "NotificationCallback : " + result );
+					_source.Flush();
+
+
+				}
+
+				return;
+			}
+			catch (WebException e)
+			{
+				Console.WriteLine("\nRespCallback Exception raised!");
+				Console.WriteLine("\nMessage:{0}", e.Message);
+				Console.WriteLine("\nStatus:{0}", e.Status);
+			}
 		}
 
 		public CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content)
@@ -1660,26 +1747,44 @@ namespace RoomService
 				//                                 select DeviceInfo.DeviceToken ).ToList<String>();
 
 				List<NDb.UserDeviceInfo> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
-												 where RoomUser.RoomIndex == room_index
+															 where RoomUser.RoomIndex == room_index && RoomUser.UserId != UserId
 												 join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>()
 													 on RoomUser.UserId equals DeviceInfo.UserId
+															 where DeviceInfo.Enable == true
 												 select DeviceInfo).ToList<NDb.UserDeviceInfo>();
-				
+
 				Console.WriteLine("Push Notification to room {0} ", room_index );
 
 				PUSH_NOTIFICATION pushInfo = new PUSH_NOTIFICATION();
+				pushInfo.room_index = (int)room_index;
+				pushInfo.message = content;
 				pushInfo.INFO = new PUSH_NOTIFICATIONINFO[device_info_list.Count];
 
 				int nPushCount = 0;
 				foreach (NDb.UserDeviceInfo device_info in device_info_list)
 				{
+					if (device_info.UserId.Equals(UserId) == true)
+					{
+						pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
+						pushInfo.INFO[nPushCount].badge = 1;
+						pushInfo.INFO[nPushCount].DeviceId = "";
+						pushInfo.INFO[nPushCount].type = "";
+						pushInfo.INFO[nPushCount].sound = "";
+						nPushCount++;
+
+						continue;
+					}
+
 					pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
+					pushInfo.INFO[nPushCount].badge = 1;
 					pushInfo.INFO[nPushCount].DeviceId = device_info.DeviceToken;
 					pushInfo.INFO[nPushCount].type = "iOS";
 					pushInfo.INFO[nPushCount].sound = "default";
-
 					nPushCount++;
 				}
+
+				RoomWCFService.SendNotificationToAzure(BaseAddress, pushInfo);
+				
 
 				//foreach (NDb.UserDeviceInfo device_info in device_info_list)
 				//{
@@ -1851,26 +1956,26 @@ namespace RoomService
 						continue;
 					}
 
-					try
-					{
-						//Create a new notification to send
-						JdSoft.Apple.Apns.Notifications.Notification
-						alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(joined_user.DeviceToken);
+					//try
+					//{
+					//    //Create a new notification to send
+					//    JdSoft.Apple.Apns.Notifications.Notification
+					//    alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(joined_user.DeviceToken);
 
-						alertNotification.Payload.Alert.Body = content;
-						alertNotification.Payload.Sound = "default";
-						alertNotification.Payload.Badge = notice_list.count;
+					//    alertNotification.Payload.Alert.Body = content;
+					//    alertNotification.Payload.Sound = "default";
+					//    alertNotification.Payload.Badge = notice_list.count;
 
-						//Queue the notification to be sent
-						if (_apnsProvider.Service.QueueNotification(alertNotification))
-							Console.WriteLine("Notification Queued!");
-						else
-							Console.WriteLine("Notification Failed to be Queued!");
-					}
-					catch
-					{
-						continue;
-					}
+					//    //Queue the notification to be sent
+					//    if (_apnsProvider.Service.QueueNotification(alertNotification))
+					//        Console.WriteLine("Notification Queued!");
+					//    else
+					//        Console.WriteLine("Notification Failed to be Queued!");
+					//}
+					//catch
+					//{
+					//    continue;
+					//}
 				}
 			}
 
@@ -2694,10 +2799,10 @@ namespace RoomService
 				foreach (NDb.InvitedUser invitedRoom in invited_user)
 				{
 					Console.WriteLine("InviteRoomList Room {0} Name {1} Date {2}", invitedRoom.CreateRoom.RoomIndex, invitedRoom.CreateRoom.Name, invitedRoom.CreateRoom.CreateDateTime);
-					NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "InviteRoomList Room {0} Name {1} Date {2} User :{3}", invitedRoom.CreateRoom.RoomIndex,
-										invitedRoom.CreateRoom.Name,
-										invitedRoom.CreateRoom.CreateDateTime,
-										invitedRoom.CreateRoom.UserId);
+					//NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "InviteRoomList Room {0} Name {1} Date {2} User :{3}", invitedRoom.CreateRoom.RoomIndex,
+					//                    invitedRoom.CreateRoom.Name,
+					//                    invitedRoom.CreateRoom.CreateDateTime,
+					//                    invitedRoom.CreateRoom.UserId);
 
 					room_info_list.JOIN_INFO.ROOM[index] = new ROOM_INFO_LISTJOIN_INFOROOM();
 					room_info_list.JOIN_INFO.ROOM[index].index = invitedRoom.CreateRoom.RoomIndex;
