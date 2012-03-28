@@ -186,11 +186,12 @@ namespace RoomService
 	{
 
 		//private const string BaseAddress = "http://a4c818f43a6c4a56bf4f6a4adfd48f6e.cloudapp.net/push.svc";
-		private const string BaseAddress = "http://StudyheyoApns.cloudapp.net/push.svc";
+		//private const string BaseAddress = "http://StudyheyoApns.cloudapp.net/push.svc";
 		//private const string BaseAddressWP7Service = "http://a4c818f43a6c4a56bf4f6a4adfd48f6e.cloudapp.net/WP7Device.svc";
 
 		//private const string BaseAddressIosService = "http://a4c818f43a6c4a56bf4f6a4adfd48f6e.cloudapp.net/IosDevice.svc";
 
+		private const string BaseAddress = "http://07e69acb3cca45acaa2e527ea4c8b38b.cloudapp.net/push.svc";
 		//private const string BaseAddress = "http://127.0.0.1:81/push.svc";
 
 		static public int nValue = 10;
@@ -1623,10 +1624,10 @@ namespace RoomService
 				using (HttpWebResponse response = myHttpWebRequest.EndGetResponse(asynchronousResult) as HttpWebResponse)
 				{
 					// Get the response stream  
-					StreamReader reader = new StreamReader(response.GetResponseStream());
-					string result = reader.ReadToEnd();
+					//StreamReader reader = new StreamReader(response.GetResponseStream());
+					//string result = reader.ReadToEnd();
 
-					_source.TraceEvent(TraceEventType.Critical, 3, "NotificationCallback : " + result );
+					_source.TraceEvent(TraceEventType.Critical, 3, "NotificationCallback Content Len {0} ", response.ContentLength);
 					_source.Flush();
 
 
