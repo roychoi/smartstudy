@@ -167,10 +167,10 @@ namespace STMate.Service
 		}
 
 		[WebMethod(EnableSession = true)]
-		public CHAT_LIST Chat(String user_no, UInt32 room_index, int local_index, int last_update, String message)
+		public CHAT_LIST Chat(String user_no, UInt32 room_index, int local_index, int last_update, String message, byte type)
 		{
 			IRoom proxy = factory.CreateChannel();
-			CHAT_LIST chat_list = proxy.ChatDb(room_index, user_no, local_index, last_update, message);
+			CHAT_LIST chat_list = proxy.ChatDb(room_index, user_no, local_index, last_update, message, type);
 			(proxy as IDisposable).Dispose();
 
 			return chat_list;

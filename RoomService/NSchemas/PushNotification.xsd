@@ -6,14 +6,17 @@
         <xs:element maxOccurs="unbounded" name="INFO">
           <xs:complexType>
             <xs:attribute name="DeviceId" type="xs:string" use="required" />
+            <xs:attribute name="owner" type="xs:unsignedByte" use="required" />
             <xs:attribute name="type" type="xs:string" use="required" />
             <xs:attribute name="sound" type="xs:string" use="required" />
             <xs:attribute name="badge" type="xs:unsignedInt" use="required" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>
-      <xs:attribute name="room_index" type="xs:int" use="required" />
-      <xs:attribute name="message" type="xs:string" use="required" />
+      <xs:attribute name="room" type="xs:int" use="required" />
+      <xs:attribute name="r_name" type="xs:string" use="required" />
+      <xs:attribute name="msg" type="xs:string" use="required" />
+      <xs:attribute name="tp" type="xs:unsignedByte" use="required" />
     </xs:complexType>
   </xs:element>
 </xs:schema>

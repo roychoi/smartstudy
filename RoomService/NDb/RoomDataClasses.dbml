@@ -85,8 +85,8 @@
       <Column Name="Homework" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="CreateRoom_Notice" Member="Notices" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Notice" />
       <Association Name="CreateRoom_RoomJoinedUser" Member="RoomJoinedUsers" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="RoomJoinedUser" />
-      <Association Name="CreateRoom_Message" Member="Messages" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Message" />
       <Association Name="CreateRoom_InvitedUser" Member="InvitedUsers" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="InvitedUser" />
+      <Association Name="CreateRoom_Message" Member="Messages" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="Message" />
       <Association Name="aspnet_User_CreateRoom" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
     </Type>
   </Table>
@@ -101,17 +101,6 @@
       <Column Name="JoinDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Association Name="aspnet_User_RoomJoinedUser" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
       <Association Name="CreateRoom_RoomJoinedUser" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Message" Member="Messages">
-    <Type Name="Message">
-      <Column Name="MsgId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Contents" Type="System.String" DbType="VarChar(512)" CanBeNull="true" />
-      <Column Name="IptTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="NickName" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
-      <Column Name="Email" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
-      <Association Name="CreateRoom_Message" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.InvitedUser" Member="InvitedUsers">
@@ -130,6 +119,18 @@
       <Column Name="DeviceToken" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
       <Column Name="Enable" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="aspnet_User_UserDeviceInfo" Member="aspnet_User" ThisKey="UserId" OtherKey="UserId" Type="aspnet_User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Message" Member="Messages">
+    <Type Name="Message">
+      <Column Name="MsgId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RoomIndex" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Contents" Type="System.String" DbType="VarChar(512)" CanBeNull="true" />
+      <Column Name="IptTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="NickName" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Association Name="CreateRoom_Message" Member="CreateRoom" ThisKey="RoomIndex" OtherKey="RoomIndex" Type="CreateRoom" IsForeignKey="true" />
     </Type>
   </Table>
   <Function Name="dbo.fn_GetProfileElement" Method="fn_GetProfileElement" IsComposable="true">

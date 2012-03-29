@@ -8,6 +8,7 @@
             <xs:simpleContent>
               <xs:extension base="xs:string">
                 <xs:attribute name="owner" type="xs:unsignedByte" use="optional" />
+                <xs:attribute name="type" type="xs:unsignedByte" use="optional" />
                 <xs:attribute name="login_id" type="xs:string" use="required" />
                 <xs:attribute name="nick_name" type="xs:string" use="required" />
                 <xs:attribute name="chat_index" type="xs:int" use="required" />

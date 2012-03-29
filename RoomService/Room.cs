@@ -124,7 +124,7 @@ namespace RoomService
 		[OperationContract]
 		CHAT_LIST Chat(UInt32 room_index, String user_no, int local_index, int last_update, String content);
 		[OperationContract]
-		CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content);
+		CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content, byte type );
 
 		[OperationContract]
 		CHAT_LIST ChatUpdate(UInt32 room_index, String user_no, int last_update);
@@ -191,8 +191,8 @@ namespace RoomService
 
 		//private const string BaseAddressIosService = "http://a4c818f43a6c4a56bf4f6a4adfd48f6e.cloudapp.net/IosDevice.svc";
 
-		private const string BaseAddress = "http://07e69acb3cca45acaa2e527ea4c8b38b.cloudapp.net/push.svc";
-		//private const string BaseAddress = "http://127.0.0.1:81/push.svc";
+		//private const string BaseAddress = "http://07e69acb3cca45acaa2e527ea4c8b38b.cloudapp.net/push.svc";
+		private const string BaseAddress = "http://127.0.0.1:81/push.svc";
 
 		static public int nValue = 10;
 		static public NLogic.NRoom.List _roomList = new NLogic.NRoom.List();
@@ -1643,7 +1643,7 @@ namespace RoomService
 			}
 		}
 
-		public CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content)
+		public CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content, byte type )
 		{
 			CHAT_LIST chat_list = new CHAT_LIST();
 			chat_list.count = 0;
@@ -1709,6 +1709,7 @@ namespace RoomService
 				insert_message.RoomIndex = (int)room_index;
 				insert_message.NickName = matched_user.NickName;
 				insert_message.Email = matched_user.LoginId;
+				insert_message.Type = type;
 
 				db.Messages.InsertOnSubmit(insert_message);
 				db.SubmitChanges();
@@ -1734,6 +1735,14 @@ namespace RoomService
 					chat_list.CHAT[nIndex].login_id = msg.Email;
 					chat_list.CHAT[nIndex].ownerSpecified = false;
 					chat_list.CHAT[nIndex].date_time = msg.IptTime;
+					if( msg.Type == 0 )
+					{
+						chat_list.CHAT[nIndex].typeSpecified = false;
+					}
+					else{
+						chat_list.CHAT[nIndex].typeSpecified = true;
+						chat_list.CHAT[nIndex].type = msg.Type;
+					}
 
 					nIndex++;
 				}
@@ -1757,26 +1766,39 @@ namespace RoomService
 				Console.WriteLine("Push Notification to room {0} ", room_index );
 
 				PUSH_NOTIFICATION pushInfo = new PUSH_NOTIFICATION();
-				pushInfo.room_index = (int)room_index;
-				pushInfo.message = content;
+				pushInfo.room = (int)room_index;
+				pushInfo.msg = content;
+				pushInfo.tp = 1; //chat
+				pushInfo.r_name = matched_user.CreateRoom.Name;
 				pushInfo.INFO = new PUSH_NOTIFICATIONINFO[device_info_list.Count];
 
 				int nPushCount = 0;
 				foreach (NDb.UserDeviceInfo device_info in device_info_list)
 				{
-					if (device_info.UserId.Equals(UserId) == true)
-					{
-						pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
-						pushInfo.INFO[nPushCount].badge = 1;
-						pushInfo.INFO[nPushCount].DeviceId = "";
-						pushInfo.INFO[nPushCount].type = "";
-						pushInfo.INFO[nPushCount].sound = "";
-						nPushCount++;
+					//if (device_info.UserId.Equals(UserId) == true)
+					//{
+					//    pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
+					//    pushInfo.INFO[nPushCount].badge = 1;
+					//    pushInfo.INFO[nPushCount].DeviceId = "";
+					//    pushInfo.INFO[nPushCount].type = "";
+					//    pushInfo.INFO[nPushCount].sound = "";
+					//    nPushCount++;
 
-						continue;
-					}
+					//    continue;
+					//}
 
 					pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
+
+
+					if (matched_user.CreateRoom.UserId.Equals(device_info.UserId))
+					{
+						pushInfo.INFO[nPushCount].owner = 1;
+					}
+					else
+					{
+						pushInfo.INFO[nPushCount].owner = 0;
+					}
+
 					pushInfo.INFO[nPushCount].badge = 1;
 					pushInfo.INFO[nPushCount].DeviceId = device_info.DeviceToken;
 					pushInfo.INFO[nPushCount].type = "iOS";
@@ -1892,7 +1914,15 @@ namespace RoomService
 					chat_list.CHAT[nIndex].login_id = msg.Email;
 					chat_list.CHAT[nIndex].ownerSpecified = false;
 					chat_list.CHAT[nIndex].date_time = msg.IptTime;
-
+					if (msg.Type == 0)
+					{
+						chat_list.CHAT[nIndex].typeSpecified = false;
+					}
+					else
+					{
+						chat_list.CHAT[nIndex].typeSpecified = true;
+						chat_list.CHAT[nIndex].type = msg.Type;
+					}
 					nIndex++;
 				}
 
