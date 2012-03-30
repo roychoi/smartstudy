@@ -1612,6 +1612,8 @@ namespace RoomService
 			catch (Exception est)
 			{
 				string error = "Exception: " + est.Message;
+                _source.TraceEvent(TraceEventType.Critical, 3, error );
+                _source.Flush();
 			}
 		}
 
@@ -1640,6 +1642,11 @@ namespace RoomService
 				Console.WriteLine("\nRespCallback Exception raised!");
 				Console.WriteLine("\nMessage:{0}", e.Message);
 				Console.WriteLine("\nStatus:{0}", e.Status);
+
+                _source.TraceEvent(TraceEventType.Critical, 3, "\nRespCallback Exception raised!");
+                _source.TraceEvent(TraceEventType.Critical, 3, "\nMessage:{0}", e.Message);
+                _source.TraceEvent(TraceEventType.Critical, 3, "\nStatus:{0}", e.Status);
+                _source.Flush();
 			}
 		}
 
