@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<PUSH_NOTIFICATION room_index ="1000001" message ="하하하하하">
-  <INFO DeviceId ="f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6" type ="iOS" sound ="default" badge ="100000"/>
-  <INFO DeviceId ="f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6" type ="And" sound ="default" badge ="100000"/>
-  <INFO DeviceId ="f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6" type ="WP7" sound ="default" badge ="100000"/>
+<PUSH_NOTIFICATION room ="1000001" r_name="방제목" msg ="하하하하하" tp ="1" >
+  <!-- 1 = chat-->
+  <!-- 2 = notice -->
+  <INFO DeviceId ="f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6" owner ="1" type ="iOS" sound ="default" badge ="100000"/>
+  <INFO DeviceId ="f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6" owner ="0" type ="And" sound ="default" badge ="100000"/>
+  <INFO DeviceId ="f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6" owner ="0" type ="WP7" sound ="default" badge ="100000"/>
 </PUSH_NOTIFICATION>
 

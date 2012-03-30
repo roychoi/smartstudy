@@ -72,6 +72,13 @@
 5. DeleteInvitedRoom 추가
 
 ---------------------------------------------------------------
+2012/03/27
+---------------------------------------------------------------
+
+1. ChatEx 추가 
+	<CHAT type = "1" ...> 추가 
+
+---------------------------------------------------------------
 1. 회원가입
 ---------------------------------------------------------------
 Method
@@ -472,12 +479,42 @@ owner: unsignedByte, optional
 Result
 
 <CHAT_LIST count="4" room_index="1000001" local_index = "1"> 
-	<CHAT owner ="1" date_time="2008-11-20T00:00:00" chat_index="1" nick_name="최진혁">하하하하하하</CHAT>
-	<CHAT owner ="1" date_time="2008-11-20T00:00:00" chat_index="2" nick_name="최진혁">하하하하하하"</CHAT>
-	<CHAT owner ="1" date_time="2008-11-20T00:00:00" chat_index="3" nick_name="최진혁">하하하하하하"</CHAT>
+	<CHAT owner ="1" type = "1" date_time="2008-11-20T00:00:00" chat_index="1" nick_name="최진혁">하하하하하하</CHAT>
+	<CHAT owner ="1" type = "1" date_time="2008-11-20T00:00:00" chat_index="2" nick_name="최진혁">하하하하하하"</CHAT>
+	<CHAT owner ="1" type = "2" date_time="2008-11-20T00:00:00" chat_index="3" nick_name="최진혁">하하하하하하"</CHAT>
 	<CHAT date_time="2008-11-20T00:00:00" chat_index="4" nick_name="신상범">하하하하하하"</CHAT>
 </CHAT_LIST>
 
+
+
+---------------------------------------------------------------
+12-1. 채팅 쓰기
+
+- type 이 필요한 확장채팅 ( 0 은 일반 optional 필드에서 보이지 않음, 1 은 업체정보 String, 2 는 플래시 등 )
+
+---------------------------------------------------------------
+Method
+http://www.studyheyo.co.kr/Service/RoomManager.asmx/ChatEx
+
+매개 변수 값 
+
+user_no:  string
+room_index:  int
+local_index: int
+last_update:  int
+message: string
+owner: unsignedByte, optional
+type: unsignedByte, optional
+
+
+Result
+
+<CHAT_LIST count="4" room_index="1000001" local_index = "1"> 
+	<CHAT owner ="1" type = "1" date_time="2008-11-20T00:00:00" chat_index="1" nick_name="최진혁">하하하하하하</CHAT>
+	<CHAT owner ="1" type = "1" date_time="2008-11-20T00:00:00" chat_index="2" nick_name="최진혁">하하하하하하"</CHAT>
+	<CHAT owner ="1" type = "2" date_time="2008-11-20T00:00:00" chat_index="3" nick_name="최진혁">하하하하하하"</CHAT>
+	<CHAT date_time="2008-11-20T00:00:00" chat_index="4" nick_name="신상범">하하하하하하"</CHAT>
+</CHAT_LIST>
 
 
 
