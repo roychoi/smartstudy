@@ -191,8 +191,8 @@ namespace RoomService
 
 		//private const string BaseAddressIosService = "http://a4c818f43a6c4a56bf4f6a4adfd48f6e.cloudapp.net/IosDevice.svc";
 
-		//private const string BaseAddress = "http://07e69acb3cca45acaa2e527ea4c8b38b.cloudapp.net/push.svc";
-		private const string BaseAddress = "http://127.0.0.1:81/push.svc";
+		private const string BaseAddress = "http://07e69acb3cca45acaa2e527ea4c8b38b.cloudapp.net/push.svc";
+		//private const string BaseAddress = "http://127.0.0.1:81/push.svc";
 
 		static public int nValue = 10;
 		static public NLogic.NRoom.List _roomList = new NLogic.NRoom.List();
