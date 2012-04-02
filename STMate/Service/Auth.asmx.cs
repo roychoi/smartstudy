@@ -283,6 +283,9 @@ namespace STMate.Service
                         auth_user_result.age = (byte)(current.Year - birth.Year);
                     }
 
+					auth_user_result.user_name = userName;
+					auth_user_result.image_url = imageUrl;
+
 					//IRoom proxy = factory.CreateChannel();
 
 					//bool bResult = proxy.LoginUser(user_guid.ToString("N"),

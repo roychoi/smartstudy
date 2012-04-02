@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<PUSH_NOTIFICATION room ="1000001" r_name="방제목" msg ="하하하하하" tp ="1" >
+<PUSH_NOTIFICATION room ="1000001" r_name="방제목" msg ="하하하하하" type ="1" >
   <!-- 1 = chat-->
   <!-- 2 = notice -->
   <INFO DeviceId ="f34d46277322e73b8e67b23c8339158a1621f1c49a05127fd839e4d0f7c4f6c6" owner ="1" type ="iOS" sound ="default" badge ="100000"/>

@@ -39,6 +39,10 @@ public partial class AUTH_RESULT {
     private byte ageField;
     
     private byte genderField;
+
+	private string image_urlField;
+
+	private string user_nameField;
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -127,4 +131,31 @@ public partial class AUTH_RESULT {
             this.genderField = value;
         }
     }
+
+	/// <remarks/>
+	[System.Xml.Serialization.XmlAttributeAttribute()]
+	public string image_url
+	{
+		get
+		{
+			return this.image_urlField;
+		}
+		set
+		{
+			this.image_urlField = value;
+		}
+	}
+
+	[System.Xml.Serialization.XmlAttributeAttribute()]
+	public string user_name
+	{
+		get
+		{
+			return this.user_nameField;
+		}
+		set
+		{
+			this.user_nameField = value;
+		}
+	}
 }
