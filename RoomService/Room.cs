@@ -296,6 +296,10 @@ namespace RoomService
 
 		public ROOM_RESULT Push(String deviceToken, String Message, int badge)
 		{
+			NApns.Provider _apnsProvider = new NApns.Provider("adhoc_studyheyo.p12", "roy3513!", false);
+			//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "WCFRoomService() called!!!!!!!!!!!!!!!!!");
+			//    NApns.Provider._source.Flush();
+
 			ROOM_RESULT res = new ROOM_RESULT();
 			JdSoft.Apple.Apns.Notifications.Notification
 			alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(deviceToken);
@@ -304,22 +308,22 @@ namespace RoomService
 			alertNotification.Payload.Sound = "default";
 			alertNotification.Payload.Badge = badge;
 
-			////Queue the notification to be sent
-			//if (_apnsProvider.Service.QueueNotification(alertNotification))
-			//{
-			//    res.crud = "Notification Queued!";
+			//Queue the notification to be sent
+			if (_apnsProvider.Service.QueueNotification(alertNotification))
+			{
+				res.crud = "Notification Queued!";
 
-			//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Queued! by TraceEvent");
-			//    NApns.Provider._source.Flush();
-			//}
-			//else
-			//{
-			//    res.crud = "Notification Failed to be Queued!";
-			//    Trace.WriteLine("Notification Failed to be Queued by Trace.WriteLine()");
+				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Queued! by TraceEvent");
+				NApns.Provider._source.Flush();
+			}
+			else
+			{
+				res.crud = "Notification Failed to be Queued!";
+				Trace.WriteLine("Notification Failed to be Queued by Trace.WriteLine()");
 
-			//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Failed to be Queued! by TraceEvent()");
-			//    NApns.Provider._source.Flush();
-			//}
+				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Failed to be Queued! by TraceEvent()");
+				NApns.Provider._source.Flush();
+			}
 
 			return res;
 		}
