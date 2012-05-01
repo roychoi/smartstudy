@@ -32,7 +32,7 @@ public partial class PUSH_NOTIFICATION {
     
     private string msgField;
     
-    private byte tpField;
+    private byte typeField;
     
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute("INFO")]
@@ -80,12 +80,12 @@ public partial class PUSH_NOTIFICATION {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
-    public byte tp {
+    public byte type {
         get {
-            return this.tpField;
+            return this.typeField;
         }
         set {
-            this.tpField = value;
+            this.typeField = value;
         }
     }
 }

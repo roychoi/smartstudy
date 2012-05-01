@@ -8,6 +8,8 @@
       <xs:attribute name="reason_sort" type="xs:string" use="optional" />
       <xs:attribute name="user_no" type="xs:string" use="required" />
       <xs:attribute name="age" type="xs:unsignedByte" use="required" />
+      <xs:attribute name="image_url" type="xs:string" use="required" />
+      <xs:attribute name="user_name" type="xs:string" use="required" />
       <xs:attribute name="gender" type="xs:unsignedByte" use="required" />
     </xs:complexType>
   </xs:element>

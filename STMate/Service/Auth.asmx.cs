@@ -18,6 +18,8 @@ using System.Collections;
 using RoomService;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using agsXMPP;
+using agsXMPP.protocol.client;
 
 namespace STMate.Service
 {
@@ -36,7 +38,7 @@ namespace STMate.Service
         private ChannelFactory<IRoom> factory = new ChannelFactory<IRoom>(new ServiceEndpoint(
             ContractDescription.GetContract(typeof(IRoom)),
           new BasicHttpBinding(),
-            new EndpointAddress(new Uri("http://www.studyheyo.co.kr/Service/RoomService.RoomWCFService.svc"))));
+            new EndpointAddress(new System.Uri("http://www.studyheyo.co.kr/Service/RoomService.RoomWCFService.svc"))));
 
 
 
@@ -162,6 +164,24 @@ namespace STMate.Service
 					return create_user;
 				}
 
+				String [] JID = loginEmail.Split('@');
+				String JID_Sender = JID[0] + "@talk.studyheyo.co.kr";
+
+				/*
+				 * Creating the Jid and the XmppClientConnection objects
+				 */
+
+				Jid jidSender = new Jid(JID_Sender);
+				jidSender.Resource = "Stheyoapp";
+
+				XmppClientConnection xmpp = new XmppClientConnection(jidSender.Server, 5222);
+				xmpp.RegisterAccount = true;
+
+				xmpp.Open(jidSender.User, passWord);
+
+				xmpp.OnRegistered += new ObjectHandler(xmpp_OnRegisterd);
+				xmpp.OnRegisterError += new XmppElementHandler(xmpp_OnRegisterFailed);
+
                 MembershipProvider defaultMembership = Membership.Provider;
                 MembershipCreateStatus status;
 
@@ -209,6 +229,22 @@ namespace STMate.Service
             }
         }
 
+		void xmpp_OnRegisterd(object sender)
+		{
+			XmppConnection conn = sender as XmppConnection;
+			conn.Close();
+
+			Console.WriteLine("Registered");
+		}
+
+		// Is raised when login and authentication is finished 
+		void xmpp_OnRegisterFailed(object sender, agsXMPP.Xml.Dom.Element e)
+		{
+			XmppConnection conn = sender as XmppConnection;
+			conn.Close();
+
+			Console.WriteLine("Register Failed :  " + e.Value);
+		}
 
         [WebMethod(EnableSession = true)]
 		public AUTH_RESULT LoginUser(String loginEmail, String passWord, String deviceToken )
@@ -282,6 +318,9 @@ namespace STMate.Service
                     {
                         auth_user_result.age = (byte)(current.Year - birth.Year);
                     }
+
+					auth_user_result.user_name = userName;
+					auth_user_result.image_url = imageUrl;
 
 					//IRoom proxy = factory.CreateChannel();
 

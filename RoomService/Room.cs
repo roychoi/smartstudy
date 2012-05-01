@@ -298,6 +298,10 @@ namespace RoomService
 
 		public ROOM_RESULT Push(String deviceToken, String Message, int badge)
 		{
+			NApns.Provider _apnsProvider = new NApns.Provider("adhoc_studyheyo.p12", "roy3513!", false);
+			//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "WCFRoomService() called!!!!!!!!!!!!!!!!!");
+			//    NApns.Provider._source.Flush();
+
 			ROOM_RESULT res = new ROOM_RESULT();
 			JdSoft.Apple.Apns.Notifications.Notification
 			alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(deviceToken);
@@ -306,22 +310,22 @@ namespace RoomService
 			alertNotification.Payload.Sound = "default";
 			alertNotification.Payload.Badge = badge;
 
-			////Queue the notification to be sent
-			//if (_apnsProvider.Service.QueueNotification(alertNotification))
-			//{
-			//    res.crud = "Notification Queued!";
+			//Queue the notification to be sent
+			if (_apnsProvider.Service.QueueNotification(alertNotification))
+			{
+				res.crud = "Notification Queued!";
 
-			//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Queued! by TraceEvent");
-			//    NApns.Provider._source.Flush();
-			//}
-			//else
-			//{
-			//    res.crud = "Notification Failed to be Queued!";
-			//    Trace.WriteLine("Notification Failed to be Queued by Trace.WriteLine()");
+				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Queued! by TraceEvent");
+				NApns.Provider._source.Flush();
+			}
+			else
+			{
+				res.crud = "Notification Failed to be Queued!";
+				Trace.WriteLine("Notification Failed to be Queued by Trace.WriteLine()");
 
-			//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Failed to be Queued! by TraceEvent()");
-			//    NApns.Provider._source.Flush();
-			//}
+				NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "Notification Failed to be Queued! by TraceEvent()");
+				NApns.Provider._source.Flush();
+			}
 
 			return res;
 		}
@@ -1587,33 +1591,35 @@ namespace RoomService
 
 		private static void SendNotificationToAzure( string BaseAddress, PUSH_NOTIFICATION info )
 		{
-			MemoryStream xmlStream = new MemoryStream();
-			XmlSerializer xmlPushNotification = new XmlSerializer(typeof(PUSH_NOTIFICATION));
-			xmlPushNotification.Serialize(xmlStream, info);
-
-			byte[] data = xmlStream.ToArray();
-
-			// Prepare web request...
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(BaseAddress + "/device/push");
-			request.Credentials = new NetworkCredential("", "");
-			request.PreAuthenticate = true;
-			request.Method = "POST";
-			request.ContentType = "application/x-www-form-urlencoded";
-			request.ContentLength = data.Length;
-			Stream newStream = request.GetRequestStream();
-
-			// Send the data.
-			newStream.Write(data, 0, data.Length);
 			try
 			{
+				MemoryStream xmlStream = new MemoryStream();
+				XmlSerializer xmlPushNotification = new XmlSerializer(typeof(PUSH_NOTIFICATION));
+				xmlPushNotification.Serialize(xmlStream, info);
+
+				byte[] data = xmlStream.ToArray();
+
+				// Prepare web request...
+				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(BaseAddress + "/device/push");
+				request.Credentials = new NetworkCredential("", "");
+				request.PreAuthenticate = true;
+				request.Method = "POST";
+				request.ContentType = "application/x-www-form-urlencoded";
+				request.ContentLength = data.Length;
+				Stream newStream = request.GetRequestStream();
+
+				// Send the data.
+				newStream.Write(data, 0, data.Length);
+
+				_source.TraceEvent(TraceEventType.Critical, 3, "Start BeginGetResponse");
+
 				IAsyncResult result =(IAsyncResult)request.BeginGetResponse(new AsyncCallback(NotificationCallback), request);
 				
-				_source.TraceEvent(TraceEventType.Critical, 3, "Start BeginGetResponse");
 				_source.Flush();
 			}
 			catch (Exception est)
 			{
-				string error = "Exception: " + est.Message;
+				string error = " SendNotificationToAzure Exception : " + est.Message;
                 _source.TraceEvent(TraceEventType.Critical, 3, error );
                 _source.Flush();
 			}
@@ -1782,7 +1788,7 @@ namespace RoomService
 				PUSH_NOTIFICATION pushInfo = new PUSH_NOTIFICATION();
 				pushInfo.room = (int)room_index;
 				pushInfo.msg = content;
-				pushInfo.tp = 1; //chat
+				pushInfo.type = 1; //chat
 				pushInfo.r_name = matched_user.CreateRoom.Name;
 				pushInfo.INFO = new PUSH_NOTIFICATIONINFO[device_info_list.Count];
 
@@ -2150,7 +2156,16 @@ namespace RoomService
 
 				notice_list.group = category;
 				notice_list.result_code = notice_index;
+				
+				TimeSpan checkOneDaySpan = new TimeSpan(2, 0, 0, 0);
+				DateTime checkOneDayTime = DateTime.Now - checkOneDaySpan;
 
+				List<NDb.Notice> current_list =  (from Notice in created_room.Notices
+									where (Notice.IptTime >= checkOneDayTime)
+									select Notice).ToList<NDb.Notice>();
+
+				notice_list.count = current_list.Count;
+				
 				return notice_list;
 			}
 			catch (Exception e)

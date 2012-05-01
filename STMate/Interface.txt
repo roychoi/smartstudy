@@ -78,6 +78,25 @@
 1. ChatEx 추가 
 	<CHAT type = "1" ...> 추가 
 
+
+---------------------------------------------------------------
+2012/04/02
+---------------------------------------------------------------
+
+1. Auth.asmx/LoginUser
+	
+	<AUTH_RESULT ...... user_name = "강동원" image_url ="http://test.jpg" /> 추가 
+
+2. RoomManager.asmx/DeleteNotice 
+
+count 정보에 현재 지워진후 남은 new 카운트 개수 저장
+( 공지사항 Update 나 Create 와 다른 의미 )
+
+<NOTICE_LIST room_index ="1000001" group ="1" count ="5" crud ="DR" result_code ="0">
+	<!-- count 는 현재 2일 이내의 새 공지사항 개수 -->
+</NOTICE_LIST>
+
+
 ---------------------------------------------------------------
 1. 회원가입
 ---------------------------------------------------------------
@@ -120,7 +139,8 @@ deviceToken:  string
 
 Result
 
-<AUTH_RESULT gender="0" age="0" reason_sort="Login Invalid" result="false" loginid="shin@naver.com"/>
+<AUTH_RESULT gender="0" age="0" reason_sort="Login Invalid" result="false" loginid="shin@naver.com" user_name = "강동원"
+	image_url ="http://test.jpg" />
 
 
 ---------------------------------------------------------------
@@ -405,9 +425,8 @@ Result
 	<!-- -5 : 해당 공지사항 인덱스를 찾을수 없음 -->
 	<!-- Positive value : 지워진 공지사항 Index -->
 
-	<NOTICE title="숙제" date_time="2008-11-20T00:00:00" index="1">책다보고오셈</NOTICE> 
-	<NOTICE title="장소및시간" date_time="2008-11-20T00:00:00" index="2">강남역토즈 5시까지 오셈</NOTICE>
-	<NOTICE title="기타" date_time="2008-11-20T00:00:00" index="3">물좋음</NOTICE> 
+	<!-- count 는 현재 2일 이내의 새 공지사항 개수 -->
+	
 </NOTICE_LIST>
 
 

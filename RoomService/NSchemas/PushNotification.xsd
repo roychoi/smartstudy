@@ -16,7 +16,7 @@
       <xs:attribute name="room" type="xs:int" use="required" />
       <xs:attribute name="r_name" type="xs:string" use="required" />
       <xs:attribute name="msg" type="xs:string" use="required" />
-      <xs:attribute name="tp" type="xs:unsignedByte" use="required" />
+      <xs:attribute name="type" type="xs:unsignedByte" use="required" />
     </xs:complexType>
   </xs:element>
 </xs:schema>
