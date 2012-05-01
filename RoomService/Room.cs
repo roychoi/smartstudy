@@ -191,8 +191,8 @@ namespace RoomService
 
 		//private const string BaseAddressIosService = "http://a4c818f43a6c4a56bf4f6a4adfd48f6e.cloudapp.net/IosDevice.svc";
 
-		//private const string BaseAddress = "http://07e69acb3cca45acaa2e527ea4c8b38b.cloudapp.net/push.svc";
-		private const string BaseAddress = "http://127.0.0.1:81/push.svc";
+		private const string BaseAddress = "http://07e69acb3cca45acaa2e527ea4c8b38b.cloudapp.net/push.svc";
+		//private const string BaseAddress = "http://127.0.0.1:81/push.svc";
 
 		static public int nValue = 10;
 		static public NLogic.NRoom.List _roomList = new NLogic.NRoom.List();
@@ -201,9 +201,11 @@ namespace RoomService
 		static public NLogic.NUser.List _userList = new NLogic.NUser.List();
 		//public NApns.Provider _apnsProvider = null;
 		public static TraceSource _source = new TraceSource("TraceSourceSTmate");
+        
 
 		public RoomWCFService()
 		{
+            
 			//_apnsProvider = new NApns.Provider("iphone_dev.p12", "roy3513!", true);
 		//    NApns.Provider._source.TraceEvent(TraceEventType.Critical, 3, "WCFRoomService() called!!!!!!!!!!!!!!!!!");
 		//    NApns.Provider._source.Flush();
@@ -1643,8 +1645,13 @@ namespace RoomService
 				Console.WriteLine("\nMessage:{0}", e.Message);
 				Console.WriteLine("\nStatus:{0}", e.Status);
 
+                //byte [] error = BitConverter.GetBytes( e.Message );
+
+                // array list 전달..
+                //  char_info.char_name = Encoding.UTF8.GetString(output.strCharName).Split(new char[] { '\0' })[0];
+                //new char[] { '\0' })
                 _source.TraceEvent(TraceEventType.Critical, 3, "\nRespCallback Exception raised!");
-                _source.TraceEvent(TraceEventType.Critical, 3, "\nMessage:{0}", e.Message);
+                _source.TraceEvent(TraceEventType.Critical, 3, "\nMessage:{0}", e.Message );
                 _source.TraceEvent(TraceEventType.Critical, 3, "\nStatus:{0}", e.Status);
                 _source.Flush();
 			}
