@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<UPDATE_PROFILE_INFO result_code ="-1" user_no ="81ae5a0f16264de3900a5747ee9e853d" login_id ="roy1669" img_url ="hahaha.jpg" comment ="고고고"/>
+<!-- result_code  -->
+<!--  0  : 성공 -->
+<!--  -1 : 확인되지 않은 유저 정보 -->
+<!--  -2 : 로그인 되지않은 user_no -->

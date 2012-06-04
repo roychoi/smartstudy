@@ -28,9 +28,9 @@ public partial class ROOM_MAIN_INFO {
     
     private int room_indexField;
     
-    private int chat_last_indexField;
+	//private int chat_last_indexField;
     
-    private int chat_unread_countField;
+	//private int chat_unread_countField;
     
     private int notice_a_cntField;
     
@@ -64,27 +64,27 @@ public partial class ROOM_MAIN_INFO {
         }
     }
     
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int chat_last_index {
-        get {
-            return this.chat_last_indexField;
-        }
-        set {
-            this.chat_last_indexField = value;
-        }
-    }
+	///// <remarks/>
+	//[System.Xml.Serialization.XmlAttributeAttribute()]
+	//public int chat_last_index {
+	//    get {
+	//        return this.chat_last_indexField;
+	//    }
+	//    set {
+	//        this.chat_last_indexField = value;
+	//    }
+	//}
     
-    /// <remarks/>
-    [System.Xml.Serialization.XmlAttributeAttribute()]
-    public int chat_unread_count {
-        get {
-            return this.chat_unread_countField;
-        }
-        set {
-            this.chat_unread_countField = value;
-        }
-    }
+	///// <remarks/>
+	//[System.Xml.Serialization.XmlAttributeAttribute()]
+	//public int chat_unread_count {
+	//    get {
+	//        return this.chat_unread_countField;
+	//    }
+	//    set {
+	//        this.chat_unread_countField = value;
+	//    }
+	//}
     
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]

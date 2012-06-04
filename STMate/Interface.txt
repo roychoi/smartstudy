@@ -96,6 +96,25 @@ count 정보에 현재 지워진후 남은 new 카운트 개수 저장
 	<!-- count 는 현재 2일 이내의 새 공지사항 개수 -->
 </NOTICE_LIST>
 
+---------------------------------------------------------------
+2012/06/02
+---------------------------------------------------------------
+
+1. Auth.asmx/LoginUser
+	
+	<AUTH_RESULT ...... phone = "01040021669" comment ="므흣" /> 추가 
+
+
+2. Auth.asmx/CreateUser 수정
+- phone 매개변수 추가
+- -2 에러코드 ( 전화번호에 문자 있을시 )
+
+3. Auth.asmx/UpdateImageUrl 삭제
+
+4. Auth.asmx/UpdateProfile 추가 ( ImageUrl 과 통합 )
+	- 23  사용자 프로필 저장 요청 참고
+5. MEMBER_PROFILE_INFO 변경
+	- 22. 회원 프로필 정보 요청  참고
 
 ---------------------------------------------------------------
 1. 회원가입
@@ -112,15 +131,18 @@ userName:  string
 gender:  byte
 birthYear:  int
 imageUrl: string
+phone : string
 
 Result
 
 <CREATE_USER date_time="2011-09-22T13:55:00.000" result_code="0" login_id="shin@naver.com"/>
 
 <!-- -1 : SystemError -->
+<!-- -2 : 전화번호 형식이 맞지 않음 (입력시) -->
 <!-- 2 : Password 형식이 맞지 않음 -->
 <!-- 5 : Email 형식이 맞지 않음 -->
 <!-- 6 : ID (Email) 중복 -->
+
 <!-- 그외 : 기타 문의 -->
 
 ---------------------------------------------------------------
@@ -139,9 +161,7 @@ deviceToken:  string
 
 Result
 
-<AUTH_RESULT gender="0" age="0" reason_sort="Login Invalid" result="false" loginid="shin@naver.com" user_name = "강동원"
-	image_url ="http://test.jpg" />
-
+<AUTH_RESULT gender="0" phone="01040021669" comment="므흣" user_name="길동이" image_url="http://test.jpg" age="13" user_no="5b658231-e864-4ef1-a5f0-5accf6c0645f" reason_sort="Success" result="true" loginid="hgd1669"/>
 
 ---------------------------------------------------------------
 3. 방생성
@@ -776,6 +796,8 @@ notice_b_cnt ="2" notice_c_cnt ="0"  cm_date ="2011-09-22T13:55:00.000" />
 		a. 로컬에 저장된 cm_date ( RoomMainInfo 에서 저장된 ) 날짜와 다르거나,
 		b. 1-2 일정도 지났을시에, ( 사진정보 변경 검사를 위해 ) 한번씩 호출
 
+- imageUrl 및 phone, comment 는 optional
+
 ---------------------------------------------------------------
 
 Method
@@ -787,11 +809,11 @@ room_index:  int
 
 Result
 
-<MEMBER_PROFILE_INFO room_index ="1002000" reason_sort = "0" count ="4" cm_date ="2011-09-22T13:55:00.000">
-    <MEMBER_PROFILE login_id ="roy1669@gmail.com" imageUrl ="roy1669abcd123.jpg"/>
-    <MEMBER_PROFILE login_id ="gusupa@gmail.com" imageUrl ="gusupaabcd123.jpg"/>
-    <MEMBER_PROFILE login_id ="azasaw@me.com" imageUrl ="default_1"/>
-    <MEMBER_PROFILE login_id ="ysskwon@nate.com" imageUrl ="default_2"/>
+<MEMBER_PROFILE_INFO room_index ="1002000" reason_sort ="-1" count ="4" cm_date ="2011-09-22T13:55:00.000">
+    <MEMBER_PROFILE login_id ="roy1669@gmail.com" imageUrl ="roy1669abcd123.jpg" phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="gusupa@gmail.com" imageUrl ="gusupaabcd123.jpg"  phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="azasaw@me.com" imageUrl ="default_1"  phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="ysskwon@nate.com" imageUrl ="default_2" phone ="01040021669" comment ="호호호"/>
 </MEMBER_PROFILE_INFO>
 
 <!-- reason_sort -1 : 해당 방정보를 찾을수 없음 -->
@@ -799,21 +821,26 @@ Result
 <!-- reason_sort -3 : 기타 System 오류-->
 
 ---------------------------------------------------------------
-23. 사용자 프로파일 정보 업데이트 (이미지)
+23. 사용자 프로파일 정보 업데이트 (이미지, 코멘트)
 ---------------------------------------------------------------
 Method
-http://www.studyheyo.co.kr/Service/Auth.asmx/UpdateImageUrl
+http://www.studyheyo.co.kr/Service/Auth.asmx/UpdateProfile
 
 매개 변수 값 
 
+loginId:  string
 userNo:  string
 imageUrl:  string
+comment:  string
 
 Result
 
-<UPDATE_DEVICE_INFO result_code ="-1" user_no ="81ae5a0f16264de3900a5747ee9e853d" login_id ="roy1669@gmail.com"/>
+<UPDATE_PROFILE_INFO result_code ="-1" user_no ="81ae5a0f16264de3900a5747ee9e853d" login_id ="roy1669" img_url ="hahaha.jpg" comment ="고고고"/>
 <!-- result_code  -->
-<!--  -1 : SystemError -->
+<!--  0  : 성공 -->
+<!--  -1 : 확인되지 않은 유저 정보 -->
+<!--  -2 : 로그인 되지않은 user_no -->
+
 
 ---------------------------------------------------------------
 24. 유저 초대하기 
