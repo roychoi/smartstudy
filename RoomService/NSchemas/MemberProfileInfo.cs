@@ -100,6 +100,8 @@ public partial class MEMBER_PROFILE_INFOMEMBER_PROFILE {
     
     private string login_idField;
     
+    private string user_nameField;
+    
     private string imageUrlField;
     
     private string phoneField;
@@ -114,6 +116,17 @@ public partial class MEMBER_PROFILE_INFOMEMBER_PROFILE {
         }
         set {
             this.login_idField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public string user_name {
+        get {
+            return this.user_nameField;
+        }
+        set {
+            this.user_nameField = value;
         }
     }
     

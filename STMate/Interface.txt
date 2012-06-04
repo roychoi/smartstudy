@@ -810,10 +810,10 @@ room_index:  int
 Result
 
 <MEMBER_PROFILE_INFO room_index ="1002000" reason_sort ="-1" count ="4" cm_date ="2011-09-22T13:55:00.000">
-    <MEMBER_PROFILE login_id ="roy1669@gmail.com" imageUrl ="roy1669abcd123.jpg" phone ="01040021669" comment ="호호호"/>
-    <MEMBER_PROFILE login_id ="gusupa@gmail.com" imageUrl ="gusupaabcd123.jpg"  phone ="01040021669" comment ="호호호"/>
-    <MEMBER_PROFILE login_id ="azasaw@me.com" imageUrl ="default_1"  phone ="01040021669" comment ="호호호"/>
-    <MEMBER_PROFILE login_id ="ysskwon@nate.com" imageUrl ="default_2" phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="roy1669@gmail.com" user_name="신상범" imageUrl ="roy1669abcd123.jpg" phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="gusupa@gmail.com" user_name="신상범" imageUrl ="gusupaabcd123.jpg"  phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="azasaw@me.com" user_name="신상범" imageUrl ="default_1"  phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="ysskwon@nate.com" user_name="신상범" imageUrl ="default_2" phone ="01040021669" comment ="호호호"/>
 </MEMBER_PROFILE_INFO>
 
 <!-- reason_sort -1 : 해당 방정보를 찾을수 없음 -->

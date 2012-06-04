@@ -2729,6 +2729,9 @@ namespace RoomService
 					result.MEMBER_PROFILE[index] = new MEMBER_PROFILE_INFOMEMBER_PROFILE();
 
 					result.MEMBER_PROFILE[index].login_id = JoinedUser.LoginId;
+					result.MEMBER_PROFILE[index].user_name = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+															JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString);
+
 					result.MEMBER_PROFILE[index].imageUrl = db.fn_GetProfileElement("ImageUrl", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
 																JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString);
 					result.MEMBER_PROFILE[index].comment = db.fn_GetProfileElement("Comment", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
