@@ -1344,6 +1344,26 @@ namespace RoomService
 					return room_result;
 				}
 
+				if( matched_user.CreateRoom.Commited == false  && 
+					matched_user.UserId.Equals( matched_user.CreateRoom.UserId ) )
+				{
+						
+					IEnumerable<NDb.RoomJoinedUser> allMembers = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+															 where JoinedUser.RoomIndex == room_index
+															select JoinedUser);
+
+					db.RoomJoinedUsers.DeleteAllOnSubmit( allMembers );
+					db.CreateRooms.DeleteOnSubmit(matched_user.CreateRoom);
+
+					db.SubmitChanges();
+															
+					room_result.reason_sort = 0;
+					room_result.room_index = room_index;
+
+				
+					return room_result;
+				}
+
 				NDb.RoomJoinedUser create_user = new NDb.RoomJoinedUser();
 
 				db.RoomJoinedUsers.DeleteOnSubmit(matched_user);
