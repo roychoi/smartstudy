@@ -117,6 +117,34 @@ count 정보에 현재 지워진후 남은 new 카운트 개수 저장
 	- 22. 회원 프로필 정보 요청  참고
 
 ---------------------------------------------------------------
+2012/07/15
+---------------------------------------------------------------
+
+1. CheckUserPenalty , MemberDetailInfo 수정
+
+	<MEMBER_DETAIL_INFO .... >
+		<MEMBER .... owner ="1"/> 추가 ( Optional )
+
+
+2. RoomManager.asmx/Create RoomManager.asmx/Join
+- CR -3 에러코드 ( 5개방 초과 )
+- JN -5 에러코드 ( 5개방 초과 )
+
+3. Invite 시 에러코드 변경( 방장권한 아니다 -> 가입된유저 아니다 )
+
+<ROOM_RESULT crud ="IV" room_index ="100001" reason_sort="0" />
+
+<!-- IV : InVite -->
+<!-- IV : -2 : 초대하는 유저가 방에 가입된 유저가 아니다.-->
+
+4. AllRoomList ( int page 추가 )
+
+해당 페이지 번호 입력 ( 1 base ) - 0 일경우 아무것도 출력되지 않는다.
+기본 페이지는 30개 
+테스트용으로 5개로 설정해놓음
+
+
+---------------------------------------------------------------
 1. 회원가입
 ---------------------------------------------------------------
 Method
@@ -181,12 +209,14 @@ maxuser:  int
   
 <ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+<!-- CR : -3 : 가입된 방개수 초과 (5개) -->
 
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+<!-- JN : -5 : 가입된 방개수 초과 (5개) -->
 
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
@@ -243,14 +273,17 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/Join
 
 Result
   
+  
 <ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+<!-- CR : -3 : 가입된 방개수 초과 (5개) -->
 
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+<!-- JN : -5 : 가입된 방개수 초과 (5개) -->
 
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
@@ -277,14 +310,17 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/Leave
 
 Result
   
+  
 <ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+<!-- CR : -3 : 가입된 방개수 초과 (5개) -->
 
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+<!-- JN : -5 : 가입된 방개수 초과 (5개) -->
 
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
@@ -340,14 +376,17 @@ room_index:  int
 Result
 <ROOM_RESULT reason_sort="0" room_index = "1000020" crud="CM"/>
 
+  
 <ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+<!-- CR : -3 : 가입된 방개수 초과 (5개) -->
 
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+<!-- JN : -5 : 가입된 방개수 초과 (5개) -->
 
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
@@ -662,7 +701,7 @@ Result
 	<!-- -3 : 올바르지 않은 대상 유저 정보 -->
 	<!-- -4 : 기타 System Error -->
 	
-    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1"/>
+    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1" owner = "1"/>
 </MEMBER_DETAIL_INFO>
 
 
@@ -686,7 +725,7 @@ Result
 	<!-- -2 : 커밋된 방이 아니다.-->
 	<!-- -4 : 기타 System Error -->
 	
-    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1"/>
+    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1" owner = "1" />
 	  <MEMBER loginid="roychoi@gmail.com" user_name="최진혁" gender="0" age="31" panalty ="30000" rank_no ="1" />
     <MEMBER loginid="gusupa@hanmail.net" user_name="이규진" gender="0" age="31" panalty ="30000" rank_no ="1" />
     <MEMBER loginid="yskown@hanmail.net" user_name="권연수" gender="1" age="25" panalty ="30000" rank_no ="2" />
@@ -860,7 +899,7 @@ Result
 
 <!-- IV : InVite -->
 <!-- IV : -1 : 해당 방정보를 찾을수 없음-->
-<!-- IV : -2 : 방장권한이 없다.-->
+<!-- IV : -2 : 초대하는 유저가 방에 가입된 유저가 아니다.-->
 <!-- IV : -3 : 커밋된 방이 아니다-->
 <!-- IV : -4 : 이미 방에 가입된 유저를 초대하려고 시도.-->
 <!-- IV : -5 : 해당하는 유저정보를 찾을수 없음 -->

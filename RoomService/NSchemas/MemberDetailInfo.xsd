@@ -11,6 +11,7 @@
             <xs:attribute name="age" type="xs:int" use="required" />
             <xs:attribute name="panalty" type="xs:int" use="required" />
             <xs:attribute name="rank_no" type="xs:int" use="required" />
+            <xs:attribute name="owner" type="xs:unsignedByte" use="optional" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>

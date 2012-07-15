@@ -96,7 +96,7 @@ namespace RoomService
 		[OperationContract]
 		ROOM_SUMMARY_LIST AllRoomList(RoomSearchKey key, String user_no);
 		[OperationContract]
-		ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int Skip);
+		ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int page);
 
 		[OperationContract]
 		JOIN_ROOM_DETAIL JoinRoomDetail(UInt32 room_index, String user_no);
@@ -201,6 +201,7 @@ namespace RoomService
 		static public NLogic.NUser.List _userList = new NLogic.NUser.List();
 		//public NApns.Provider _apnsProvider = null;
 		public static TraceSource _source = new TraceSource("TraceSourceSTmate");
+		static public int PageSize = 5;
 
 		public RoomWCFService()
 		{
@@ -440,6 +441,18 @@ namespace RoomService
 			{
 				// TRANSACTION
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+				Guid UserNo = new Guid(user_no);
+
+				int joined_count = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+									 where JoinedUser.UserId == UserNo
+									 select JoinedUser).Count();
+
+				if (joined_count >= 5)
+				{
+					result.reason_sort = -3;		// Max 치 초과
+					return result;
+				}
+				
 				NDb.CreateRoom room = new NDb.CreateRoom();
 
 				room.Category = (byte)key._category;
@@ -449,7 +462,7 @@ namespace RoomService
 				room.Name = name;
 				room.CreateDateTime = DateTime.Now;
 				room.MaxUser = (byte)maxuser;
-				room.UserId = new Guid(user_no);
+				room.UserId = UserNo;
 				room.Duration = duration;
 
 				db.CreateRooms.InsertOnSubmit(room);
@@ -896,12 +909,17 @@ namespace RoomService
 		}
 
 
-		public ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int Skip)
+		public ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int page)
 		{
 			ROOM_SUMMARY_LIST room_summary_list = new ROOM_SUMMARY_LIST();
 
 			try
 			{
+				if (page < 1)
+				{
+					return room_summary_list;
+				}
+
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
 
 				List<NDb.NData.JoinedRoom> room_list = (from room in db.GetTable<NDb.CreateRoom>()
@@ -928,8 +946,10 @@ namespace RoomService
 																				 select RoomUserCount).Count<NDb.RoomJoinedUser>(),
 															MasterUserId = room.UserId
 
-														}).Skip(Skip).Take(50).ToList<NDb.NData.JoinedRoom>();
-				Console.WriteLine(" Skip Count {0} ", Skip);
+														//}).Skip(Skip).Take(5).ToList<NDb.NData.JoinedRoom>();
+														}).Skip((page - 1) * PageSize).Take(PageSize).ToList<NDb.NData.JoinedRoom>();
+				
+				Console.WriteLine(" page Count {0} ", page);
 
 				room_summary_list.category = key._category;
 				room_summary_list.location_main = key._location_main;
@@ -1198,9 +1218,20 @@ namespace RoomService
 			try
 			{
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+				Guid UserId = new Guid(user_no);
+			
+				int joined_count = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+									where JoinedUser.UserId == UserId
+									select JoinedUser).Count();
+
+				if (joined_count >= 5)
+				{
+					room_result.reason_sort = -5;		// Max 치 초과
+					return room_result;
+				}
+
 				NDb.RoomJoinedUser create_user = new NDb.RoomJoinedUser();
 
-				Guid UserId = new Guid(user_no);
 				var joining_user = (from User in db.GetTable<NDb.aspnet_User>()
 									where User.UserId == UserId
 									//join Profile in db.GetTable<NDb.aspnet_Profile>() on UserId equals Profile.UserId
@@ -2458,6 +2489,15 @@ namespace RoomService
 				result.MEMBER[0].panalty = mached_user.Penalty;
 				result.MEMBER[0].rank_no = 0;
 				result.MEMBER[0].age = (byte)(DateTime.Now.Year - Birth.Year);
+				if (matched_room.UserId.Equals(mached_user.UserId))
+				{
+					result.MEMBER[0].ownerSpecified = true;
+					result.MEMBER[0].owner = 1;
+				}
+				else
+				{
+					result.MEMBER[0].ownerSpecified = false;
+				}	
 
 				return result;
 			}
@@ -2531,6 +2571,16 @@ namespace RoomService
 																				JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString));
 
 					result.MEMBER[index].age = (byte)(DateTime.Now.Year - Birth.Year);
+					if (matched_room.UserId.Equals(JoinedUser.UserId))
+					{
+						result.MEMBER[index].ownerSpecified = true;
+						result.MEMBER[index].owner = 1;
+					}
+					else
+					{
+						result.MEMBER[index].ownerSpecified = false;
+					}	
+
 					index++;
 				}
 
@@ -2791,12 +2841,21 @@ namespace RoomService
 					result.reason_sort = -1;   // not found room
 					return result;
 				}
-
-				if (matched_room.UserId.Equals(UserId) == false)
+				
+				NDb.RoomJoinedUser joined_user = (from RoomUser in matched_room.RoomJoinedUsers
+												  where RoomUser.UserId == UserId
+												  select RoomUser).SingleOrDefault();
+				if (joined_user == null)
 				{
-					result.reason_sort = -2;   // not master user
+					result.reason_sort = -2;   // requester is not joined user
 					return result;
 				}
+							
+				//if (matched_room.UserId.Equals(UserId) == false)
+				//{
+				//    result.reason_sort = -2;   // not master user
+				//    return result;
+				//}
 
 				if (matched_room.Commited == false)
 				{
@@ -2810,7 +2869,7 @@ namespace RoomService
 												  select RoomUser).SingleOrDefault();
 				if (mached_user != null)
 				{
-					result.reason_sort = -4;   // already joined user
+					result.reason_sort = -4;   // dest member  already joined user
 					return result;
 				}
 

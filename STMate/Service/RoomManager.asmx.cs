@@ -40,7 +40,7 @@ namespace STMate.Service
         }
 
         [WebMethod(EnableSession = true)]
-        public ROOM_SUMMARY_LIST AllRoomList(Int32 category, Int32 location_main, Int32 location_sub, String user_no)
+        public ROOM_SUMMARY_LIST AllRoomList(Int32 category, Int32 location_main, Int32 location_sub, String user_no,int page )
         {
             IRoom proxy = factory.CreateChannel();
             RoomSearchKey search_key = new RoomSearchKey();
@@ -48,7 +48,7 @@ namespace STMate.Service
             search_key._location_main = location_main;
             search_key._location_sub = location_sub;
 
-            ROOM_SUMMARY_LIST room_summary_list = proxy.AllRoomListDb(search_key, user_no, 0);
+			ROOM_SUMMARY_LIST room_summary_list = proxy.AllRoomListDb(search_key, user_no, page);
 
             (proxy as IDisposable).Dispose();
 
