@@ -31,6 +31,27 @@ namespace WCFClient
 
             try
             {
+                TRADE_SEARCH_INFO search = new TRADE_SEARCH_INFO();
+                search.item_index = 1;
+                search.category = 1;
+                search.kind = 1;
+                search.section = 1;
+                search.item_rank = 1;
+                search.req_level = 1;
+                search.page_no = 1;
+                search.page_size = 1;
+
+                Trade trade = new Trade();
+                //try
+                //{
+
+                    System.Xml.XmlNode node = trade.GetTradeListInfo( search );
+                //}
+                //catch( Exception e )
+                //{
+                //    Console.WriteLine( e.Message );
+                //}
+
 				RoomService.RoomSearchKey key = new RoomService.RoomSearchKey();
 				key._category = 1;
 				key._location_main = 2;
@@ -43,8 +64,7 @@ namespace WCFClient
 				RoomClient test = new RoomClient("BasicHttpBinding_IRoom");
 				RoomClient testTcp = new RoomClient("NetTcpBinding_IRoomLocal");
 
-
-
+             
 				ROOM_RESULT rr = new ROOM_RESULT();
 			
                 String resultString = test.Test2("콜콜");

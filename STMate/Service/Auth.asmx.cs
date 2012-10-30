@@ -155,39 +155,39 @@ namespace STMate.Service
             try
             {
 
-				if (RegexUtil.IsValidEmail(loginEmail) == false)
-				{
-					create_user.date_timeSpecified = false;
-					create_user.login_id = loginEmail;
-					create_user.result_code = (int)MembershipCreateStatus.InvalidEmail;
+                //if (RegexUtil.IsValidEmail(loginEmail) == false)
+                //{
+                //    create_user.date_timeSpecified = false;
+                //    create_user.login_id = loginEmail;
+                //    create_user.result_code = (int)MembershipCreateStatus.InvalidEmail;
 
-					return create_user;
-				}
+                //    return create_user;
+                //}
 
-				String [] JID = loginEmail.Split('@');
-				String JID_Sender = JID[0] + "@talk.studyheyo.co.kr";
+                //String [] JID = loginEmail.Split('@');
+                //String JID_Sender = JID[0] + "@talk.studyheyo.co.kr";
 
 				/*
 				 * Creating the Jid and the XmppClientConnection objects
 				 */
 
-				Jid jidSender = new Jid(JID_Sender);
-				jidSender.Resource = "Stheyoapp";
+                //Jid jidSender = new Jid(JID_Sender);
+                //jidSender.Resource = "Stheyoapp";
 
-				XmppClientConnection xmpp = new XmppClientConnection(jidSender.Server, 5222);
-				xmpp.RegisterAccount = true;
+                //XmppClientConnection xmpp = new XmppClientConnection(jidSender.Server, 5222);
+                //xmpp.RegisterAccount = true;
 
-				xmpp.Open(jidSender.User, passWord);
+                //xmpp.Open(jidSender.User, passWord);
 
-				xmpp.OnRegistered += new ObjectHandler(xmpp_OnRegisterd);
-				xmpp.OnRegisterError += new XmppElementHandler(xmpp_OnRegisterFailed);
+                //xmpp.OnRegistered += new ObjectHandler(xmpp_OnRegisterd);
+                //xmpp.OnRegisterError += new XmppElementHandler(xmpp_OnRegisterFailed);
 
                 MembershipProvider defaultMembership = Membership.Provider;
                 MembershipCreateStatus status;
 
 				MembershipUser newUser = defaultMembership.CreateUser(	loginEmail,
 																		passWord,
-																		loginEmail, 
+																		null, 
 																		null,
 																		null,
 																		true, 
