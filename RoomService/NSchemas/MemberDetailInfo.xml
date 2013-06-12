@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <MEMBER_DETAIL_INFO reason_sort ="-1" index ="1002000" deposit_total ="200000" penalty_total ="142000" count ="4"  cm_date ="2011-09-22T13:55:00.000" >
-    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1"/>
+    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1" owner ="1"/>
     <MEMBER loginid="roychoi@gmail.com" user_name="최진혁" gender="0" age="31" panalty ="30000" rank_no ="1" />
     <MEMBER loginid="gusupa@hanmail.net" user_name="이규진" gender="0" age="31" panalty ="30000" rank_no ="1" />
     <MEMBER loginid="yskown@hanmail.net" user_name="권연수" gender="1" age="25" panalty ="30000" rank_no ="2" />

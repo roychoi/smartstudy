@@ -100,6 +100,9 @@
     <Compile Include="NSchemas\UpdateDeviceInfo.cs">
       <DependentUpon>UpdateDeviceInfo.xsd</DependentUpon>
     </Compile>
+    <Compile Include="NSchemas\UpdateProfile.cs">
+      <DependentUpon>UpdateProfile.xsd</DependentUpon>
+    </Compile>
     <Compile Include="NTrace\LocalStorageXmlWriterTraceListener.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -159,6 +162,9 @@
     <None Include="NSchemas\UpdateDeviceInfo.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="NSchemas\UpdateProfile.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -186,6 +192,7 @@
     <Content Include="NSchemas\RoomSummaryList.xml" />
     <Content Include="NSchemas\UpdateDeviceInfo.xml" />
     <Content Include="NSchemas\RoomBadgeInfo.xml" />
+    <Content Include="NSchemas\UpdateProfile.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JdSoft.Apple.Apns.Notifications\JdSoft.Apple.Apns.Notifications.csproj">

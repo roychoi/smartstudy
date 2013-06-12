@@ -96,6 +96,53 @@ count 정보에 현재 지워진후 남은 new 카운트 개수 저장
 	<!-- count 는 현재 2일 이내의 새 공지사항 개수 -->
 </NOTICE_LIST>
 
+---------------------------------------------------------------
+2012/06/02
+---------------------------------------------------------------
+
+1. Auth.asmx/LoginUser
+	
+	<AUTH_RESULT ...... phone = "01040021669" comment ="므흣" /> 추가 
+
+
+2. Auth.asmx/CreateUser 수정
+- phone 매개변수 추가
+- -2 에러코드 ( 전화번호에 문자 있을시 )
+
+3. Auth.asmx/UpdateImageUrl 삭제
+
+4. Auth.asmx/UpdateProfile 추가 ( ImageUrl 과 통합 )
+	- 23  사용자 프로필 저장 요청 참고
+5. MEMBER_PROFILE_INFO 변경
+	- 22. 회원 프로필 정보 요청  참고
+
+---------------------------------------------------------------
+2012/07/15
+---------------------------------------------------------------
+
+1. CheckUserPenalty , MemberDetailInfo 수정
+
+	<MEMBER_DETAIL_INFO .... >
+		<MEMBER .... owner ="1"/> 추가 ( Optional )
+
+
+2. RoomManager.asmx/Create RoomManager.asmx/Join
+- CR -3 에러코드 ( 5개방 초과 )
+- JN -5 에러코드 ( 5개방 초과 )
+
+3. Invite 시 에러코드 변경( 방장권한 아니다 -> 가입된유저 아니다 )
+
+<ROOM_RESULT crud ="IV" room_index ="100001" reason_sort="0" />
+
+<!-- IV : InVite -->
+<!-- IV : -2 : 초대하는 유저가 방에 가입된 유저가 아니다.-->
+
+4. AllRoomList ( int page 추가 )
+
+해당 페이지 번호 입력 ( 1 base ) - 0 일경우 아무것도 출력되지 않는다.
+기본 페이지는 30개 
+테스트용으로 5개로 설정해놓음
+
 
 ---------------------------------------------------------------
 1. 회원가입
@@ -112,15 +159,18 @@ userName:  string
 gender:  byte
 birthYear:  int
 imageUrl: string
+phone : string
 
 Result
 
 <CREATE_USER date_time="2011-09-22T13:55:00.000" result_code="0" login_id="shin@naver.com"/>
 
 <!-- -1 : SystemError -->
+<!-- -2 : 전화번호 형식이 맞지 않음 (입력시) -->
 <!-- 2 : Password 형식이 맞지 않음 -->
 <!-- 5 : Email 형식이 맞지 않음 -->
 <!-- 6 : ID (Email) 중복 -->
+
 <!-- 그외 : 기타 문의 -->
 
 ---------------------------------------------------------------
@@ -139,9 +189,7 @@ deviceToken:  string
 
 Result
 
-<AUTH_RESULT gender="0" age="0" reason_sort="Login Invalid" result="false" loginid="shin@naver.com" user_name = "강동원"
-	image_url ="http://test.jpg" />
-
+<AUTH_RESULT gender="0" phone="01040021669" comment="므흣" user_name="길동이" image_url="http://test.jpg" age="13" user_no="5b658231-e864-4ef1-a5f0-5accf6c0645f" reason_sort="Success" result="true" loginid="hgd1669"/>
 
 ---------------------------------------------------------------
 3. 방생성
@@ -161,12 +209,14 @@ maxuser:  int
   
 <ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+<!-- CR : -3 : 가입된 방개수 초과 (5개) -->
 
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+<!-- JN : -5 : 가입된 방개수 초과 (5개) -->
 
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
@@ -223,14 +273,17 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/Join
 
 Result
   
+  
 <ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+<!-- CR : -3 : 가입된 방개수 초과 (5개) -->
 
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+<!-- JN : -5 : 가입된 방개수 초과 (5개) -->
 
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
@@ -257,14 +310,17 @@ http://www.studyheyo.co.kr/Service/RoomManager.asmx/Leave
 
 Result
   
+  
 <ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+<!-- CR : -3 : 가입된 방개수 초과 (5개) -->
 
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+<!-- JN : -5 : 가입된 방개수 초과 (5개) -->
 
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
@@ -320,14 +376,17 @@ room_index:  int
 Result
 <ROOM_RESULT reason_sort="0" room_index = "1000020" crud="CM"/>
 
+  
 <ROOM_RESULT crud ="CR" room_index ="100001" reason_sort="0" />
 <!-- CR : CReate -->
+<!-- CR : -3 : 가입된 방개수 초과 (5개) -->
 
 <!-- JN : JoiN -->
 <!-- JN : -1 : 해당 유저를 찾을수 없음 -->
 <!-- JN : -2 : 해당 방정보 를 찾을수 없음 -->
 <!-- JN : -3 : maxUser 만큼 꽉찾다 -->
 <!-- JN : -4 : 이미가입중이다. -->
+<!-- JN : -5 : 가입된 방개수 초과 (5개) -->
 
 <!-- DR : DRop -->
 <!-- DR : -1 : 해당 유저를 찾을수 없음 -->
@@ -642,7 +701,7 @@ Result
 	<!-- -3 : 올바르지 않은 대상 유저 정보 -->
 	<!-- -4 : 기타 System Error -->
 	
-    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1"/>
+    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1" owner = "1"/>
 </MEMBER_DETAIL_INFO>
 
 
@@ -666,7 +725,7 @@ Result
 	<!-- -2 : 커밋된 방이 아니다.-->
 	<!-- -4 : 기타 System Error -->
 	
-    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1"/>
+    <MEMBER loginid="shin@naver.com" user_name="신상범" gender="0" age="31" panalty ="30000" rank_no ="1" owner = "1" />
 	  <MEMBER loginid="roychoi@gmail.com" user_name="최진혁" gender="0" age="31" panalty ="30000" rank_no ="1" />
     <MEMBER loginid="gusupa@hanmail.net" user_name="이규진" gender="0" age="31" panalty ="30000" rank_no ="1" />
     <MEMBER loginid="yskown@hanmail.net" user_name="권연수" gender="1" age="25" panalty ="30000" rank_no ="2" />
@@ -776,6 +835,8 @@ notice_b_cnt ="2" notice_c_cnt ="0"  cm_date ="2011-09-22T13:55:00.000" />
 		a. 로컬에 저장된 cm_date ( RoomMainInfo 에서 저장된 ) 날짜와 다르거나,
 		b. 1-2 일정도 지났을시에, ( 사진정보 변경 검사를 위해 ) 한번씩 호출
 
+- imageUrl 및 phone, comment 는 optional
+
 ---------------------------------------------------------------
 
 Method
@@ -787,11 +848,11 @@ room_index:  int
 
 Result
 
-<MEMBER_PROFILE_INFO room_index ="1002000" reason_sort = "0" count ="4" cm_date ="2011-09-22T13:55:00.000">
-    <MEMBER_PROFILE login_id ="roy1669@gmail.com" imageUrl ="roy1669abcd123.jpg"/>
-    <MEMBER_PROFILE login_id ="gusupa@gmail.com" imageUrl ="gusupaabcd123.jpg"/>
-    <MEMBER_PROFILE login_id ="azasaw@me.com" imageUrl ="default_1"/>
-    <MEMBER_PROFILE login_id ="ysskwon@nate.com" imageUrl ="default_2"/>
+<MEMBER_PROFILE_INFO room_index ="1002000" reason_sort ="-1" count ="4" cm_date ="2011-09-22T13:55:00.000">
+    <MEMBER_PROFILE login_id ="roy1669@gmail.com" user_name="신상범" imageUrl ="roy1669abcd123.jpg" phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="gusupa@gmail.com" user_name="신상범" imageUrl ="gusupaabcd123.jpg"  phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="azasaw@me.com" user_name="신상범" imageUrl ="default_1"  phone ="01040021669" comment ="호호호"/>
+    <MEMBER_PROFILE login_id ="ysskwon@nate.com" user_name="신상범" imageUrl ="default_2" phone ="01040021669" comment ="호호호"/>
 </MEMBER_PROFILE_INFO>
 
 <!-- reason_sort -1 : 해당 방정보를 찾을수 없음 -->
@@ -799,21 +860,26 @@ Result
 <!-- reason_sort -3 : 기타 System 오류-->
 
 ---------------------------------------------------------------
-23. 사용자 프로파일 정보 업데이트 (이미지)
+23. 사용자 프로파일 정보 업데이트 (이미지, 코멘트)
 ---------------------------------------------------------------
 Method
-http://www.studyheyo.co.kr/Service/Auth.asmx/UpdateImageUrl
+http://www.studyheyo.co.kr/Service/Auth.asmx/UpdateProfile
 
 매개 변수 값 
 
+loginId:  string
 userNo:  string
 imageUrl:  string
+comment:  string
 
 Result
 
-<UPDATE_DEVICE_INFO result_code ="-1" user_no ="81ae5a0f16264de3900a5747ee9e853d" login_id ="roy1669@gmail.com"/>
+<UPDATE_PROFILE_INFO result_code ="-1" user_no ="81ae5a0f16264de3900a5747ee9e853d" login_id ="roy1669" img_url ="hahaha.jpg" comment ="고고고"/>
 <!-- result_code  -->
-<!--  -1 : SystemError -->
+<!--  0  : 성공 -->
+<!--  -1 : 확인되지 않은 유저 정보 -->
+<!--  -2 : 로그인 되지않은 user_no -->
+
 
 ---------------------------------------------------------------
 24. 유저 초대하기 
@@ -833,7 +899,7 @@ Result
 
 <!-- IV : InVite -->
 <!-- IV : -1 : 해당 방정보를 찾을수 없음-->
-<!-- IV : -2 : 방장권한이 없다.-->
+<!-- IV : -2 : 초대하는 유저가 방에 가입된 유저가 아니다.-->
 <!-- IV : -3 : 커밋된 방이 아니다-->
 <!-- IV : -4 : 이미 방에 가입된 유저를 초대하려고 시도.-->
 <!-- IV : -5 : 해당하는 유저정보를 찾을수 없음 -->

@@ -166,15 +166,15 @@ namespace STMate.Service
 			return join_result;
 		}
 
-		[WebMethod(EnableSession = true)]
-		public CHAT_LIST Chat(String user_no, UInt32 room_index, int local_index, int last_update, String message, byte type)
-		{
-			IRoom proxy = factory.CreateChannel();
-			CHAT_LIST chat_list = proxy.ChatDb(room_index, user_no, local_index, last_update, message, type);
-			(proxy as IDisposable).Dispose();
+		//[WebMethod(EnableSession = true)]
+		//public CHAT_LIST Chat(String user_no, UInt32 room_index, int local_index, int last_update, String message, byte type)
+		//{
+		//    IRoom proxy = factory.CreateChannel();
+		//    CHAT_LIST chat_list = proxy.ChatDb(room_index, user_no, local_index, last_update, message, type);
+		//    (proxy as IDisposable).Dispose();
 
-			return chat_list;
-		}
+		//    return chat_list;
+		//}
 
 		[WebMethod(EnableSession = true)]
 		public UPDATE_DEVICE_INFO UpdateDeviceInfo(String userNo, String deviceToken)

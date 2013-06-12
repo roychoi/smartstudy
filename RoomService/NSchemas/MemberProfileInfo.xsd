@@ -6,7 +6,10 @@
         <xs:element maxOccurs="unbounded" name="MEMBER_PROFILE">
           <xs:complexType>
             <xs:attribute name="login_id" type="xs:string" use="required" />
+            <xs:attribute name="user_name" type="xs:string" use="required" />
             <xs:attribute name="imageUrl" type="xs:string" use="required" />
+            <xs:attribute name="phone" type="xs:string" use="required" />
+            <xs:attribute name="comment" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>

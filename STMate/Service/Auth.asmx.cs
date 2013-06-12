@@ -18,8 +18,8 @@ using System.Collections;
 using RoomService;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
-using agsXMPP;
-using agsXMPP.protocol.client;
+
+using System.Threading;
 
 namespace STMate.Service
 {
@@ -135,6 +135,31 @@ namespace STMate.Service
         [WebMethod(EnableSession = true)]
         public GAME_SERVER_INFO GetServerInfo( string game_no, string server_no )
         {
+
+			//                if (Context.Session.IsNewSession == true)
+			//                {
+			//                    Context.Session.Add(userName, passWord);
+			//                }
+
+			//                HttpCookie userCookie = Context.Request.Cookies["login_id"];
+			//                MembershipProvider defaultMembership = Membership.Provider;
+
+			//                if (userCookie != null)
+			//                {
+			//                    if (userCookie.Value.Equals(userName) == false)
+			//                    {
+			//                        auth_user_result.loginid = userName;
+			//                        auth_user_result.reason_sort = "Invalid";
+			//                        auth_user_result.date_timeSpecified = true;
+			//                        auth_user_result.date_time = userCookie.Expires;
+
+			//                        Context.Request.Cookies.Clear();
+			//                        this.Context.Response.Cookies.Clear();
+			//;
+			//                        return auth_user_result;
+			//                    }
+			//                }
+
             GAME_SERVER_INFO game_server_info = new GAME_SERVER_INFO();
 
             IRoom proxy = factory.CreateChannel();
@@ -148,22 +173,31 @@ namespace STMate.Service
 
         [WebMethod(EnableSession = true)]
 		public CREATE_USER CreateUser( String loginEmail, String passWord, String userName, Byte gender, UInt16 birthYear 
-											, String imageUrl )
+											, String imageUrl, String phone )
         {
             CREATE_USER create_user = new CREATE_USER();
 
             try
             {
+<<<<<<< HEAD
 
                 //if (RegexUtil.IsValidEmail(loginEmail) == false)
                 //{
                 //    create_user.date_timeSpecified = false;
                 //    create_user.login_id = loginEmail;
                 //    create_user.result_code = (int)MembershipCreateStatus.InvalidEmail;
+=======
+				if (RegExUtil.IsUserName(loginEmail) == false)
+				{
+					create_user.date_timeSpecified = false;
+					create_user.login_id = loginEmail;
+					create_user.result_code = (int)MembershipCreateStatus.InvalidUserName;
+>>>>>>> 2f9933aba0dc559e533166c9e7d6530d07851fe2
 
                 //    return create_user;
                 //}
 
+<<<<<<< HEAD
                 //String [] JID = loginEmail.Split('@');
                 //String JID_Sender = JID[0] + "@talk.studyheyo.co.kr";
 
@@ -181,6 +215,20 @@ namespace STMate.Service
 
                 //xmpp.OnRegistered += new ObjectHandler(xmpp_OnRegisterd);
                 //xmpp.OnRegisterError += new XmppElementHandler(xmpp_OnRegisterFailed);
+=======
+				if (phone.Count() != 0)
+				{
+					if (RegExUtil.IsCustomMatch(phone, RegExUtil.NumberOnlyFormat) == false)
+					{
+						create_user.date_timeSpecified = false;
+						create_user.login_id = loginEmail;
+						create_user.result_code = -2;		// Phone Num Error
+
+						return create_user;
+					}
+
+				}
+>>>>>>> 2f9933aba0dc559e533166c9e7d6530d07851fe2
 
                 MembershipProvider defaultMembership = Membership.Provider;
                 MembershipCreateStatus status;
@@ -213,6 +261,7 @@ namespace STMate.Service
                 userProfile["BirthYear"] = new DateTime(birthYear, 1, 1);
 				userProfile["NickName"] = userName;
 				userProfile["ImageUrl"] = imageUrl;
+				userProfile["Phone"] = phone;
 
                 userProfile.Save();
 
@@ -229,24 +278,7 @@ namespace STMate.Service
             }
         }
 
-		void xmpp_OnRegisterd(object sender)
-		{
-			XmppConnection conn = sender as XmppConnection;
-			conn.Close();
-
-			Console.WriteLine("Registered");
-		}
-
-		// Is raised when login and authentication is finished 
-		void xmpp_OnRegisterFailed(object sender, agsXMPP.Xml.Dom.Element e)
-		{
-			XmppConnection conn = sender as XmppConnection;
-			conn.Close();
-
-			Console.WriteLine("Register Failed :  " + e.Value);
-		}
-
-        [WebMethod(EnableSession = true)]
+	    [WebMethod(EnableSession = true)]
 		public AUTH_RESULT LoginUser(String loginEmail, String passWord, String deviceToken )
         {
             try
@@ -254,29 +286,6 @@ namespace STMate.Service
                 AUTH_RESULT auth_user_result = new AUTH_RESULT();
                 MembershipProvider defaultMembership = Membership.Provider;
 
-//                if (Context.Session.IsNewSession == true)
-//                {
-//                    Context.Session.Add(userName, passWord);
-//                }
-
-//                HttpCookie userCookie = Context.Request.Cookies["login_id"];
-//                MembershipProvider defaultMembership = Membership.Provider;
-                
-//                if (userCookie != null)
-//                {
-//                    if (userCookie.Value.Equals(userName) == false)
-//                    {
-//                        auth_user_result.loginid = userName;
-//                        auth_user_result.reason_sort = "Invalid";
-//                        auth_user_result.date_timeSpecified = true;
-//                        auth_user_result.date_time = userCookie.Expires;
-
-//                        Context.Request.Cookies.Clear();
-//                        this.Context.Response.Cookies.Clear();
-//;
-//                        return auth_user_result;
-//                    }
-//                }
 
 				bool bresult = defaultMembership.ValidateUser(loginEmail, passWord);
                 if (bresult == true)
@@ -295,7 +304,6 @@ namespace STMate.Service
                     auth_user_result.result = true;
                     auth_user_result.reason_sort = "Success";
                     auth_user_result.date_timeSpecified = false;
-					//auth_user_result.user_no = user_guid.ToString("N");
 					auth_user_result.user_no = user_guid.ToString("D");
 
 					ProfileBase userProfile = ProfileBase.Create(loginEmail, true);
@@ -304,6 +312,8 @@ namespace STMate.Service
 					DateTime birth = (DateTime)userProfile.GetPropertyValue("BirthYear");
 					String userName = (String)userProfile.GetPropertyValue("NickName");
 					String imageUrl = (String)userProfile.GetPropertyValue("ImageUrl");
+					String phone_num = (String)userProfile.GetPropertyValue("Phone");
+					String comment = (String)userProfile.GetPropertyValue("Comment");
 
 					userProfile["DeviceToken"] = deviceToken;	// last logined device
 					userProfile.Save();
@@ -321,23 +331,10 @@ namespace STMate.Service
 
 					auth_user_result.user_name = userName;
 					auth_user_result.image_url = imageUrl;
+					auth_user_result.comment = comment;
+					auth_user_result.phone = phone_num;
 
-					//IRoom proxy = factory.CreateChannel();
-
-					//bool bResult = proxy.LoginUser(user_guid.ToString("N"),
-					//    loginEmail,		// from membership
-					//    userName,		// from profile
-					//    birth, // from profile
-					//    auth_user_result.gender, // from profile 
-					//    deviceToken
-					//    );
-
-					//(proxy as IDisposable).Dispose();
-
-					//SqlProfileProvider sqlProfile = ProfileManager.Provider as SqlProfileProvider;
-					//String Name = sqlProfile.ApplicationName;
-
-                    return auth_user_result;
+			        return auth_user_result;
                 }
                 else
                 {
@@ -390,24 +387,54 @@ namespace STMate.Service
 		}
 
 		[WebMethod(EnableSession = true)]
-		public UPDATE_DEVICE_INFO UpdateImageUrl(String userNo, String imageUrl )
+		public UPDATE_PROFILE_INFO UpdateProfile(String loginId, String userNo, String imageUrl, String comment)
 		{
-			UPDATE_DEVICE_INFO update_device_info = new UPDATE_DEVICE_INFO();
+			UPDATE_PROFILE_INFO update_profile = new UPDATE_PROFILE_INFO();
+			update_profile.login_id = loginId;
+			update_profile.user_no = userNo;
+			update_profile.comment = "";
+			update_profile.img_url = "";
+			
+			MembershipProvider defaultMembership = Membership.Provider;
+			MembershipUser user = defaultMembership.GetUser(loginId, false);
+			if (user == null)
+			{
+				update_profile.result_code = -1;
+				return update_profile;
+			}
 
+			System.Guid user_guid = (System.Guid) user.ProviderUserKey;
+			System.Guid req_guid = new Guid( userNo );
+
+			if (req_guid.Equals(user_guid) == false)
+			{
+				update_profile.result_code = -1;
+				return update_profile;
+
+			}
+			
 			try
 			{
-				ProfileBase userProfile = ProfileBase.Create(userNo, true);
 
-				userProfile["ImageUrl"] = imageUrl;	// last logined device
+				ProfileBase userProfile = ProfileBase.Create(loginId, true);
+
+				userProfile["ImageUrl"] = imageUrl;
+				userProfile["Comment"] = comment;
+
 				userProfile.Save();
 
-				return update_device_info;
+				update_profile.comment = comment;
+				update_profile.img_url = imageUrl;
+				update_profile.result_code = 0;
+
+
+				return update_profile;
 			}
 			catch ( Exception )
 			{
-				update_device_info.result_code = -1;
-				return update_device_info;
+				update_profile.result_code = -2;
+				return update_profile;
 			}
-		}
+		}	
     }
 }

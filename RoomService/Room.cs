@@ -96,7 +96,7 @@ namespace RoomService
 		[OperationContract]
 		ROOM_SUMMARY_LIST AllRoomList(RoomSearchKey key, String user_no);
 		[OperationContract]
-		ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int Skip);
+		ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int page);
 
 		[OperationContract]
 		JOIN_ROOM_DETAIL JoinRoomDetail(UInt32 room_index, String user_no);
@@ -121,15 +121,15 @@ namespace RoomService
 		[OperationContract]
 		ROOM_RESULT RecruitMember(String user_no , int room_index );
 
-		[OperationContract]
-		CHAT_LIST Chat(UInt32 room_index, String user_no, int local_index, int last_update, String content);
-		[OperationContract]
-		CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content, byte type );
+		//[OperationContract]
+		//CHAT_LIST Chat(UInt32 room_index, String user_no, int local_index, int last_update, String content);
+		//[OperationContract]
+		//CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content, byte type );
 
-		[OperationContract]
-		CHAT_LIST ChatUpdate(UInt32 room_index, String user_no, int last_update);
-		[OperationContract]
-		CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update);
+		//[OperationContract]
+		//CHAT_LIST ChatUpdate(UInt32 room_index, String user_no, int last_update);
+		//[OperationContract]
+		//CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update);
 
 		[OperationContract]
 		NOTICE_LIST CreateNotice(UInt32 room_index, String user_no, int group, String title, String content);
@@ -201,7 +201,11 @@ namespace RoomService
 		static public NLogic.NUser.List _userList = new NLogic.NUser.List();
 		//public NApns.Provider _apnsProvider = null;
 		public static TraceSource _source = new TraceSource("TraceSourceSTmate");
+<<<<<<< HEAD
         
+=======
+		static public int PageSize = 5;
+>>>>>>> 2f9933aba0dc559e533166c9e7d6530d07851fe2
 
 		public RoomWCFService()
 		{
@@ -442,6 +446,18 @@ namespace RoomService
 			{
 				// TRANSACTION
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+				Guid UserNo = new Guid(user_no);
+
+				int joined_count = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+									 where JoinedUser.UserId == UserNo
+									 select JoinedUser).Count();
+
+				if (joined_count >= 5)
+				{
+					result.reason_sort = -3;		// Max 치 초과
+					return result;
+				}
+				
 				NDb.CreateRoom room = new NDb.CreateRoom();
 
 				room.Category = (byte)key._category;
@@ -451,7 +467,7 @@ namespace RoomService
 				room.Name = name;
 				room.CreateDateTime = DateTime.Now;
 				room.MaxUser = (byte)maxuser;
-				room.UserId = new Guid(user_no);
+				room.UserId = UserNo;
 				room.Duration = duration;
 
 				db.CreateRooms.InsertOnSubmit(room);
@@ -898,12 +914,17 @@ namespace RoomService
 		}
 
 
-		public ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int Skip)
+		public ROOM_SUMMARY_LIST AllRoomListDb(RoomSearchKey key, String user_no, int page)
 		{
 			ROOM_SUMMARY_LIST room_summary_list = new ROOM_SUMMARY_LIST();
 
 			try
 			{
+				if (page < 1)
+				{
+					return room_summary_list;
+				}
+
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
 
 				List<NDb.NData.JoinedRoom> room_list = (from room in db.GetTable<NDb.CreateRoom>()
@@ -930,8 +951,10 @@ namespace RoomService
 																				 select RoomUserCount).Count<NDb.RoomJoinedUser>(),
 															MasterUserId = room.UserId
 
-														}).Skip(Skip).Take(50).ToList<NDb.NData.JoinedRoom>();
-				Console.WriteLine(" Skip Count {0} ", Skip);
+														//}).Skip(Skip).Take(5).ToList<NDb.NData.JoinedRoom>();
+														}).Skip((page - 1) * PageSize).Take(PageSize).ToList<NDb.NData.JoinedRoom>();
+				
+				Console.WriteLine(" page Count {0} ", page);
 
 				room_summary_list.category = key._category;
 				room_summary_list.location_main = key._location_main;
@@ -1200,9 +1223,20 @@ namespace RoomService
 			try
 			{
 				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+				Guid UserId = new Guid(user_no);
+			
+				int joined_count = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+									where JoinedUser.UserId == UserId
+									select JoinedUser).Count();
+
+				if (joined_count >= 5)
+				{
+					room_result.reason_sort = -5;		// Max 치 초과
+					return room_result;
+				}
+
 				NDb.RoomJoinedUser create_user = new NDb.RoomJoinedUser();
 
-				Guid UserId = new Guid(user_no);
 				var joining_user = (from User in db.GetTable<NDb.aspnet_User>()
 									where User.UserId == UserId
 									//join Profile in db.GetTable<NDb.aspnet_Profile>() on UserId equals Profile.UserId
@@ -1343,6 +1377,26 @@ namespace RoomService
 				if (matched_user == null)
 				{
 					room_result.reason_sort = -1;   // not found user
+					return room_result;
+				}
+
+				if( matched_user.CreateRoom.Commited == false  && 
+					matched_user.UserId.Equals( matched_user.CreateRoom.UserId ) )
+				{
+						
+					IEnumerable<NDb.RoomJoinedUser> allMembers = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+															 where JoinedUser.RoomIndex == room_index
+															select JoinedUser);
+
+					db.RoomJoinedUsers.DeleteAllOnSubmit( allMembers );
+					db.CreateRooms.DeleteOnSubmit(matched_user.CreateRoom);
+
+					db.SubmitChanges();
+															
+					room_result.reason_sort = 0;
+					room_result.room_index = room_index;
+
+				
 					return room_result;
 				}
 
@@ -1663,302 +1717,302 @@ namespace RoomService
 			}
 		}
 
-		public CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content, byte type )
-		{
-			CHAT_LIST chat_list = new CHAT_LIST();
-			chat_list.count = 0;
-			chat_list.room_index = room_index;
+		//public CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content, byte type )
+		//{
+		//    CHAT_LIST chat_list = new CHAT_LIST();
+		//    chat_list.count = 0;
+		//    chat_list.room_index = room_index;
 
-			try
-			{
-				Guid UserId = new Guid(user_no);
-				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+		//    try
+		//    {
+		//        Guid UserId = new Guid(user_no);
+		//        NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
 
-				//var message = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
-				//               where (JoinedUser.RoomIndex == room_index && JoinedUser.UserId == UserId)
-				//               //join Profile in db.GetTable<NDb.aspnet_Profile>() on UserId equals Profile.UserId
-				//               select new NDb.NData.ChatMessage
-				//               {
-				//                   MsgId = (from Message in db.GetTable<NDb.Message>()
-				//                            where Message.RoomIndex == room_index
-				//                            select Message.MsgId).Count(),
+		//        //var message = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+		//        //               where (JoinedUser.RoomIndex == room_index && JoinedUser.UserId == UserId)
+		//        //               //join Profile in db.GetTable<NDb.aspnet_Profile>() on UserId equals Profile.UserId
+		//        //               select new NDb.NData.ChatMessage
+		//        //               {
+		//        //                   MsgId = (from Message in db.GetTable<NDb.Message>()
+		//        //                            where Message.RoomIndex == room_index
+		//        //                            select Message.MsgId).Count(),
 
-				//                   Contents = content,
-				//                   //NickName = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
-				//                   //											    JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString),
-				//                   UserId = JoinedUser.UserId.ToString(),
-				//                   NickName = JoinedUser.NickName,	// NickName 만 JoinedUser 에 저장할까나?... 아니면 위에 같이 조인시킬까?
-				//                   Email = JoinedUser.LoginId,
-				//                   //Email = JoinedUser.aspnet_User.UserName,	// squence 가 하나 여야 성공한다.
+		//        //                   Contents = content,
+		//        //                   //NickName = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+		//        //                   //											    JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString),
+		//        //                   UserId = JoinedUser.UserId.ToString(),
+		//        //                   NickName = JoinedUser.NickName,	// NickName 만 JoinedUser 에 저장할까나?... 아니면 위에 같이 조인시킬까?
+		//        //                   Email = JoinedUser.LoginId,
+		//        //                   //Email = JoinedUser.aspnet_User.UserName,	// squence 가 하나 여야 성공한다.
 
-				//               }).SingleOrDefault<NDb.NData.ChatMessage>();
+		//        //               }).SingleOrDefault<NDb.NData.ChatMessage>();
 
-				//if (message == null)
-				//{
-				//    Console.WriteLine("Invalid ChatMsg...");
-				//    chat_list.local_index = local_index;
-				//    return chat_list;
-				//}
+		//        //if (message == null)
+		//        //{
+		//        //    Console.WriteLine("Invalid ChatMsg...");
+		//        //    chat_list.local_index = local_index;
+		//        //    return chat_list;
+		//        //}
 
-				var matched_user = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
-									where (JoinedUser.RoomIndex == room_index && JoinedUser.UserId == UserId)
-									select JoinedUser).SingleOrDefault();
+		//        var matched_user = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+		//                            where (JoinedUser.RoomIndex == room_index && JoinedUser.UserId == UserId)
+		//                            select JoinedUser).SingleOrDefault();
 
-				if (matched_user == null)
-				{
-					Console.WriteLine("Invalid User...");
-					chat_list.local_index = local_index;
-					return chat_list;
-				}
+		//        if (matched_user == null)
+		//        {
+		//            Console.WriteLine("Invalid User...");
+		//            chat_list.local_index = local_index;
+		//            return chat_list;
+		//        }
 
-				//int lastMessage = (from Message in db.GetTable<NDb.Message>()
-				//                   where Message.RoomIndex == room_index
-				//                   select Message.MsgId).Count();
+		//        //int lastMessage = (from Message in db.GetTable<NDb.Message>()
+		//        //                   where Message.RoomIndex == room_index
+		//        //                   select Message.MsgId).Count();
 
-				NDb.Message insert_message = new NDb.Message();
+		//        NDb.Message insert_message = new NDb.Message();
 
-				//insert_message.MsgId = ++ message.MsgId;
-				//insert_message.IptTime = DateTime.Now;
-				//insert_message.Contents = message.Contents;
-				//insert_message.RoomIndex = (int)room_index;
-				//insert_message.NickName = message.NickName;
-				//insert_message.Email = message.Email;
+		//        //insert_message.MsgId = ++ message.MsgId;
+		//        //insert_message.IptTime = DateTime.Now;
+		//        //insert_message.Contents = message.Contents;
+		//        //insert_message.RoomIndex = (int)room_index;
+		//        //insert_message.NickName = message.NickName;
+		//        //insert_message.Email = message.Email;
 
-				insert_message.IptTime = DateTime.Now;
-				insert_message.Contents = content;
-				insert_message.RoomIndex = (int)room_index;
-				insert_message.NickName = matched_user.NickName;
-				insert_message.Email = matched_user.LoginId;
-				insert_message.Type = type;
+		//        insert_message.IptTime = DateTime.Now;
+		//        insert_message.Contents = content;
+		//        insert_message.RoomIndex = (int)room_index;
+		//        insert_message.NickName = matched_user.NickName;
+		//        insert_message.Email = matched_user.LoginId;
+		//        insert_message.Type = type;
 
-				db.Messages.InsertOnSubmit(insert_message);
-				db.SubmitChanges();
+		//        db.Messages.InsertOnSubmit(insert_message);
+		//        db.SubmitChanges();
 
-				IEnumerable<NDb.Message> query_message = (from Message in db.GetTable<NDb.Message>()
-														  where Message.RoomIndex == room_index && Message.MsgId > last_update
-														  orderby Message.MsgId ascending
-														  select Message).Take(50);
+		//        IEnumerable<NDb.Message> query_message = (from Message in db.GetTable<NDb.Message>()
+		//                                                  where Message.RoomIndex == room_index && Message.MsgId > last_update
+		//                                                  orderby Message.MsgId ascending
+		//                                                  select Message).Take(50);
 
-				int return_count = query_message.Count();
-				chat_list.count = return_count;
-				chat_list.room_index = room_index;
-				chat_list.CHAT = new CHAT_LISTCHAT[return_count];
+		//        int return_count = query_message.Count();
+		//        chat_list.count = return_count;
+		//        chat_list.room_index = room_index;
+		//        chat_list.CHAT = new CHAT_LISTCHAT[return_count];
 
-				int nIndex = 0;
-				foreach (NDb.Message msg in query_message)
-				{
-					chat_list.CHAT[nIndex] = new CHAT_LISTCHAT();
+		//        int nIndex = 0;
+		//        foreach (NDb.Message msg in query_message)
+		//        {
+		//            chat_list.CHAT[nIndex] = new CHAT_LISTCHAT();
 
-					chat_list.CHAT[nIndex].chat_index = msg.MsgId;
-					chat_list.CHAT[nIndex].nick_name = msg.NickName;
-					chat_list.CHAT[nIndex].Value = msg.Contents;
-					chat_list.CHAT[nIndex].login_id = msg.Email;
-					chat_list.CHAT[nIndex].ownerSpecified = false;
-					chat_list.CHAT[nIndex].date_time = msg.IptTime;
-					if( msg.Type == 0 )
-					{
-						chat_list.CHAT[nIndex].typeSpecified = false;
-					}
-					else{
-						chat_list.CHAT[nIndex].typeSpecified = true;
-						chat_list.CHAT[nIndex].type = msg.Type;
-					}
+		//            chat_list.CHAT[nIndex].chat_index = msg.MsgId;
+		//            chat_list.CHAT[nIndex].nick_name = msg.NickName;
+		//            chat_list.CHAT[nIndex].Value = msg.Contents;
+		//            chat_list.CHAT[nIndex].login_id = msg.Email;
+		//            chat_list.CHAT[nIndex].ownerSpecified = false;
+		//            chat_list.CHAT[nIndex].date_time = msg.IptTime;
+		//            if( msg.Type == 0 )
+		//            {
+		//                chat_list.CHAT[nIndex].typeSpecified = false;
+		//            }
+		//            else{
+		//                chat_list.CHAT[nIndex].typeSpecified = true;
+		//                chat_list.CHAT[nIndex].type = msg.Type;
+		//            }
 
-					nIndex++;
-				}
+		//            nIndex++;
+		//        }
 
-				chat_list.local_index = local_index;
+		//        chat_list.local_index = local_index;
 
-				// Backend push server 로 옮겨야 ..
-				//List<String> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
-				//                                 where RoomUser.RoomIndex == room_index
-				//                                join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>() 
-				//                                                on RoomUser.UserId equals DeviceInfo.UserId
-				//                                 select DeviceInfo.DeviceToken ).ToList<String>();
+		//        // Backend push server 로 옮겨야 ..
+		//        //List<String> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+		//        //                                 where RoomUser.RoomIndex == room_index
+		//        //                                join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>() 
+		//        //                                                on RoomUser.UserId equals DeviceInfo.UserId
+		//        //                                 select DeviceInfo.DeviceToken ).ToList<String>();
 
-				List<NDb.UserDeviceInfo> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
-															 where RoomUser.RoomIndex == room_index && RoomUser.UserId != UserId
-												 join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>()
-													 on RoomUser.UserId equals DeviceInfo.UserId
-															 where DeviceInfo.Enable == true
-												 select DeviceInfo).ToList<NDb.UserDeviceInfo>();
+		//        List<NDb.UserDeviceInfo> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+		//                                                     where RoomUser.RoomIndex == room_index && RoomUser.UserId != UserId
+		//                                         join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>()
+		//                                             on RoomUser.UserId equals DeviceInfo.UserId
+		//                                                     where DeviceInfo.Enable == true
+		//                                         select DeviceInfo).ToList<NDb.UserDeviceInfo>();
 
-				Console.WriteLine("Push Notification to room {0} ", room_index );
+		//        Console.WriteLine("Push Notification to room {0} ", room_index );
 
-				PUSH_NOTIFICATION pushInfo = new PUSH_NOTIFICATION();
-				pushInfo.room = (int)room_index;
-				pushInfo.msg = content;
-				pushInfo.type = 1; //chat
-				pushInfo.r_name = matched_user.CreateRoom.Name;
-				pushInfo.INFO = new PUSH_NOTIFICATIONINFO[device_info_list.Count];
+		//        PUSH_NOTIFICATION pushInfo = new PUSH_NOTIFICATION();
+		//        pushInfo.room = (int)room_index;
+		//        pushInfo.msg = content;
+		//        pushInfo.type = 1; //chat
+		//        pushInfo.r_name = matched_user.CreateRoom.Name;
+		//        pushInfo.INFO = new PUSH_NOTIFICATIONINFO[device_info_list.Count];
 
-				int nPushCount = 0;
-				foreach (NDb.UserDeviceInfo device_info in device_info_list)
-				{
-					//if (device_info.UserId.Equals(UserId) == true)
-					//{
-					//    pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
-					//    pushInfo.INFO[nPushCount].badge = 1;
-					//    pushInfo.INFO[nPushCount].DeviceId = "";
-					//    pushInfo.INFO[nPushCount].type = "";
-					//    pushInfo.INFO[nPushCount].sound = "";
-					//    nPushCount++;
+		//        int nPushCount = 0;
+		//        foreach (NDb.UserDeviceInfo device_info in device_info_list)
+		//        {
+		//            //if (device_info.UserId.Equals(UserId) == true)
+		//            //{
+		//            //    pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
+		//            //    pushInfo.INFO[nPushCount].badge = 1;
+		//            //    pushInfo.INFO[nPushCount].DeviceId = "";
+		//            //    pushInfo.INFO[nPushCount].type = "";
+		//            //    pushInfo.INFO[nPushCount].sound = "";
+		//            //    nPushCount++;
 
-					//    continue;
-					//}
+		//            //    continue;
+		//            //}
 
-					pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
+		//            pushInfo.INFO[nPushCount] = new PUSH_NOTIFICATIONINFO();
 
 
-					if (matched_user.CreateRoom.UserId.Equals(device_info.UserId))
-					{
-						pushInfo.INFO[nPushCount].owner = 1;
-					}
-					else
-					{
-						pushInfo.INFO[nPushCount].owner = 0;
-					}
+		//            if (matched_user.CreateRoom.UserId.Equals(device_info.UserId))
+		//            {
+		//                pushInfo.INFO[nPushCount].owner = 1;
+		//            }
+		//            else
+		//            {
+		//                pushInfo.INFO[nPushCount].owner = 0;
+		//            }
 
-					pushInfo.INFO[nPushCount].badge = 1;
-					pushInfo.INFO[nPushCount].DeviceId = device_info.DeviceToken;
-					pushInfo.INFO[nPushCount].type = "iOS";
-					pushInfo.INFO[nPushCount].sound = "default";
-					nPushCount++;
-				}
+		//            pushInfo.INFO[nPushCount].badge = 1;
+		//            pushInfo.INFO[nPushCount].DeviceId = device_info.DeviceToken;
+		//            pushInfo.INFO[nPushCount].type = "iOS";
+		//            pushInfo.INFO[nPushCount].sound = "default";
+		//            nPushCount++;
+		//        }
 
-				RoomWCFService.SendNotificationToAzure(BaseAddress, pushInfo);
+		//        RoomWCFService.SendNotificationToAzure(BaseAddress, pushInfo);
 				
 
-				//foreach (NDb.UserDeviceInfo device_info in device_info_list)
-				//{
-				//    Console.WriteLine("DeviceToken {0} ", device_info );
+		//        //foreach (NDb.UserDeviceInfo device_info in device_info_list)
+		//        //{
+		//        //    Console.WriteLine("DeviceToken {0} ", device_info );
 
-				//    if (device_info.UserId.Equals(UserId))
-				//    {
-				//        Console.WriteLine("[ChatRoom Skip user]  : {0}", device_info.UserId);
-				//        continue;
-				//    }
+		//        //    if (device_info.UserId.Equals(UserId))
+		//        //    {
+		//        //        Console.WriteLine("[ChatRoom Skip user]  : {0}", device_info.UserId);
+		//        //        continue;
+		//        //    }
 
-				//    if (device_info.DeviceToken.Equals(""))
-				//    {
-				//        Console.WriteLine("[ChatRoom Skip user Invalid DeviceToken ]  : {0}", device_info.UserId);
-				//        continue;
-				//    }
+		//        //    if (device_info.DeviceToken.Equals(""))
+		//        //    {
+		//        //        Console.WriteLine("[ChatRoom Skip user Invalid DeviceToken ]  : {0}", device_info.UserId);
+		//        //        continue;
+		//        //    }
 
-				//    try
-				//    {
-				//        //Create a new notification to send
-				//        JdSoft.Apple.Apns.Notifications.Notification
-				//        alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(device_info.DeviceToken);
+		//        //    try
+		//        //    {
+		//        //        //Create a new notification to send
+		//        //        JdSoft.Apple.Apns.Notifications.Notification
+		//        //        alertNotification = new JdSoft.Apple.Apns.Notifications.Notification(device_info.DeviceToken);
 
-				//        alertNotification.Payload.Alert.Body = content;
-				//        alertNotification.Payload.Sound = "default";
-				//        alertNotification.Payload.Badge = 1;
+		//        //        alertNotification.Payload.Alert.Body = content;
+		//        //        alertNotification.Payload.Sound = "default";
+		//        //        alertNotification.Payload.Badge = 1;
 
-				//        //Queue the notification to be sent
-				//        if (_apnsProvider.Service.QueueNotification(alertNotification))
-				//            Console.WriteLine("Notification Queued!");
-				//        else
-				//            Console.WriteLine("Notification Failed to be Queued!");
-				//    }
-				//    catch
-				//    {
-				//        continue;
-				//    }
-				//}
+		//        //        //Queue the notification to be sent
+		//        //        if (_apnsProvider.Service.QueueNotification(alertNotification))
+		//        //            Console.WriteLine("Notification Queued!");
+		//        //        else
+		//        //            Console.WriteLine("Notification Failed to be Queued!");
+		//        //    }
+		//        //    catch
+		//        //    {
+		//        //        continue;
+		//        //    }
+		//        //}
 
-				return chat_list;
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("======================== Chat Error ==========================");
-				Console.WriteLine("{0}", e.Message);
-				Console.WriteLine("==============================================================");
+		//        return chat_list;
+		//    }
+		//    catch (Exception e)
+		//    {
+		//        Console.WriteLine("======================== Chat Error ==========================");
+		//        Console.WriteLine("{0}", e.Message);
+		//        Console.WriteLine("==============================================================");
 
-				chat_list.local_index = local_index;
-				return chat_list;
-			}
-		}
+		//        chat_list.local_index = local_index;
+		//        return chat_list;
+		//    }
+		//}
 
-		public CHAT_LIST ChatUpdate(UInt32 room_index, String user_no, int last_update)
-		{
-			CHAT_LIST chat_list = new CHAT_LIST();
-			chat_list.count = 0;
-			chat_list.room_index = room_index;
+		//public CHAT_LIST ChatUpdate(UInt32 room_index, String user_no, int last_update)
+		//{
+		//    CHAT_LIST chat_list = new CHAT_LIST();
+		//    chat_list.count = 0;
+		//    chat_list.room_index = room_index;
 
-			NLogic.Room room = _roomList.Find(room_index);
-			if (room == null)
-			{
-				return chat_list;
-			}
+		//    NLogic.Room room = _roomList.Find(room_index);
+		//    if (room == null)
+		//    {
+		//        return chat_list;
+		//    }
 
-			NLogic.User user = room.UserList.FindUser(user_no);
-			if (user == null)
-			{
-				return chat_list;
-			}
+		//    NLogic.User user = room.UserList.FindUser(user_no);
+		//    if (user == null)
+		//    {
+		//        return chat_list;
+		//    }
 
-			room.UpdateMessage(user, last_update, ref chat_list);
-			chat_list.local_index = -1;
-			return chat_list;
-		}
+		//    room.UpdateMessage(user, last_update, ref chat_list);
+		//    chat_list.local_index = -1;
+		//    return chat_list;
+		//}
 
-		public CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update)
-		{
-			CHAT_LIST chat_list = new CHAT_LIST();
-			chat_list.count = 0;
-			chat_list.room_index = room_index;
+		//public CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update)
+		//{
+		//    CHAT_LIST chat_list = new CHAT_LIST();
+		//    chat_list.count = 0;
+		//    chat_list.room_index = room_index;
 
-			try
-			{
-				Guid UserId = new Guid(user_no);
-				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
-				DateTime last_date = DateTime.Now;
-				IEnumerable<NDb.Message> query_message = (from Message in db.GetTable<NDb.Message>()
-														  where Message.RoomIndex == room_index && Message.MsgId > last_update
-														  orderby Message.MsgId ascending
-														  select Message).Take(50);
+		//    try
+		//    {
+		//        Guid UserId = new Guid(user_no);
+		//        NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+		//        DateTime last_date = DateTime.Now;
+		//        IEnumerable<NDb.Message> query_message = (from Message in db.GetTable<NDb.Message>()
+		//                                                  where Message.RoomIndex == room_index && Message.MsgId > last_update
+		//                                                  orderby Message.MsgId ascending
+		//                                                  select Message).Take(50);
 
-				int return_count = query_message.Count();
-				chat_list.count = return_count;
-				chat_list.room_index = room_index;
-				chat_list.CHAT = new CHAT_LISTCHAT[return_count];
+		//        int return_count = query_message.Count();
+		//        chat_list.count = return_count;
+		//        chat_list.room_index = room_index;
+		//        chat_list.CHAT = new CHAT_LISTCHAT[return_count];
 
-				int nIndex = 0;
-				foreach (NDb.Message msg in query_message)
-				{
-					chat_list.CHAT[nIndex] = new CHAT_LISTCHAT();
-					chat_list.CHAT[nIndex].chat_index = msg.MsgId;
-					chat_list.CHAT[nIndex].nick_name = msg.NickName;
-					chat_list.CHAT[nIndex].Value = msg.Contents;
-					chat_list.CHAT[nIndex].login_id = msg.Email;
-					chat_list.CHAT[nIndex].ownerSpecified = false;
-					chat_list.CHAT[nIndex].date_time = msg.IptTime;
-					if (msg.Type == 0)
-					{
-						chat_list.CHAT[nIndex].typeSpecified = false;
-					}
-					else
-					{
-						chat_list.CHAT[nIndex].typeSpecified = true;
-						chat_list.CHAT[nIndex].type = msg.Type;
-					}
-					nIndex++;
-				}
+		//        int nIndex = 0;
+		//        foreach (NDb.Message msg in query_message)
+		//        {
+		//            chat_list.CHAT[nIndex] = new CHAT_LISTCHAT();
+		//            chat_list.CHAT[nIndex].chat_index = msg.MsgId;
+		//            chat_list.CHAT[nIndex].nick_name = msg.NickName;
+		//            chat_list.CHAT[nIndex].Value = msg.Contents;
+		//            chat_list.CHAT[nIndex].login_id = msg.Email;
+		//            chat_list.CHAT[nIndex].ownerSpecified = false;
+		//            chat_list.CHAT[nIndex].date_time = msg.IptTime;
+		//            if (msg.Type == 0)
+		//            {
+		//                chat_list.CHAT[nIndex].typeSpecified = false;
+		//            }
+		//            else
+		//            {
+		//                chat_list.CHAT[nIndex].typeSpecified = true;
+		//                chat_list.CHAT[nIndex].type = msg.Type;
+		//            }
+		//            nIndex++;
+		//        }
 
-				chat_list.local_index = -1;
-				return chat_list;
+		//        chat_list.local_index = -1;
+		//        return chat_list;
 
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("======================== Chat Error ==========================");
-				Console.WriteLine("{0}", e.Message);
-				Console.WriteLine("==============================================================");
+		//    }
+		//    catch (Exception e)
+		//    {
+		//        Console.WriteLine("======================== Chat Error ==========================");
+		//        Console.WriteLine("{0}", e.Message);
+		//        Console.WriteLine("==============================================================");
 
-				return chat_list;
-			}
-		}
+		//        return chat_list;
+		//    }
+		//}
 
 		public NOTICE_LIST CreateNotice(UInt32 room_index,
 											String user_no,
@@ -2445,6 +2499,15 @@ namespace RoomService
 				result.MEMBER[0].panalty = mached_user.Penalty;
 				result.MEMBER[0].rank_no = 0;
 				result.MEMBER[0].age = (byte)(DateTime.Now.Year - Birth.Year);
+				if (matched_room.UserId.Equals(mached_user.UserId))
+				{
+					result.MEMBER[0].ownerSpecified = true;
+					result.MEMBER[0].owner = 1;
+				}
+				else
+				{
+					result.MEMBER[0].ownerSpecified = false;
+				}	
 
 				return result;
 			}
@@ -2518,6 +2581,16 @@ namespace RoomService
 																				JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString));
 
 					result.MEMBER[index].age = (byte)(DateTime.Now.Year - Birth.Year);
+					if (matched_room.UserId.Equals(JoinedUser.UserId))
+					{
+						result.MEMBER[index].ownerSpecified = true;
+						result.MEMBER[index].owner = 1;
+					}
+					else
+					{
+						result.MEMBER[index].ownerSpecified = false;
+					}	
+
 					index++;
 				}
 
@@ -2659,16 +2732,16 @@ namespace RoomService
 					}
 				}
 
-				if (matched_room.Messages.Count() == 0)
-				{
-					result.chat_last_index = 0;
-					result.chat_unread_count = 0;
-				}
-				else
-				{
-					result.chat_last_index = matched_room.Messages.Max<NDb.Message>(Message => Message.MsgId);
-					result.chat_unread_count = matched_room.Messages.Count<NDb.Message>(Message => Message.MsgId > last_chat_index);
-				}
+				//if (matched_room.Messages.Count() == 0)
+				//{
+				//    result.chat_last_index = 0;
+				//    result.chat_unread_count = 0;
+				//}
+				//else
+				//{
+				//    result.chat_last_index = matched_room.Messages.Max<NDb.Message>(Message => Message.MsgId);
+				//    result.chat_unread_count = matched_room.Messages.Count<NDb.Message>(Message => Message.MsgId > last_chat_index);
+				//}
 
 				// JoinedRoomUser 가 0 일때 체크 하기
 				List<NDb.RoomJoinedUser> user_list = matched_room.RoomJoinedUsers.ToList<NDb.RoomJoinedUser>();
@@ -2736,7 +2809,14 @@ namespace RoomService
 					result.MEMBER_PROFILE[index] = new MEMBER_PROFILE_INFOMEMBER_PROFILE();
 
 					result.MEMBER_PROFILE[index].login_id = JoinedUser.LoginId;
+					result.MEMBER_PROFILE[index].user_name = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+															JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString);
+
 					result.MEMBER_PROFILE[index].imageUrl = db.fn_GetProfileElement("ImageUrl", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+																JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString);
+					result.MEMBER_PROFILE[index].comment = db.fn_GetProfileElement("Comment", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+																JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString);
+					result.MEMBER_PROFILE[index].phone = db.fn_GetProfileElement("Phone", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
 																JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString);
 
 					index++;
@@ -2771,12 +2851,21 @@ namespace RoomService
 					result.reason_sort = -1;   // not found room
 					return result;
 				}
-
-				if (matched_room.UserId.Equals(UserId) == false)
+				
+				NDb.RoomJoinedUser joined_user = (from RoomUser in matched_room.RoomJoinedUsers
+												  where RoomUser.UserId == UserId
+												  select RoomUser).SingleOrDefault();
+				if (joined_user == null)
 				{
-					result.reason_sort = -2;   // not master user
+					result.reason_sort = -2;   // requester is not joined user
 					return result;
 				}
+							
+				//if (matched_room.UserId.Equals(UserId) == false)
+				//{
+				//    result.reason_sort = -2;   // not master user
+				//    return result;
+				//}
 
 				if (matched_room.Commited == false)
 				{
@@ -2790,7 +2879,7 @@ namespace RoomService
 												  select RoomUser).SingleOrDefault();
 				if (mached_user != null)
 				{
-					result.reason_sort = -4;   // already joined user
+					result.reason_sort = -4;   // dest member  already joined user
 					return result;
 				}
 

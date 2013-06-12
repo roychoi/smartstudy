@@ -672,181 +672,181 @@ namespace RoomService
 
 		}
 	
-		public CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content)
-		{
-			CHAT_LIST chat_list = new CHAT_LIST();
-			chat_list.count = 0;
-			chat_list.room_index = room_index;
+		//public CHAT_LIST ChatDb(UInt32 room_index, String user_no, int local_index, int last_update, String content)
+		//{
+		//    CHAT_LIST chat_list = new CHAT_LIST();
+		//    chat_list.count = 0;
+		//    chat_list.room_index = room_index;
 
-			try
-			{
-				Guid UserId = new Guid(user_no);
-				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+		//    try
+		//    {
+		//        Guid UserId = new Guid(user_no);
+		//        NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
 
-				var message = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
-							   where (JoinedUser.RoomIndex == room_index && JoinedUser.UserId == UserId)
-							   //join Profile in db.GetTable<NDb.aspnet_Profile>() on UserId equals Profile.UserId
-							   select new NDb.NData.ChatMessage
-							   {
-								   MsgId = (from Message in db.GetTable<NDb.Message>()
-											where Message.RoomIndex == room_index
-											select Message.MsgId).Count(),
+		//        var message = (from JoinedUser in db.GetTable<NDb.RoomJoinedUser>()
+		//                       where (JoinedUser.RoomIndex == room_index && JoinedUser.UserId == UserId)
+		//                       //join Profile in db.GetTable<NDb.aspnet_Profile>() on UserId equals Profile.UserId
+		//                       select new NDb.NData.ChatMessage
+		//                       {
+		//                           MsgId = (from Message in db.GetTable<NDb.Message>()
+		//                                    where Message.RoomIndex == room_index
+		//                                    select Message.MsgId).Count(),
 
-								   Contents = content,
-								   //NickName = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
-								   //     JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString),
-								   NickName = JoinedUser.NickName,	// NickName 만 JoinedUser 에 저장할까나?... 아니면 위에 같이 조인시킬까?
-								   Email = JoinedUser.LoginId,
-								   //Email = JoinedUser.aspnet_User.UserName,	// squence 가 하나 여야 성공한다.
+		//                           Contents = content,
+		//                           //NickName = db.fn_GetProfileElement("NickName", JoinedUser.aspnet_User.aspnet_Profile.PropertyNames,
+		//                           //     JoinedUser.aspnet_User.aspnet_Profile.PropertyValuesString),
+		//                           NickName = JoinedUser.NickName,	// NickName 만 JoinedUser 에 저장할까나?... 아니면 위에 같이 조인시킬까?
+		//                           Email = JoinedUser.LoginId,
+		//                           //Email = JoinedUser.aspnet_User.UserName,	// squence 가 하나 여야 성공한다.
 
-							   }).SingleOrDefault<NDb.NData.ChatMessage>();
+		//                       }).SingleOrDefault<NDb.NData.ChatMessage>();
 
-				if (message == null)
-				{
-					Console.WriteLine("Invalid ChatMsg...");
-					chat_list.local_index = 0;
-					return chat_list;
-				}
+		//        if (message == null)
+		//        {
+		//            Console.WriteLine("Invalid ChatMsg...");
+		//            chat_list.local_index = 0;
+		//            return chat_list;
+		//        }
 
-				NDb.Message insert_message = new NDb.Message();
+		//        NDb.Message insert_message = new NDb.Message();
 
-				insert_message.MsgId = ++message.MsgId;
-				insert_message.IptTime = DateTime.Now;
-				insert_message.Contents = message.Contents;
-				insert_message.RoomIndex = (int)room_index;
-				insert_message.NickName = message.NickName;
-				insert_message.Email = message.Email;
+		//        insert_message.MsgId = ++message.MsgId;
+		//        insert_message.IptTime = DateTime.Now;
+		//        insert_message.Contents = message.Contents;
+		//        insert_message.RoomIndex = (int)room_index;
+		//        insert_message.NickName = message.NickName;
+		//        insert_message.Email = message.Email;
 
-				db.Messages.InsertOnSubmit(insert_message);
-				db.SubmitChanges();
+		//        db.Messages.InsertOnSubmit(insert_message);
+		//        db.SubmitChanges();
 
-				IEnumerable<NDb.Message> query_message = (from Message in db.GetTable<NDb.Message>()
-														  where Message.RoomIndex == room_index && Message.MsgId > last_update
-														  orderby Message.MsgId ascending
-														  select Message).Take(50);
+		//        IEnumerable<NDb.Message> query_message = (from Message in db.GetTable<NDb.Message>()
+		//                                                  where Message.RoomIndex == room_index && Message.MsgId > last_update
+		//                                                  orderby Message.MsgId ascending
+		//                                                  select Message).Take(50);
 
-				int return_count = query_message.Count();
-				chat_list.count = return_count;
-				chat_list.room_index = room_index;
-				chat_list.CHAT = new CHAT_LISTCHAT[return_count];
+		//        int return_count = query_message.Count();
+		//        chat_list.count = return_count;
+		//        chat_list.room_index = room_index;
+		//        chat_list.CHAT = new CHAT_LISTCHAT[return_count];
 
-				int nIndex = 0;
-				foreach (NDb.Message msg in query_message)
-				{
-					chat_list.CHAT[nIndex] = new CHAT_LISTCHAT();
+		//        int nIndex = 0;
+		//        foreach (NDb.Message msg in query_message)
+		//        {
+		//            chat_list.CHAT[nIndex] = new CHAT_LISTCHAT();
 
-					chat_list.CHAT[nIndex].chat_index = msg.MsgId;
-					chat_list.CHAT[nIndex].nick_name = msg.NickName;
-					chat_list.CHAT[nIndex].Value = msg.Contents;
-					chat_list.CHAT[nIndex].login_id = msg.Email;
-					chat_list.CHAT[nIndex].ownerSpecified = false;
-					chat_list.CHAT[nIndex].date_time = msg.IptTime;
+		//            chat_list.CHAT[nIndex].chat_index = msg.MsgId;
+		//            chat_list.CHAT[nIndex].nick_name = msg.NickName;
+		//            chat_list.CHAT[nIndex].Value = msg.Contents;
+		//            chat_list.CHAT[nIndex].login_id = msg.Email;
+		//            chat_list.CHAT[nIndex].ownerSpecified = false;
+		//            chat_list.CHAT[nIndex].date_time = msg.IptTime;
 
-					// 클라이언트에서 판단하도록 수정요망
-					//if (user.UserGuid.Equals(query_message.UserGuid))
-					//{
-					//    chat_list.CHAT[nIndex].ownerSpecified = true;
-					//    chat_list.CHAT[nIndex].owner = 1;
-					//}
-					//else
-					//{
-					//    chat_list.CHAT[nIndex].ownerSpecified = false;
-					//}
+		//            // 클라이언트에서 판단하도록 수정요망
+		//            //if (user.UserGuid.Equals(query_message.UserGuid))
+		//            //{
+		//            //    chat_list.CHAT[nIndex].ownerSpecified = true;
+		//            //    chat_list.CHAT[nIndex].owner = 1;
+		//            //}
+		//            //else
+		//            //{
+		//            //    chat_list.CHAT[nIndex].ownerSpecified = false;
+		//            //}
 
-					nIndex++;
-				}
+		//            nIndex++;
+		//        }
 
-				chat_list.local_index = local_index;
+		//        chat_list.local_index = local_index;
 
-				// Backend push server 로 옮겨야 ..
-				List<String> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
-												 where RoomUser.RoomIndex == room_index
-												 join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>()
-																 on RoomUser.UserId equals DeviceInfo.UserId
-												 select DeviceInfo.DeviceToken).ToList<String>();
+		//        // Backend push server 로 옮겨야 ..
+		//        List<String> device_info_list = (from RoomUser in db.GetTable<NDb.RoomJoinedUser>()
+		//                                         where RoomUser.RoomIndex == room_index
+		//                                         join DeviceInfo in db.GetTable<NDb.UserDeviceInfo>()
+		//                                                         on RoomUser.UserId equals DeviceInfo.UserId
+		//                                         select DeviceInfo.DeviceToken).ToList<String>();
 
 
-				Console.WriteLine("Push Notification to room {0} ", room_index);
+		//        Console.WriteLine("Push Notification to room {0} ", room_index);
 
-				foreach (String device_info in device_info_list)
-				{
-					Console.WriteLine("DeviceToken {0} ", device_info);
-				}
+		//        foreach (String device_info in device_info_list)
+		//        {
+		//            Console.WriteLine("DeviceToken {0} ", device_info);
+		//        }
 
-				return chat_list;
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("======================== Chat Error ==========================");
-				Console.WriteLine("{0}", e.Message);
-				Console.WriteLine("==============================================================");
+		//        return chat_list;
+		//    }
+		//    catch (Exception e)
+		//    {
+		//        Console.WriteLine("======================== Chat Error ==========================");
+		//        Console.WriteLine("{0}", e.Message);
+		//        Console.WriteLine("==============================================================");
 
-				chat_list.local_index = 0;
-				return chat_list;
-			}
-		}
+		//        chat_list.local_index = 0;
+		//        return chat_list;
+		//    }
+		//}
 
 	
-		public CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update)
-		{
-			CHAT_LIST chat_list = new CHAT_LIST();
-			chat_list.count = 0;
-			chat_list.room_index = room_index;
+		//public CHAT_LIST ChatUpdateDb(UInt32 room_index, String user_no, int last_update)
+		//{
+		//    CHAT_LIST chat_list = new CHAT_LIST();
+		//    chat_list.count = 0;
+		//    chat_list.room_index = room_index;
 
-			try
-			{
-				Guid UserId = new Guid(user_no);
-				NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
-				DateTime last_date = DateTime.Now;
-				IEnumerable<NDb.Message> query_message = (from Message in db.GetTable<NDb.Message>()
-														  where Message.RoomIndex == room_index && Message.MsgId > last_update
-														  orderby Message.MsgId ascending
-														  select Message).Take(50);
+		//    try
+		//    {
+		//        Guid UserId = new Guid(user_no);
+		//        NDb.RoomDataClassesDataContext db = new NDb.RoomDataClassesDataContext();
+		//        DateTime last_date = DateTime.Now;
+		//        IEnumerable<NDb.Message> query_message = (from Message in db.GetTable<NDb.Message>()
+		//                                                  where Message.RoomIndex == room_index && Message.MsgId > last_update
+		//                                                  orderby Message.MsgId ascending
+		//                                                  select Message).Take(50);
 
-				int return_count = query_message.Count();
-				chat_list.count = return_count;
-				chat_list.room_index = room_index;
-				chat_list.CHAT = new CHAT_LISTCHAT[return_count];
+		//        int return_count = query_message.Count();
+		//        chat_list.count = return_count;
+		//        chat_list.room_index = room_index;
+		//        chat_list.CHAT = new CHAT_LISTCHAT[return_count];
 
-				int nIndex = 0;
-				foreach (NDb.Message msg in query_message)
-				{
-					chat_list.CHAT[nIndex] = new CHAT_LISTCHAT();
-					chat_list.CHAT[nIndex].chat_index = msg.MsgId;
-					chat_list.CHAT[nIndex].nick_name = msg.NickName;
-					chat_list.CHAT[nIndex].Value = msg.Contents;
-					chat_list.CHAT[nIndex].login_id = msg.Email;
-					chat_list.CHAT[nIndex].ownerSpecified = false;
-					chat_list.CHAT[nIndex].date_time = msg.IptTime;
+		//        int nIndex = 0;
+		//        foreach (NDb.Message msg in query_message)
+		//        {
+		//            chat_list.CHAT[nIndex] = new CHAT_LISTCHAT();
+		//            chat_list.CHAT[nIndex].chat_index = msg.MsgId;
+		//            chat_list.CHAT[nIndex].nick_name = msg.NickName;
+		//            chat_list.CHAT[nIndex].Value = msg.Contents;
+		//            chat_list.CHAT[nIndex].login_id = msg.Email;
+		//            chat_list.CHAT[nIndex].ownerSpecified = false;
+		//            chat_list.CHAT[nIndex].date_time = msg.IptTime;
 
-					// 클라이언트에서 판단하도록 수정요망
+		//            // 클라이언트에서 판단하도록 수정요망
 
-					//if (user.UserGuid.Equals(query_message.UserGuid))
-					//{
-					//    chat_list.CHAT[nIndex].ownerSpecified = true;
-					//    chat_list.CHAT[nIndex].owner = 1;
-					//}
-					//else
-					//{
-					//    chat_list.CHAT[nIndex].ownerSpecified = false;
-					//}
+		//            //if (user.UserGuid.Equals(query_message.UserGuid))
+		//            //{
+		//            //    chat_list.CHAT[nIndex].ownerSpecified = true;
+		//            //    chat_list.CHAT[nIndex].owner = 1;
+		//            //}
+		//            //else
+		//            //{
+		//            //    chat_list.CHAT[nIndex].ownerSpecified = false;
+		//            //}
 
-					nIndex++;
-				}
+		//            nIndex++;
+		//        }
 
-				chat_list.local_index = -1;
-				return chat_list;
+		//        chat_list.local_index = -1;
+		//        return chat_list;
 
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("======================== Chat Error ==========================");
-				Console.WriteLine("{0}", e.Message);
-				Console.WriteLine("==============================================================");
+		//    }
+		//    catch (Exception e)
+		//    {
+		//        Console.WriteLine("======================== Chat Error ==========================");
+		//        Console.WriteLine("{0}", e.Message);
+		//        Console.WriteLine("==============================================================");
 
-				return chat_list;
-			}
-		}
+		//        return chat_list;
+		//    }
+		//}
 
 		public NOTICE_LIST CreateNotice(UInt32 room_index,
 											String user_no,
