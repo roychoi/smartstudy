@@ -7,6 +7,9 @@ namespace RoomService.NLogic.NUser
 {
     class Builder
     {
+
+
+
     }
 
 
